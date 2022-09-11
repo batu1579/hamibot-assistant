@@ -1,0 +1,62 @@
+{
+    "name": "hamibot-assistant",
+    "displayName": "Hamibot 开发助手",
+    "description": "辅助开发 Hamibot 脚本的 VSCode 插件",
+    "keywords": [
+        "hamibot"
+    ],
+    "version": "0.0.1",
+    "publisher": "BATU1579",
+    "license": "MPL-2.0",
+    "homepage": "https://github.com/batu1579/hamibot-assistant#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/batu1579/hamibot-assistant.git"
+    },
+    "bugs": {
+        "url": "https://github.com/batu1579/hamibot-assistant/issues"
+    },
+    "engines": {
+        "vscode": "^1.70.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "icon": "images/logo.png",
+    "activationEvents": [
+        "workspaceContains:hamibot.config.json",
+        "onCommand:extension.createNewHamibotProject"
+    ],
+    "main": "./dist/extension.js",
+    "scripts": {
+        "vscode:prepublish": "npm run package",
+        "compile": "webpack",
+        "watch": "webpack --watch",
+        "package": "webpack --mode production --devtool hidden-source-map",
+        "compile-tests": "tsc -p . --outDir out",
+        "watch-tests": "tsc -p . -w --outDir out",
+        "pretest": "npm run compile-tests && npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/glob": "^7.2.0",
+        "@types/mocha": "^9.1.1",
+        "@types/node": "16.x",
+        "@types/vscode": "^1.70.0",
+        "@typescript-eslint/eslint-plugin": "^5.31.0",
+        "@typescript-eslint/parser": "^5.31.0",
+        "@vscode/test-electron": "^2.1.5",
+        "eslint": "^8.20.0",
+        "glob": "^8.0.3",
+        "mocha": "^10.0.0",
+        "ts-loader": "^9.3.1",
+        "typescript": "^4.7.4",
+        "webpack": "^5.74.0",
+        "webpack-cli": "^4.10.0"
+    },
+    "dependencies": {
+        "axios": "^0.27.2",
+        "form-data": "^4.0.0"
+    }
+}
