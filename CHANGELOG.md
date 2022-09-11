@@ -1,21 +1,19 @@
 # Change Log
 
-All notable changes to the "hamibot-assistant" extension will be documented in this file.
+所有对 "hamibot-assistant" 扩展的更改都会记录在这个文件中。
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
-The format is based on [Keep a Changelog],
-and this project adheres to [Semantic Versioning].
+文档格式基于 [Keep a Changelog] ，
+此项目遵循 [语义化版本号].
 
 ## [Unreleased]
 
-## [0.0.1] - 2022-08-25
+## [0.0.1] - 2022-09-11
 
 - initial release
 
 <!-- Links -->
 [keep a changelog]: https://keepachangelog.com/en/1.0.0/
-[semantic versioning]: https://semver.org/spec/v2.0.0.html
+[语义化版本号]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
 [unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.0.1...HEAD
