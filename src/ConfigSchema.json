@@ -1,0 +1,49 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "default": "Untitled Project",
+            "description": "项目名称"
+        },
+        "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{24}$",
+            "description": "脚本 ID （不用自己填写，创建项目时会自动生成）"
+        },
+        "lastRobot": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[0-9a-f]{24}$",
+                    "description": "机器人 ID （一个 24 位 16 进制字符串）"
+                },
+                "name": {
+                    "type": "string",
+                    "description": "机器名称"
+                }
+            },
+            "description": "上一次使用的机器人信息（使用 setExecuteRobot 指令修改）"
+        },
+        "fileMark": {
+            "type": "object",
+            "properties": {
+                "configFile": {
+                    "type": "string",
+                    "default": "./config.json",
+                    "pattern": "^.*\\.json$",
+                    "description": "脚本配置文件"
+                },
+                "scriptFile": {
+                    "type": "string",
+                    "default": "./index.js",
+                    "pattern": "^.*\\.js$",
+                    "description": "编译后的脚本文件"
+                }
+            },
+            "description": "文件标记，用于标记要上传的文件"
+        }
+    }
+}

@@ -28,6 +28,14 @@
         "onCommand:extension.createNewHamibotProject"
     ],
     "main": "./dist/extension.js",
+    "contributes": {
+        "jsonValidation": [
+            {
+                "fileMatch": "hamibot.config.json",
+                "url": "./src/ConfigSchema.json"
+            }
+        ]
+    },
     "scripts": {
         "vscode:prepublish": "npm run package",
         "compile": "webpack",
