@@ -10,6 +10,7 @@
 ### Added
 
 - 项目设置 Schema ( `hamibot.config.json` )
+- 项目设置操作接口
 
 ## [0.0.1] - 2022-09-11
 
