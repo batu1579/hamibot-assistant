@@ -29,6 +29,32 @@
     ],
     "main": "./dist/extension.js",
     "contributes": {
+        "commands": [
+            {
+                "command": "hamibot-assistant.markScriptFile",
+                "title": "标记脚本文件",
+                "category": "Project config"
+            },
+            {
+                "command": "hamibot-assistant.markConfigFile",
+                "title": "标记脚本配置文件",
+                "category": "Project config"
+            }
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "when": "resourceExtname == .js",
+                    "command": "hamibot-assistant.markScriptFile",
+                    "group": "workspace"
+                },
+                {
+                    "when": "resourceExtname == .json && resourceFilename != hamibot.config.json",
+                    "command": "hamibot-assistant.markConfigFile",
+                    "group": "workspace"
+                }
+            ]
+        },
         "jsonValidation": [
             {
                 "fileMatch": "hamibot.config.json",
