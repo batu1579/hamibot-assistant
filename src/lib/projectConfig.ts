@@ -78,7 +78,7 @@ function mergeObj(target: any, origin: any): any {
     for (const key in origin) {
         let copy = origin[key];
 
-        if (typeof copy === "object") {
+        if (typeof copy === "object" && target.hasOwnProperty(key)) {
             target[key] = mergeObj(target[key], copy);
         } else {
             target[key] = copy;
