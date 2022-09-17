@@ -32,12 +32,24 @@ export async function getProjectConfig(): Promise<ProjectConfig> {
  * @description: 更新项目设置，可以合并更深层次的设置项
  * @param {ProjectConfig} newConfig 新的设置项。
  */
-export async function updateProjectConfig(newConfig: ProjectConfig): Promise<void> {
-    let config = await getProjectConfig();
+export async function updateProjectConfig(newConfig: ProjectConfig, oldConfig?: ProjectConfig): Promise<void> {
+    let config = oldConfig ?? await getProjectConfig();
 
     // 合并新旧设置
     config = mergeObj(config, newConfig);
     saveProjectConfig(config);
+}
+
+/**
+ * @description: 获取设置文件的 `Uri` 。
+ * @return {Uri}
+ */
+export function getConfigFileUri(): Uri {
+    const workspaceFolders = workspace.workspaceFolders;
+    if (!workspaceFolders) {
+        throw new Error('workspace.workspaceFolders must be provided');
+    }
+    return Uri.joinPath(workspaceFolders[0].uri, CONFIG_FILENAME);
 }
 
 /**
@@ -49,18 +61,6 @@ async function saveProjectConfig(config: ProjectConfig): Promise<void> {
         getConfigFileUri(),
         Buffer.from(JSON.stringify(config, null, 4))
     );
-}
-
-/**
- * @description: 获取设置文件的 `Uri` 。
- * @return {Uri}
- */
-function getConfigFileUri(): Uri {
-    const workspaceFolders = workspace.workspaceFolders;
-    if (!workspaceFolders) {
-        throw new Error('workspace.workspaceFolders must be provided');
-    }
-    return Uri.joinPath(workspaceFolders[0].uri, CONFIG_FILENAME);
 }
 
 /**

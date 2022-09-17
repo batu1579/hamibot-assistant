@@ -53,6 +53,16 @@
                     "command": "hamibot-assistant.markConfigFile",
                     "group": "workspace"
                 }
+            ],
+            "commandPalette": [
+                {
+                    "when": "false",
+                    "command": "hamibot-assistant.markScriptFile"
+                },
+                {
+                    "when": "false",
+                    "command": "hamibot-assistant.markConfigFile"
+                }
             ]
         },
         "jsonValidation": [

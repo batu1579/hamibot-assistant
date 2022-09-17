@@ -6,12 +6,8 @@ export function registerCommand(context: ExtensionContext): void {
         // 全局设置
 
         // 项目设置
-        commands.registerCommand("hamibot-assistant.markScriptFile", (uri: Uri) => {
-            updateProjectConfig({ fileMark: { scriptFile: uri.fsPath } });
-        }),
-        commands.registerCommand("hamibot-assistant.markConfigFile", (uri: Uri) => {
-            updateProjectConfig({ fileMark: { configFile: uri.fsPath } });
-        }),
+        commands.registerCommand("hamibot-assistant.markScriptFile", markScriptFile),
+        commands.registerCommand("hamibot-assistant.markConfigFile", markConfigFile),
 
         // 操作
     );
