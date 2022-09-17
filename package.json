@@ -31,6 +31,11 @@
     "contributes": {
         "commands": [
             {
+                "command": "hamibot-assistant.setProjectName",
+                "title": "设置项目名称",
+                "category": "Project config"
+            },
+            {
                 "command": "hamibot-assistant.markScriptFile",
                 "title": "标记脚本文件",
                 "category": "Project config"
