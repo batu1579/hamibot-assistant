@@ -33,6 +33,14 @@
             "type": "object",
             "title": "Hamibot 开发助手",
             "properties": {
+                "hamibot-assistant.apiToken": {
+                    "type": "string",
+                    "scope": "window",
+                    "pattern": "^hmp_[0-9a-f]{64}$",
+                    "patternErrorMessage": "需要是一个以 'hmp_' 开头加 64 位 16 进制字符串。",
+                    "editPresentation": "multilineText",
+                    "markdownDescription": "用于访问 Hamibot API 的开发者令牌，可以从 [控制台](https://hamibot.com/account/tokens) 申请。"
+                },
                 "hamibot-assistant.showOfflineRobot": {
                     "type": "boolean",
                     "scope": "window",
@@ -42,6 +50,16 @@
             }
         },
         "commands": [
+            {
+                "command": "hamibot-assistant.setApiToken",
+                "title": "设置 Hamibot API 令牌",
+                "category": "Hamibot Config"
+            },
+            {
+                "command": "hamibot-assistant.setShowOfflineRobot",
+                "title": "设置是否显示离线机器人",
+                "category": "Hamibot Config"
+            },
             {
                 "command": "hamibot-assistant.setProjectName",
                 "title": "设置项目名称",
