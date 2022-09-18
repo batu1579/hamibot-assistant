@@ -19,15 +19,25 @@
 
 ## 📋 更新日志
 
-查看 [更新日志](./CHANGELOG.md)
+查看 [更新日志]
 
 ## 🤝 贡献
 
-欢迎贡献，问题和功能请求！查看 [问题页面](https://github.com/batu1579/hamibot-assistant/issues) 。
+欢迎提交 [PR] ， [问题] 和 [功能请求] ！查看 [问题页面] 。
 
 ## ✨ 支持
 
 如果有帮到你的话，帮我点颗小星星叭~ ⭐️
 
 ***
-_This README was generated with ❤️ by [readme-md-generator](https://github.com/kefranabg/readme-md-generator)_
+
+_This README was generated with ❤️ by [readme-md-generator]_
+
+<!-- Links -->
+
+[更新日志]: https://github.com/batu1579/hamibot-assistant/blob/main/CHANGELOG.md
+[PR]: https://github.com/batu1579/hamibot-assistant/compare
+[问题]: https://github.com/batu1579/hamibot-assistant/issues/new?assignees=batu1579&labels=bug&template=---bug.md&title=%5BBUG%5D
+[功能请求]: https://github.com/batu1579/hamibot-assistant/issues/new?assignees=batu1579&labels=enhancement&template=----.md&title=%5BFeature%5D
+[问题页面]: https://github.com/batu1579/hamibot-assistant/issues
+[readme-md-generator]: https://github.com/kefranabg/readme-md-generator
