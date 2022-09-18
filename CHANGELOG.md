@@ -7,6 +7,16 @@
 
 ## [Unreleased]
 
+### Added
+
+- 全局设置指令:
+  - `hamibot-assistant.setApiToken` : 设置用于访问 Hamibot API 的开发者令牌
+  - `hamibot-assistant.setShowOfflineRobot` : 设置是否显示离线机器人
+
+### Changed
+
+- 项目设置的指令分类修改为: `Hamibot Project`
+
 ## [0.1.0] - 2022-09-18
 
 ### Added
