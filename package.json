@@ -45,22 +45,22 @@
             {
                 "command": "hamibot-assistant.setProjectName",
                 "title": "设置项目名称",
-                "category": "Project config"
+                "category": "Hamibot Project"
             },
             {
                 "command": "hamibot-assistant.markScriptFile",
                 "title": "标记脚本文件",
-                "category": "Project config"
+                "category": "Hamibot Project"
             },
             {
                 "command": "hamibot-assistant.markConfigFile",
                 "title": "标记脚本配置文件",
-                "category": "Project config"
+                "category": "Hamibot Project"
             },
             {
                 "command": "hamibot-assistant.setExecuteRobot",
                 "title": "设置用于调试的机器人",
-                "category": "Project config"
+                "category": "Hamibot Project"
             }
         ],
         "menus": {
