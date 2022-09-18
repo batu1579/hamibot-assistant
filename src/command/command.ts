@@ -1,5 +1,11 @@
 import { ExtensionContext, commands } from "vscode";
-import { setProjectName, markConfigFile, markScriptFile } from "./projectConfig";
+
+import {
+    setProjectName,
+    markConfigFile,
+    markScriptFile,
+    setExecuteRobot
+} from "./projectConfig";
 
 export function registerCommand(context: ExtensionContext): void {
     context.subscriptions.push(
@@ -9,6 +15,7 @@ export function registerCommand(context: ExtensionContext): void {
         commands.registerCommand("hamibot-assistant.setProjectName", setProjectName),
         commands.registerCommand("hamibot-assistant.markScriptFile", markScriptFile),
         commands.registerCommand("hamibot-assistant.markConfigFile", markConfigFile),
+        commands.registerCommand("hamibot-assistant.setExecuteRobot", setExecuteRobot),
 
         // 操作
     );
