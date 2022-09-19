@@ -12,7 +12,7 @@ export async function setProjectName(step: number, totalStep: number): Promise<v
 
     widget.onDidAccept(() => {
         if (widget.value) {
-            updateProjectConfig({name: widget.value});
+            updateProjectConfig({ name: widget.value });
         }
         widget.dispose();
     });
@@ -85,10 +85,14 @@ async function getQuickPickList(): Promise<RobotQuickPickItem[]> {
             continue;
         }
 
+        let { _id, name, tags } = item;
         robotList.push({
-            label: `${item.online ? "🟢 [在线]" : "🔴 [离线]"} ${item.name}`,
-            detail: `${item.tags.length === 0 ? "" : "[ " + item.tags + " ]"}${item.brand} ${item.model}`,
-            robotInfo: item
+            label: `${item.online ? "🟢 [在线]" : "🔴 [离线]"} ${name}`,
+            detail: `${tags.length === 0 ? "" : "[ " + tags + " ]"}${item.brand} ${item.model}`,
+            robotInfo: {
+                _id: _id,
+                name: name,
+            }
         });
     }
 
