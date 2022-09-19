@@ -88,10 +88,7 @@ async function getQuickPickList(): Promise<RobotQuickPickItem[]> {
         robotList.push({
             label: `${item.online ? "🟢 [在线]" : "🔴 [离线]"} ${item.name}`,
             detail: `${item.tags.length === 0 ? "" : "[ " + item.tags + " ]"}${item.brand} ${item.model}`,
-            robotInfo: {
-                id: item._id,
-                name: item.name
-            }
+            robotInfo: item
         });
     }
 
@@ -100,7 +97,7 @@ async function getQuickPickList(): Promise<RobotQuickPickItem[]> {
 
 interface RobotQuickPickItem extends QuickPickItem {
     robotInfo: {
-        id: string;
+        _id: string;
         name: string;
     }
 }
