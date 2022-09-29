@@ -67,22 +67,37 @@ export async function del<DataType extends object>(path: string, data?: object):
  * @param {AxiosRequestConfig} config 请求配置。
  * @return {Promise<DataType>} 发送后服务器返回的数据。
  */
-async function requests<DataType>(config: AxiosRequestConfig): Promise<DataType> {
+async function requests<DataType>(config: AxiosRequestConfig, url?: string): Promise<DataType> {
+
     config.headers = getHeaders(config.headers);
     try {
-        config.baseURL = baseUrl;
+        config.baseURL = url ?? baseUrl;
         return (await axios.request(config)).data;
     } catch (err: any) {
-        // 如果是服务器问题就尝试访问另一个域名
-        if (err.status >= 500) {
-            config.baseURL = backupUrl;
-            return (await axios.request(config)).data;
+        if (err.status >= 500 && config.baseURL === baseUrl) {
+            // 如果是服务器异常尝试访问备用域名
+            return await requests(config, backupUrl);
         }
 
-        // TODO： 根据不同的状态码显示错误信息
         switch (err.status) {
+            case 401:
+                // Token 有误
+                throw new Error("开发者令牌无效，请重新设置！");
+
+            case 422:
+                // 参数有误
+                throw new Error("请求参数格式有误，请检查！");
+
+            case 429:
+                // 频率限制
+                throw new Error("本月 API 调用次数已达上限！");
+
+            case 400:
+                // unknown error
+                throw new Error("未知的客户端异常，请在仓库提交 issue");
+
             default:
-                throw new Error(err);
+                throw new Error("服务器异常，请向 Hamibot 官方反馈！");
         }
     }
 }
