@@ -14,6 +14,10 @@
   - `hamibot-assistant.setShowOfflineRobot` : 设置是否显示离线机器人
 - 更详细的请求失败报错
 
+### Fixed
+
+- 无法访问国内站接口的问题
+
 ### Changed
 
 - 项目设置的指令分类修改为: `Hamibot Project`

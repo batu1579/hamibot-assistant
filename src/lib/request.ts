@@ -6,7 +6,7 @@ import { readFileSync } from 'fs';
 import { extensions, workspace } from 'vscode';
 import { AxiosRequestHeaders, AxiosRequestConfig } from "axios";
 
-const baseUrl = 'https://hamibot.cn/api';
+const baseUrl = 'https://api.hamibot.cn';
 const backupUrl = 'https://api.hamibot.com';
 
 /**
@@ -92,12 +92,13 @@ async function requests<DataType>(config: AxiosRequestConfig, url?: string): Pro
                 // 频率限制
                 throw new Error("本月 API 调用次数已达上限！");
 
-            case 400:
-                // unknown error
-                throw new Error("未知的客户端异常，请在仓库提交 issue");
-
             default:
-                throw new Error("服务器异常，请向 Hamibot 官方反馈！");
+                if (err.status >= 500) {
+                    throw new Error("服务器异常，请向 Hamibot 官方反馈！");
+                } else if (err.code === "ENOTFOUND") {
+                    throw new Error("无法连接到服务器，请检查网络后重试！");
+                }
+                throw new Error(`未知的客户端异常，请在仓库提交 issue 。详细信息：${err.message}`);
         }
     }
 }
