@@ -5,6 +5,7 @@ import { basename } from "path";
 import { readFileSync } from 'fs';
 import { extensions, workspace } from 'vscode';
 import { AxiosRequestHeaders, AxiosRequestConfig } from "axios";
+import { validToken } from './valid';
 
 const baseUrl = 'https://api.hamibot.cn';
 const backupUrl = 'https://api.hamibot.com';
@@ -112,7 +113,7 @@ function getHeaders(headers?: AxiosRequestHeaders): AxiosRequestHeaders {
     let version = extensions.getExtension('batu1579.hamibot-assistant')?.packageJSON?.version;
     let token: string | undefined = workspace.getConfiguration("hamibot-assistant").get('apiToken');
 
-    // TODO： 验证 Token
+    validToken(token);
 
     return {
         /* eslint-disable */

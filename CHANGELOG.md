@@ -13,6 +13,7 @@
   - `hamibot-assistant.setApiToken` : 设置用于访问 Hamibot API 的开发者令牌
   - `hamibot-assistant.setShowOfflineRobot` : 设置是否显示离线机器人
 - 更详细的请求失败报错
+- 访问接口前检查请求参数
 
 ### Fixed
 
