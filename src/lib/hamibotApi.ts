@@ -12,7 +12,7 @@ export class Robot {
      * @description: 获取机器人列表。
      * @return {Promise<RobotList>} 机器人列表。
      */
-    async getRobotList(): Promise<RobotList> {
+    static async getRobotList(): Promise<RobotList> {
         return await request.get<RobotList>('/v1/robots');
     }
 
@@ -21,7 +21,7 @@ export class Robot {
      * @param {string} robotId 机器人 ID 。
      * @return {Promise<RobotList>} 机器人的详细信息。
      */
-    async getRobotById(robotId: string): Promise<RobotItem> {
+    static async getRobotById(robotId: string): Promise<RobotItem> {
         // 校验机器人 ID 格式
         validRobotId(robotId);
         return await request.get<RobotItem>(`/v1/robots/${robotId}`);
@@ -31,7 +31,7 @@ export class Robot {
      * @description: 停止指定机器人正在运行的所有脚本。
      * @param {string} robotId 机器人 ID 。
      */
-    async stopRobotById(robotId: string): Promise<void> {
+    static async stopRobotById(robotId: string): Promise<void> {
         // 校验机器人 ID 格式
         validRobotId(robotId);
         await request.put(`/v1/robots/${robotId}/stop`);
@@ -44,7 +44,7 @@ export class Robot {
      * - `title` - 推送标题，最大长度为 128 。
      * - `text` - 推送内容，最大长度为 512 。
      */
-    async sendMessage(robotId: string, msg: PostMessage): Promise<void> {
+    static async sendMessage(robotId: string, msg: PostMessage): Promise<void> {
         // 校验机器人 ID 格式
         validRobotId(robotId);
         await request.post(`/v1/robots/${robotId}/messages`, msg);
@@ -103,7 +103,7 @@ export class Script {
      * @description: 获取正在开发中的脚本列表。
      * @return {Promise<ScriptList>} 开发中的脚本列表。
      */
-    async getScriptList(): Promise<ScriptList> {
+    static async getScriptList(): Promise<ScriptList> {
         return await request.get<ScriptList>('/v1/devscripts');
     }
 
@@ -112,7 +112,7 @@ export class Script {
      * @param {string} scriptId 脚本 ID 。
      * @return {Promise<ScriptItem>} 脚本的详细信息。
      */
-    async getScriptById(scriptId: string): Promise<ScriptItem> {
+    static async getScriptById(scriptId: string): Promise<ScriptItem> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
         return await request.get<ScriptItem>(`/v1/devscripts/${scriptId}`);
@@ -124,7 +124,7 @@ export class Script {
      * @param {RobotMark} robots 机器人标记。
      * @param {object} scriptConfig 运行时加载的脚本配置。
      */
-    async runScript(scriptId: string, robots: RobotMark[], scriptConfig?: object): Promise<void> {
+    static async runScript(scriptId: string, robots: RobotMark[], scriptConfig?: object): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
@@ -145,7 +145,7 @@ export class Script {
      * @param {string} scriptId 脚本 ID 。
      * @param {RobotMark} robots 机器人标记。
      */
-    async stopScript(scriptId: string, robots: RobotMark[]): Promise<void> {
+    static async stopScript(scriptId: string, robots: RobotMark[]): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
@@ -160,7 +160,7 @@ export class Script {
      * @param {string} scriptName 脚本名称。
      * @return {Promise<ScriptItem>} 创建脚本的详细信息。
      */
-    async createNewScript(scriptName: string): Promise<ScriptItem> {
+    static async createNewScript(scriptName: string): Promise<ScriptItem> {
         return await request.post<ScriptItem>(`/v1/devscripts`, { name: scriptName });
     }
 
@@ -190,7 +190,7 @@ export class Script {
      * @description: 删除指定脚本。
      * @param {string} scriptId 脚本 ID 。
      */
-    async deleteScript(scriptId: string): Promise<void> {
+    static async deleteScript(scriptId: string): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
         await request.del(`/v1/devscripts/${scriptId}`);
