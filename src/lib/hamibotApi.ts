@@ -1,4 +1,6 @@
-import { extname } from 'path';
+import { Uri, workspace } from 'vscode';
+import { basename, extname } from 'path';
+import * as FormData from 'form-data';
 
 import * as request from "./request";
 import { validRobotId, validScriptId } from './valid';
@@ -162,6 +164,28 @@ export class Script {
         return await request.post<ScriptItem>(`/v1/devscripts`, { name: scriptName });
     }
 
+    static async updateScript(scriptId: string, filesUri: Uri[]): Promise<void> {
+        // 校验脚本 ID 格式
+        validScriptId(scriptId);
+
+        let jobs: Promise<any>[] = [];
+        const files: FileInfo[] = Script.transUriToFileInfo(filesUri);
+
+        for (const file of files) {
+            // 向任务队列添加要上传的文件
+            jobs.push((async () => {
+                const fileData = new FormData();
+                fileData.append('file', await workspace.fs.readFile(file.uri), {
+                    contentType: file.fileType,
+                    filename: basename(file.uri.fsPath),
+                });
+                await request.put(`/v1/devscripts/${scriptId}/files`, fileData);
+            })());
+        }
+
+        await Promise.all(jobs);
+    }
+
     /**
      * @description: 删除指定脚本。
      * @param {string} scriptId 脚本 ID 。
@@ -170,6 +194,28 @@ export class Script {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
         await request.del(`/v1/devscripts/${scriptId}`);
+    }
+
+    private static transUriToFileInfo(files: Uri[]): FileInfo[] {
+        return files.map((value) => {
+            let fileType: string;
+
+            switch (extname(value.fsPath)) {
+                case 'json':
+                    fileType = "application/json";
+                    break;
+                case 'js':
+                    fileType = "application/javascript";
+                    break;
+                default:
+                    throw new Error(`不支持上传文件类型： ${extname(value.fsPath)} 。`);
+            }
+
+            return {
+                uri: value,
+                fileType: fileType
+            };
+        });
     }
 }
 
@@ -186,4 +232,9 @@ interface ScriptItem {
 interface RobotMark {
     _id: string;
     name: string;
+}
+
+interface FileInfo {
+    uri: Uri;
+    fileType: string;
 }

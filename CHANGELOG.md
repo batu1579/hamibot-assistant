@@ -14,6 +14,7 @@
   - `hamibot-assistant.setShowOfflineRobot` : 设置是否显示离线机器人
 - 更详细的请求失败报错
 - 访问接口前检查请求参数
+- 上传文件接口
 
 ### Fixed
 

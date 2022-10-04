@@ -1,10 +1,7 @@
 import axios from 'axios';
-import * as FormData from 'form-data';
-
-import { basename } from "path";
-import { readFileSync } from 'fs';
 import { extensions, workspace } from 'vscode';
 import { AxiosRequestHeaders, AxiosRequestConfig } from "axios";
+
 import { validToken } from './valid';
 
 const baseUrl = 'https://api.hamibot.cn';
@@ -123,9 +120,4 @@ function getHeaders(headers?: AxiosRequestHeaders): AxiosRequestHeaders {
         /* eslint-enable */
         ...headers
     };
-}
-
-interface FileInfo {
-    path: string;
-    type: string;
 }
