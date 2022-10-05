@@ -19,9 +19,9 @@ interface FileMarks {
 
 type ConfigField = keyof ProjectConfig;
 
-const CONFIG_FILENAME = 'hamibot.config.json';
-
 export class HamibotConfig {
+    public workspaceUri: Uri;
+
     private configFile: Uri;
     private static readonly configFileName = 'hamibot.config.json';
     private static readonly defaultConfig = {};
@@ -30,8 +30,8 @@ export class HamibotConfig {
     constructor(workspaceUri: Uri);
     constructor(workspaceUri: Uri, config: ProjectConfig);
     constructor(workspaceUri?: Uri, config?: ProjectConfig) {
-        workspaceUri = workspaceUri ?? HamibotConfig.getWorkspaceUri();
-        this.configFile = Uri.joinPath(workspaceUri, HamibotConfig.configFileName);
+        this.workspaceUri = workspaceUri ?? HamibotConfig.getWorkspaceUri();
+        this.configFile = Uri.joinPath(this.workspaceUri, HamibotConfig.configFileName);
 
         // 检查是否存在配置文件（不存在则创建）
         this.checkConfigFile(config ?? HamibotConfig.defaultConfig);

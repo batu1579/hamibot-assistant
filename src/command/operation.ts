@@ -1,0 +1,22 @@
+import { Uri } from "vscode";
+
+import { Script } from "../lib/hamibotApi";
+
+export async function uploadScript(): Promise<void> {
+    let { id, fileMark } = await global.currentConfg.getProjectConfig();
+
+    if (!fileMark || !id) {
+        return;
+    }
+
+    let fileList: Uri[] = [];
+
+    for (let mark in fileMark) {
+        fileList.push(Uri.joinPath(
+            global.currentConfg.workspaceUri,
+            Object.getOwnPropertyDescriptor(fileMark, mark)?.value
+        ));
+    }
+
+    Script.uploadScript(id, fileList);
+}
