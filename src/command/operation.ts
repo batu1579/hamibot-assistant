@@ -24,6 +24,9 @@ export async function uploadScript(): Promise<void> {
         ));
     }
 
+    // 保存文件并上传
+    await window.activeTextEditor?.document.save();
+    await Script.uploadScript(scriptId, fileList);
 }
 
 export async function initProject(): Promise<void> {
