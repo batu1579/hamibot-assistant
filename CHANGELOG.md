@@ -16,8 +16,9 @@
 
 - 项目操作指令：
 
-  - `hamibot-assistant.uploadFile` : 上传标记的脚本文件
   - `hamibot-assistant.initProject` : 创建新项目
+  - `hamibot-assistant.uploadScript` : 上传标记的脚本文件
+  - `hamibot-assistant.uploadAndRunScript` : 上传并运行标记的脚本文件
 
 - 更详细的请求失败报错
 - 访问接口前检查请求参数

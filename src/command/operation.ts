@@ -29,6 +29,17 @@ export async function uploadScript(): Promise<void> {
     await Script.uploadScript(scriptId, fileList);
 }
 
+export async function uploadAndRunScript(): Promise<void> {
+    let { scriptId, executeRobot } = await global.currentConfig.getProjectConfig();
+
+    if (!executeRobot) {
+        throw new Error("请填入测试脚本机器人的信息");
+    }
+
+    await uploadScript();
+    await Script.runScript(scriptId!, [executeRobot]);
+}
+
 export async function initProject(): Promise<void> {
     let select = await window.showOpenDialog({
         canSelectFiles: false,

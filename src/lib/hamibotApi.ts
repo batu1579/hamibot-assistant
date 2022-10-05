@@ -4,6 +4,7 @@ import * as FormData from 'form-data';
 
 import * as request from "./request";
 import { validRobotId, validScriptId } from './valid';
+import { RobotInfo } from './projectConfig';
 
 export class Robot {
     private constructor() { };
@@ -121,10 +122,10 @@ export class Script {
     /**
      * @description: 让指定机器人运行脚本。
      * @param {string} scriptId 脚本 ID 。
-     * @param {RobotMark} robots 机器人标记。
+     * @param {RobotInfo} robots 机器人标记。
      * @param {object} scriptConfig 运行时加载的脚本配置。
      */
-    static async runScript(scriptId: string, robots: RobotMark[], scriptConfig?: object): Promise<void> {
+    static async runScript(scriptId: string, robots: RobotInfo[], scriptConfig?: object): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
@@ -143,9 +144,9 @@ export class Script {
     /**
      * @description: 让指定机器人停止运行脚本。
      * @param {string} scriptId 脚本 ID 。
-     * @param {RobotMark} robots 机器人标记。
+     * @param {RobotInfo} robots 机器人标记。
      */
-    static async stopScript(scriptId: string, robots: RobotMark[]): Promise<void> {
+    static async stopScript(scriptId: string, robots: RobotInfo[]): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
@@ -225,11 +226,6 @@ interface ScriptList {
 }
 
 interface ScriptItem {
-    _id: string;
-    name: string;
-}
-
-interface RobotMark {
     _id: string;
     name: string;
 }

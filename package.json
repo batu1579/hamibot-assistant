@@ -81,13 +81,18 @@
                 "category": "Hamibot Project"
             },
             {
+                "command": "hamibot-assistant.initProject",
+                "title": "新建 Hamibot 项目",
+                "category": "Hamibot Operation"
+            },
+            {
                 "command": "hamibot-assistant.uploadScript",
                 "title": "上传标记的脚本文件",
                 "category": "Hamibot Operation"
             },
             {
-                "command": "hamibot-assistant.initProject",
-                "title": "新建 Hamibot 项目",
+                "command": "hamibot-assistant.uploadAndRunScript",
+                "title": "上传并运行标记的脚本文件",
                 "category": "Hamibot Operation"
             }
         ],
