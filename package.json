@@ -79,6 +79,11 @@
                 "command": "hamibot-assistant.setExecuteRobot",
                 "title": "设置用于调试的机器人",
                 "category": "Hamibot Project"
+            },
+            {
+                "command": "hamibot-assistant.uploadScript",
+                "title": "上传标记的脚本文件",
+                "category": "Hamibot Operation"
             }
         ],
         "menus": {
