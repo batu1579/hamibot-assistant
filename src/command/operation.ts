@@ -1,7 +1,7 @@
 import { commands, Uri, window, workspace } from "vscode";
 
 import { Script } from "../lib/hamibotApi";
-import { HamibotConfig } from "../lib/projectConfig";
+import { HamibotConfig, RobotInfo } from "../lib/projectConfig";
 import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
 
 export async function uploadScript(): Promise<void> {
@@ -66,7 +66,7 @@ export async function initProject(): Promise<void> {
     }
 
     // 设置调试机器人
-    let defaultRobot = await workspace.getConfiguration("hamibot-assistant").get("defaultExecuteRobot");
+    let defaultRobot: RobotInfo | undefined = await workspace.getConfiguration("hamibot-assistant").get("defaultExecuteRobot");
     let robot = defaultRobot ? defaultRobot : await getExecuteRobotByInput();
 
     // 保存设置
