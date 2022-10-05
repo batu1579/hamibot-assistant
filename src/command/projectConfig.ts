@@ -1,7 +1,6 @@
 import { QuickPickItem, Uri, window, workspace } from "vscode";
 
 import { Robot } from "../lib/hamibotApi";
-import { updateProjectConfig } from "../lib/projectConfig";
 
 export async function setProjectName(step: number, totalStep: number): Promise<void> {
     let widget = window.createInputBox();
@@ -12,7 +11,7 @@ export async function setProjectName(step: number, totalStep: number): Promise<v
 
     widget.onDidAccept(() => {
         if (widget.value) {
-            updateProjectConfig({ name: widget.value });
+            global.currentConfg.updateProjectConfig({ name: widget.value });
         }
         widget.dispose();
     });
@@ -21,18 +20,16 @@ export async function setProjectName(step: number, totalStep: number): Promise<v
 }
 
 export async function markScriptFile(uri: Uri): Promise<void> {
-    updateProjectConfig({
-        fileMark:
-        {
+    await global.currentConfg.updateProjectConfig({
+        fileMark: {
             scriptFile: workspace.asRelativePath(uri)
         }
     });
 }
 
 export async function markConfigFile(uri: Uri): Promise<void> {
-    updateProjectConfig({
-        fileMark:
-        {
+    await global.currentConfg.updateProjectConfig({
+        fileMark: {
             configFile: workspace.asRelativePath(uri)
         }
     });
@@ -61,7 +58,7 @@ export function setExecuteRobot(step: number, totalStep: number): void {
         let item = widget.activeItems[0];
 
         if (isRobotQuickPickItem(item)) {
-            updateProjectConfig({ lastRobot: item.robotInfo });
+            global.currentConfg.updateProjectConfig({ executeRobot: item.robotInfo });
             widget.dispose();
         } else {
             refreshItems();
