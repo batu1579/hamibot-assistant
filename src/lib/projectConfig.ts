@@ -3,7 +3,7 @@ import { workspace, Uri } from "vscode";
 interface ProjectConfig {
     name?: string,
     id?: string,
-    lastRobot?: RobotInfo,
+    executeRobot?: RobotInfo,
     fileMark?: FileMarks
 }
 
