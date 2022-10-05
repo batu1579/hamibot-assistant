@@ -25,7 +25,7 @@
     "icon": "images/logo.png",
     "activationEvents": [
         "workspaceContains:hamibot.config.json",
-        "onCommand:extension.createNewHamibotProject"
+        "onCommand:hamibot-assistant.initProject"
     ],
     "main": "./dist/extension.js",
     "contributes": {
@@ -83,6 +83,11 @@
             {
                 "command": "hamibot-assistant.uploadScript",
                 "title": "上传标记的脚本文件",
+                "category": "Hamibot Operation"
+            },
+            {
+                "command": "hamibot-assistant.initProject",
+                "title": "新建 Hamibot 项目",
                 "category": "Hamibot Operation"
             }
         ],
