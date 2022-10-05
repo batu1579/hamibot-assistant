@@ -3,7 +3,7 @@ import { Uri } from "vscode";
 import { Script } from "../lib/hamibotApi";
 
 export async function uploadScript(): Promise<void> {
-    let { scriptId, fileMark } = await global.currentConfg.getProjectConfig();
+    let { scriptId, fileMark } = await global.currentConfig.getProjectConfig();
 
     if (!fileMark || !scriptId) {
         return;
@@ -13,7 +13,7 @@ export async function uploadScript(): Promise<void> {
 
     for (let mark in fileMark) {
         fileList.push(Uri.joinPath(
-            global.currentConfg.workspaceUri,
+            global.currentConfig.workspaceUri,
             Object.getOwnPropertyDescriptor(fileMark, mark)?.value
         ));
     }

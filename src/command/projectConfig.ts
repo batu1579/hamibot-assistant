@@ -11,7 +11,7 @@ export async function setProjectName(step: number, totalStep: number): Promise<v
 
     widget.onDidAccept(() => {
         if (widget.value) {
-            global.currentConfg.updateProjectConfig({ name: widget.value });
+            global.currentConfig.updateProjectConfig({ name: widget.value });
         }
         widget.dispose();
     });
@@ -20,7 +20,7 @@ export async function setProjectName(step: number, totalStep: number): Promise<v
 }
 
 export async function markScriptFile(uri: Uri): Promise<void> {
-    await global.currentConfg.updateProjectConfig({
+    await global.currentConfig.updateProjectConfig({
         fileMark: {
             scriptFile: workspace.asRelativePath(uri)
         }
@@ -28,7 +28,7 @@ export async function markScriptFile(uri: Uri): Promise<void> {
 }
 
 export async function markConfigFile(uri: Uri): Promise<void> {
-    await global.currentConfg.updateProjectConfig({
+    await global.currentConfig.updateProjectConfig({
         fileMark: {
             configFile: workspace.asRelativePath(uri)
         }
@@ -58,7 +58,7 @@ export function setExecuteRobot(step: number, totalStep: number): void {
         let item = widget.activeItems[0];
 
         if (isRobotQuickPickItem(item)) {
-            global.currentConfg.updateProjectConfig({ executeRobot: item.robotInfo });
+            global.currentConfig.updateProjectConfig({ executeRobot: item.robotInfo });
             widget.dispose();
         } else {
             refreshItems();
