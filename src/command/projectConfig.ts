@@ -1,22 +1,21 @@
-import { QuickPickItem, Uri, window, workspace } from "vscode";
+import { QuickInput, QuickPick, QuickPickItem, Uri, window, workspace } from "vscode";
 
 import { Robot } from "../lib/hamibotApi";
+import { RobotInfo } from "../lib/projectConfig";
 
-export async function setProjectName(step: number, totalStep: number): Promise<void> {
-    let widget = window.createInputBox();
-    widget.title = "项目名称";
-    widget.prompt = "请输入新的项目名称";
-    widget.step = step;
-    widget.totalSteps = totalStep;
-
-    widget.onDidAccept(() => {
-        if (widget.value) {
-            global.currentConfig.updateProjectConfig({ name: widget.value });
-        }
-        widget.dispose();
+export async function getProjectNameByInput(): Promise<string> {
+    let projectName = await window.showInputBox({
+        title: "修改项目名称",
+        prompt: "请输入新的项目名称",
+        placeHolder: "Untitled Project"
     });
+    return projectName ?? "Untitled Project";
+}
 
-    widget.show();
+export async function setProjectName(): Promise<string> {
+    let projectName = await getProjectNameByInput();
+    await global.currentConfig.updateProjectConfig({ name: projectName });
+    return projectName;
 }
 
 export async function markScriptFile(uri: Uri): Promise<void> {
@@ -35,37 +34,30 @@ export async function markConfigFile(uri: Uri): Promise<void> {
     });
 }
 
-export function setExecuteRobot(step: number, totalStep: number): void {
-    let widget = window.createQuickPick<RobotQuickPickItem | QuickPickItem>();
-    widget.title = "选择调试机器人";
-    widget.matchOnDetail = true;
-    widget.step = step;
-    widget.totalSteps = totalStep;
-    widget.show();
+export async function getExecuteRobotByInput(): Promise<RobotInfo> {
+    while (true) {
+        let robot = await window.showQuickPick(
+            [...(await getQuickPickList()), {
+                label: "🔃 刷新",
+                detail: "重新获取机器人列表",
+                alwaysShow: true,
+            }],
+            {
+                title: "选择调试机器人",
+                matchOnDetail: true,
+            }
+        );
 
-    const refreshItems = async () => {
-        widget.items = [];
-        widget.busy = true;
-        widget.items = [...(await getQuickPickList()), {
-            label: "🔃 刷新",
-            detail: "重新获取机器人列表",
-            alwaysShow: true,
-        }];
-        widget.busy = false;
-    };
-
-    widget.onDidAccept(() => {
-        let item = widget.activeItems[0];
-
-        if (isRobotQuickPickItem(item)) {
-            global.currentConfig.updateProjectConfig({ executeRobot: item.robotInfo });
-            widget.dispose();
-        } else {
-            refreshItems();
+        if (robot && isRobotQuickPickItem(robot)) {
+            return robot.robotInfo;
         }
-    });
+    }
+}
 
-    refreshItems();
+export async function setExecuteRobot(): Promise<RobotInfo> {
+    let robot = await getExecuteRobotByInput();
+    await global.currentConfig.updateProjectConfig({ executeRobot: robot });
+    return robot;
 }
 
 function isRobotQuickPickItem(item: RobotQuickPickItem | QuickPickItem): item is RobotQuickPickItem {
@@ -97,8 +89,5 @@ async function getQuickPickList(): Promise<RobotQuickPickItem[]> {
 }
 
 interface RobotQuickPickItem extends QuickPickItem {
-    robotInfo: {
-        _id: string;
-        name: string;
-    }
+    robotInfo: RobotInfo
 }

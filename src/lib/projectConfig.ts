@@ -7,8 +7,8 @@ interface ProjectConfig {
     fileMark?: FileMarks
 }
 
-interface RobotInfo {
-    id?: string,
+export interface RobotInfo {
+    _id?: string,
     name?: string
 }
 

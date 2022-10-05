@@ -1,7 +1,7 @@
 import { ExtensionContext, commands } from "vscode";
 
 import { setApiToken, setShowOfflineRobot } from "./globalConfig";
-import { uploadScript } from "./operation";
+import { initProject, uploadScript } from "./operation";
 import {
     setProjectName,
     markConfigFile,
@@ -22,6 +22,7 @@ export function registerCommand(context: ExtensionContext): void {
         commands.registerCommand("hamibot-assistant.setExecuteRobot", setExecuteRobot),
 
         // 操作
-        commands.registerCommand("hamibot-assistant.uploadScript", uploadScript)
+        commands.registerCommand("hamibot-assistant.uploadScript", uploadScript),
+        commands.registerCommand("hamibot-assistant.initProject", initProject),
     );
 }
