@@ -104,12 +104,12 @@ export class HamibotConfig {
     private async checkConfigFile(config: ProjectConfig): Promise<void> {
         try {
             let oldConfig = await this.getProjectConfig();
-            this.updateProjectConfig(config, oldConfig);
+            await this.updateProjectConfig(config, oldConfig);
         } catch (error: any) {
-            if (error.code === 'FileNotFound') {
-                this.writeProjectConfig(config);
+            if (error.code !== 'FileNotFound') {
+                throw error;
             }
-            throw error;
+            await this.writeProjectConfig(config);
         }
     }
 
