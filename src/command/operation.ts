@@ -7,8 +7,12 @@ import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
 export async function uploadScript(): Promise<void> {
     let { scriptId, fileMark } = await global.currentConfig.getProjectConfig();
 
-    if (!fileMark || !scriptId) {
-        return;
+    if (!fileMark) {
+        throw new Error("未标记脚本相关文件");
+    }
+
+    if (!scriptId) {
+        throw new Error("请填入脚本 ID 后重试");
     }
 
     let fileList: Uri[] = [];
