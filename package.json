@@ -46,6 +46,24 @@
                     "scope": "window",
                     "default": false,
                     "markdownDescription": "选择调试机器人时显示离线机器人。"
+                },
+                "hamibot-assistant.defaultExecuteRobot": {
+                    "type": "object",
+                    "scope": "window",
+                    "default": null,
+                    "properties": {
+                        "_id": {
+                            "type": "string",
+                            "scope": "window",
+                            "pattern": "^[0-9a-f]{24}$",
+                            "patternProperties": "需要是一个 24 位 16 进制字符串",
+                            "markdownDescription": "可以使用 Hamibot API 查看相关信息"
+                        },
+                        "name": {
+                            "type": "string",
+                            "scope": "window"
+                        }
+                    }
                 }
             }
         },
@@ -58,6 +76,11 @@
             {
                 "command": "hamibot-assistant.setShowOfflineRobot",
                 "title": "设置是否显示离线机器人",
+                "category": "Hamibot Config"
+            },
+            {
+                "command": "hamibot-assistant.setDefaultExecuteRobot",
+                "title": "设置默认调试机器人",
                 "category": "Hamibot Config"
             },
             {

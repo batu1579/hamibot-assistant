@@ -13,6 +13,7 @@
 
   - `hamibot-assistant.setApiToken` : 设置用于访问 Hamibot API 的开发者令牌
   - `hamibot-assistant.setShowOfflineRobot` : 设置是否显示离线机器人
+  - `hamibot-assistant.setDefaultExecuteRobot` : 设置默认调试机器人
 
 - 项目操作指令：
 
