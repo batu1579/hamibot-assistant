@@ -17,6 +17,7 @@
 
 - `hamibot-assistant.ApiToken`: 用于使用 Hamibot Api 的开发者令牌。
 - `hamibot-assistant.showOfflineRobot`: 选择调试机器人时显示离线机器人（默认不显示）。
+- `hamibot-assistant.defaultExecuteRobot` : 默认调试机器人。
 
 ## 📋 更新日志
 

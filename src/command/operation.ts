@@ -1,7 +1,7 @@
-import { commands, Uri, window } from "vscode";
+import { commands, Uri, window, workspace } from "vscode";
 
 import { Script } from "../lib/hamibotApi";
-import { HamibotConfig } from "../lib/projectConfig";
+import { HamibotConfig, RobotInfo } from "../lib/projectConfig";
 import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
 
 export async function uploadScript(): Promise<void> {
@@ -31,6 +31,8 @@ export async function uploadScript(): Promise<void> {
 
 export async function uploadAndRunScript(): Promise<void> {
     let { scriptId, executeRobot } = await global.currentConfig.getProjectConfig();
+
+    executeRobot = executeRobot ?? await workspace.getConfiguration("hamibot-assistant").get("defaultExecuteRobot");
 
     if (!executeRobot) {
         throw new Error("请填入测试脚本机器人的信息");
@@ -64,7 +66,8 @@ export async function initProject(): Promise<void> {
     }
 
     // 设置调试机器人
-    let robot = await getExecuteRobotByInput();
+    let defaultRobot: RobotInfo | undefined = await workspace.getConfiguration("hamibot-assistant").get("defaultExecuteRobot");
+    let robot = defaultRobot ? defaultRobot : await getExecuteRobotByInput();
 
     // 保存设置
     global.currentConfig.updateProjectConfig({

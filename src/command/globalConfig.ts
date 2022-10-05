@@ -1,19 +1,22 @@
 import { window, workspace } from 'vscode';
+import { getExecuteRobotByInput } from './projectConfig';
 
-export function setApiToken(): void {
-    window.showInputBox({
+export async function setApiToken(): Promise<void> {
+    let token = await window.showInputBox({
         title: "输入开发者令牌",
         ignoreFocusOut: true
-    }).then((token) => {
-        workspace.getConfiguration("hamibot-assistant").update("ApiToken", token);
     });
+    workspace.getConfiguration("hamibot-assistant").update("ApiToken", token);
 }
 
-export function setShowOfflineRobot(): void {
-    window.showQuickPick(["是", "否"], {
+export async function setShowOfflineRobot(): Promise<void> {
+    let choose = await window.showQuickPick(["是", "否"], {
         title: "显示离线机器人"
-    }).then((value) => {
-        let choose: boolean = value === "是" ? true : false;
-        workspace.getConfiguration("hamibot-assistant").update("OfflineRobot", choose);
     });
+    workspace.getConfiguration("hamibot-assistant").update("OfflineRobot", choose === "是");
+}
+
+export async function setDefaultExecuteRobot(): Promise<void> {
+    let robot = await getExecuteRobotByInput();
+    workspace.getConfiguration("hamibot-assistant").update("defaultExecuteRobot", robot);
 }
