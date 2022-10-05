@@ -7,7 +7,7 @@
             "default": "Untitled Project",
             "description": "项目名称"
         },
-        "id": {
+        "scriptId": {
             "type": "string",
             "pattern": "^[0-9a-f]{24}$",
             "description": "脚本 ID （不用自己填写，创建项目时会自动生成）"

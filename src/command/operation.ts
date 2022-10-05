@@ -3,9 +3,9 @@ import { Uri } from "vscode";
 import { Script } from "../lib/hamibotApi";
 
 export async function uploadScript(): Promise<void> {
-    let { id, fileMark } = await global.currentConfg.getProjectConfig();
+    let { scriptId, fileMark } = await global.currentConfg.getProjectConfig();
 
-    if (!fileMark || !id) {
+    if (!fileMark || !scriptId) {
         return;
     }
 
@@ -18,5 +18,5 @@ export async function uploadScript(): Promise<void> {
         ));
     }
 
-    Script.uploadScript(id, fileList);
+    Script.uploadScript(scriptId, fileList);
 }
