@@ -26,15 +26,17 @@ export class HamibotConfig {
     private static readonly configFileName = 'hamibot.config.json';
     private static readonly defaultConfig = {};
 
-    constructor();
-    constructor(workspaceUri: Uri);
-    constructor(workspaceUri: Uri, config: ProjectConfig);
-    constructor(workspaceUri?: Uri, config?: ProjectConfig) {
+    private constructor(workspaceUri?: Uri) {
         this.workspaceUri = workspaceUri ?? HamibotConfig.getWorkspaceUri();
         this.configFile = Uri.joinPath(this.workspaceUri, HamibotConfig.configFileName);
+    }
+
+    public static async newConfigFile(workspaceUri?: Uri, config?: ProjectConfig): Promise<HamibotConfig> {
+        let configObject = new HamibotConfig(workspaceUri);
 
         // 检查是否存在配置文件（不存在则创建）
-        this.checkConfigFile(config ?? HamibotConfig.defaultConfig);
+        await configObject.checkConfigFile(config ?? HamibotConfig.defaultConfig);
+        return configObject;
     }
 
     /**
