@@ -164,7 +164,7 @@ export class Script {
         return await request.post<ScriptItem>(`/v1/devscripts`, { name: scriptName });
     }
 
-    static async updateScript(scriptId: string, filesUri: Uri[]): Promise<void> {
+    static async uploadScript(scriptId: string, filesUri: Uri[]): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
@@ -201,10 +201,10 @@ export class Script {
             let fileType: string;
 
             switch (extname(value.fsPath)) {
-                case 'json':
+                case '.json':
                     fileType = "application/json";
                     break;
-                case 'js':
+                case '.js':
                     fileType = "application/javascript";
                     break;
                 default:
