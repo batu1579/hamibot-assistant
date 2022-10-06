@@ -6,17 +6,17 @@ export async function setApiToken(): Promise<void> {
         title: "输入开发者令牌",
         ignoreFocusOut: true
     });
-    workspace.getConfiguration("hamibot-assistant").update("ApiToken", token);
+    workspace.getConfiguration("hamibot-assistant").update("ApiToken", token, true);
 }
 
 export async function setShowOfflineRobot(): Promise<void> {
     let choose = await window.showQuickPick(["是", "否"], {
         title: "显示离线机器人"
     });
-    workspace.getConfiguration("hamibot-assistant").update("OfflineRobot", choose === "是");
+    workspace.getConfiguration("hamibot-assistant").update("OfflineRobot", choose === "是", true);
 }
 
 export async function setDefaultExecuteRobot(): Promise<void> {
     let robot = await getExecuteRobotByInput();
-    workspace.getConfiguration("hamibot-assistant").update("defaultExecuteRobot", robot);
+    workspace.getConfiguration("hamibot-assistant").update("defaultExecuteRobot", robot, true);
 }

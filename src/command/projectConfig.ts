@@ -1,4 +1,4 @@
-import { QuickInput, QuickPick, QuickPickItem, Uri, window, workspace } from "vscode";
+import { QuickPickItem, Uri, window, workspace } from "vscode";
 
 import { Robot } from "../lib/hamibotApi";
 import { RobotInfo } from "../lib/projectConfig";
@@ -12,10 +12,9 @@ export async function getProjectNameByInput(): Promise<string> {
     return projectName ?? "Untitled Project";
 }
 
-export async function setProjectName(): Promise<string> {
+export async function setProjectName(): Promise<void> {
     let projectName = await getProjectNameByInput();
     await global.currentConfig.updateProjectConfig({ name: projectName });
-    return projectName;
 }
 
 export async function markScriptFile(uri: Uri): Promise<void> {
@@ -34,9 +33,9 @@ export async function markConfigFile(uri: Uri): Promise<void> {
     });
 }
 
-export async function getExecuteRobotByInput(): Promise<RobotInfo> {
+export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
     while (true) {
-        let robot = await window.showQuickPick(
+        let select = await window.showQuickPick(
             [...(await getQuickPickList()), {
                 label: "🔃 刷新",
                 detail: "重新获取机器人列表",
@@ -48,16 +47,19 @@ export async function getExecuteRobotByInput(): Promise<RobotInfo> {
             }
         );
 
-        if (robot && isRobotQuickPickItem(robot)) {
-            return robot.robotInfo;
+        if (!select) {
+            return undefined;
+        } else if (isRobotQuickPickItem(select)) {
+            return select.robotInfo;
         }
     }
 }
 
-export async function setExecuteRobot(): Promise<RobotInfo> {
+export async function setExecuteRobot(): Promise<void> {
     let robot = await getExecuteRobotByInput();
-    await global.currentConfig.updateProjectConfig({ executeRobot: robot });
-    return robot;
+    if (robot) {
+        await global.currentConfig.updateProjectConfig({ executeRobot: robot });
+    }
 }
 
 function isRobotQuickPickItem(item: RobotQuickPickItem | QuickPickItem): item is RobotQuickPickItem {
