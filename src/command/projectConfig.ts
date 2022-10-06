@@ -2,19 +2,30 @@ import { QuickPickItem, Uri, window, workspace } from "vscode";
 
 import { Robot } from "../lib/hamibotApi";
 import { RobotInfo } from "../lib/projectConfig";
+import { isError } from "../lib/typeUtil";
 
 export async function getProjectNameByInput(): Promise<string> {
     let projectName = await window.showInputBox({
         title: "修改项目名称",
-        prompt: "请输入新的项目名称",
-        placeHolder: "Untitled Project"
+        prompt: "请输入新的项目名称"
     });
-    return projectName ?? "Untitled Project";
+
+    if (!projectName) {
+        throw new Error("必须提供项目名称");
+    }
+
+    return projectName;
 }
 
 export async function setProjectName(): Promise<void> {
-    let projectName = await getProjectNameByInput();
-    await global.currentConfig.updateProjectConfig({ name: projectName });
+    try {
+        let projectName = await getProjectNameByInput();
+        await global.currentConfig.updateProjectConfig({ name: projectName });
+    } catch (error) {
+        if (!isError(error) || error.message !== "必须提供项目名称") {
+            throw error;
+        }
+    }
 }
 
 export async function markScriptFile(uri: Uri): Promise<void> {
