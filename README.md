@@ -11,6 +11,45 @@
 
 ## 🎉 特性
 
+- 自动在远程创建脚本
+- 可视化选择机器人
+- 指令上传和运行
+- 同时上传脚本文件和配置文件
+
+## 🚀 使用方法
+
+> 因为此插件依赖于 Hamibot API ，所以在使用之前请先设置开发者令牌，见 [全局设置](#全局设置-hamibot-config-) 。
+
+1. 使用 `新建 Hamibot 项目` 指令创建新的脚本。
+2. 编写代码。
+3. 初次上传需要标记所需上传的文件：
+
+   1. 在资源管理器界面找到需要上传的文件
+   2. 在文件上点击右键选择标记选项
+
+4. 使用 `上传标记的脚本文件` 或 `上传并运行标记的脚本文件` 指令上传。
+
+## 📟 可用指令
+
+> 此插件提供的所有指令都可以通过搜索 `hamibot` 关键字找到。
+
+### 全局设置（ `Hamibot Config` ）
+
+- `hamibot-assistant.setApiToken`: 设置 Hamibot API 令牌，在开始使用前请务必设置好。
+- `hamibot-assistant.setShowOfflineRobot`: 设置是否显示离线机器人（默认为 `false` ）。
+- `hamibot-assistant.setDefaultExecuteRobot`: 设置默认调试机器人，在创建新项目时会选择，自动使用这个作为调试机器人。
+
+### 项目设置（ `Hamibot Project` ）
+
+- `hamibot-assistant.setProjectName`: 设置项目名称，这个指令目前只是本地调试，能够远程修改还需要等待 Hamibot 开放修改接口。
+- `hamibot-assistant.setExecuteRobot`: 设置用于当前项目中调试脚本的机器人。
+
+### 可用操作（ `Hamibot Operation` ）
+
+- `hamibot-assistant.initProject`: 新建 Hamibot 项目，会自动在远程创建对应名称的脚本。
+- `hamibot-assistant.uploadScript`: 上传标记的脚本文件。
+- `hamibot-assistant.uploadAndRunScript`: 上传并运行标记的脚本文件.
+
 ## ⚙️ 扩展设置
 
 此扩展提供以下设置:
@@ -27,8 +66,10 @@
 
 - [ ] 跟踪要发送的文件
 - [ ] 在新建项目时使用模板
-- [ ] 设置默认调试机器人
-- [ ] 在控制台显示调试信息
+- [x] 设置默认调试机器人
+- [ ] 在控制台显示脚本调试信息
+- [ ] 在调试时加载指定的脚本配置项
+- [ ] 更多可视化方式代替指令操作
 
 ## 🤝 贡献
 
