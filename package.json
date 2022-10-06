@@ -85,7 +85,7 @@
             },
             {
                 "command": "hamibot-assistant.resetDialogs",
-                "title": "重置 Hamibot 提示信息",
+                "title": "重置提示信息",
                 "category": "Hamibot Config"
             },
             {
