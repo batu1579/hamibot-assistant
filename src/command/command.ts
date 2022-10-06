@@ -1,5 +1,6 @@
 import { ExtensionContext, commands, Uri, window, workspace } from "vscode";
 import { ERROR_DIALOG, INFO_DIALOG } from "../lib/dialog";
+import { isError } from "../lib/typeUtil";
 
 import { setApiToken, setDefaultExecuteRobot, setShowOfflineRobot } from "./globalConfig";
 import { initProject, uploadAndRunScript, uploadScript } from "./operation";
@@ -111,19 +112,15 @@ async function exceptionHandler(context: ExtensionContext, uri: Uri, c: Command)
         if (c.doneInfo) {
             await INFO_DIALOG.showDialog(context, c.doneInfo);
         }
-    } catch (e) {
-        if (!isError(e)) {
-            throw e;
+    } catch (error) {
+        if (!isError(error)) {
+            throw error;
         }
 
-        needRetry = await ERROR_DIALOG.showDialog(context, e.message);
+        needRetry = await ERROR_DIALOG.showDialog(context, error.message);
     };
 
     return needRetry;
-}
-
-function isError(e: any): e is Error {
-    return e instanceof Error;
 }
 
 interface Command {

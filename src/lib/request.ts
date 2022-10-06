@@ -71,13 +71,13 @@ async function requests<DataType>(config: AxiosRequestConfig, url?: string): Pro
     try {
         config.baseURL = url ?? baseUrl;
         return (await axios.request(config)).data;
-    } catch (err: any) {
-        if (err.status >= 500 && config.baseURL === baseUrl) {
+    } catch (error: any) {
+        if (error.status >= 500 && config.baseURL === baseUrl) {
             // 如果是服务器异常尝试访问备用域名
             return await requests(config, backupUrl);
         }
 
-        switch (err.status) {
+        switch (error.status) {
             case 401:
                 // Token 有误
                 throw new Error("开发者令牌无效，请重新设置！");
@@ -91,12 +91,12 @@ async function requests<DataType>(config: AxiosRequestConfig, url?: string): Pro
                 throw new Error("本月 API 调用次数已达上限！");
 
             default:
-                if (err.status >= 500) {
+                if (error.status >= 500) {
                     throw new Error("服务器异常，请向 Hamibot 官方反馈！");
-                } else if (err.code === "ENOTFOUND") {
+                } else if (error.code === "ENOTFOUND") {
                     throw new Error("无法连接到服务器，请检查网络后重试！");
                 }
-                throw new Error(`未知的客户端异常，请在仓库提交 issue 。详细信息：${err.message}`);
+                throw new Error(`未知的客户端异常，请在仓库提交 issue 。详细信息：${error.message}`);
         }
     }
 }
