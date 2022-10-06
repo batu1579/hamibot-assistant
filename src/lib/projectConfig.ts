@@ -20,23 +20,30 @@ interface FileMarks {
 type ConfigField = keyof ProjectConfig;
 
 export class HamibotConfig {
-    public workspaceUri: Uri;
-
-    private configFile: Uri;
+    private workspaceUri: Uri | undefined;
     private static readonly configFileName = 'hamibot.config.json';
     private static readonly defaultConfig = {};
 
     private constructor(workspaceUri?: Uri) {
-        this.workspaceUri = workspaceUri ?? HamibotConfig.getWorkspaceUri();
-        this.configFile = Uri.joinPath(this.workspaceUri, HamibotConfig.configFileName);
+        this.workspaceUri = workspaceUri ?? HamibotConfig.getCurrentWorkspaceUri();
     }
 
     public static async newConfigFile(workspaceUri?: Uri, config?: ProjectConfig): Promise<HamibotConfig> {
         let configObject = new HamibotConfig(workspaceUri);
 
-        // 检查是否存在配置文件（不存在则创建）
-        await configObject.checkConfigFile(config ?? HamibotConfig.defaultConfig);
+        if (configObject.workspaceUri) {
+            // 检查是否存在配置文件（不存在则创建）
+            await configObject.checkConfigFile(config ?? HamibotConfig.defaultConfig);
+        }
+
         return configObject;
+    }
+
+    public getWorkspaceUri(): Uri {
+        if (!this.workspaceUri) {
+            throw new Error('workspaceUri is required');
+        }
+        return this.workspaceUri;
     }
 
     /**
@@ -75,12 +82,9 @@ export class HamibotConfig {
      * @description: 获取当前工作区的 `Uri` 。
      * @return {Uri} 工作区 `Uri` 。
      */
-    private static getWorkspaceUri(): Uri {
+    private static getCurrentWorkspaceUri(): Uri | undefined {
         const workspaceFolders = workspace.workspaceFolders;
-        if (!workspaceFolders) {
-            throw new Error('workspace.workspaceFolders must be provided');
-        }
-        return workspaceFolders[0].uri;
+        return workspaceFolders ? workspaceFolders[0].uri : undefined;
     }
 
     /**
@@ -88,7 +92,9 @@ export class HamibotConfig {
      * @return {Promise<ProjectConfig>} 项目设置对象。
      */
     private async readProjectConfig(): Promise<ProjectConfig> {
-        let configDocument = await workspace.fs.readFile(this.configFile);
+        let configDocument = await workspace.fs.readFile(
+            Uri.joinPath(this.getWorkspaceUri(), HamibotConfig.configFileName)
+        );
         return JSON.parse(configDocument.toString());
     }
 
@@ -98,7 +104,7 @@ export class HamibotConfig {
      */
     private async writeProjectConfig(config: ProjectConfig): Promise<void> {
         await workspace.fs.writeFile(
-            this.configFile,
+            Uri.joinPath(this.getWorkspaceUri(), HamibotConfig.configFileName),
             Buffer.from(JSON.stringify(config, null, 4))
         );
     }

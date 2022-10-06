@@ -19,7 +19,7 @@ export async function uploadScript(): Promise<void> {
 
     for (let mark in fileMark) {
         fileList.push(Uri.joinPath(
-            global.currentConfig.workspaceUri,
+            global.currentConfig.getWorkspaceUri(),
             Object.getOwnPropertyDescriptor(fileMark, mark)?.value
         ));
     }
@@ -70,12 +70,12 @@ export async function initProject(): Promise<void> {
     let robot = defaultRobot ? defaultRobot : await getExecuteRobotByInput();
 
     // 保存设置
-    global.currentConfig.updateProjectConfig({
+    await global.currentConfig.updateProjectConfig({
         name: newProjectName,
         scriptId: _id,
         executeRobot: robot
     });
 
     // 打开文件夹
-    await commands.executeCommand('vscode.openFolder', global.currentConfig.workspaceUri);
+    commands.executeCommand('vscode.openFolder', global.currentConfig.getWorkspaceUri());
 }
