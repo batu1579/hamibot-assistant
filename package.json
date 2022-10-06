@@ -122,24 +122,40 @@
         "menus": {
             "explorer/context": [
                 {
-                    "when": "resourceExtname == .js",
+                    "when": "resourceExtname == .js && hamibot-assistant.isProjectFolder",
                     "command": "hamibot-assistant.markScriptFile",
                     "group": "workspace"
                 },
                 {
-                    "when": "resourceExtname == .json && resourceFilename != hamibot.config.json",
+                    "when": "resourceExtname == .json &&resourceFilename != hamibot.config.json && hamibot-assistant.isProjectFolder",
                     "command": "hamibot-assistant.markConfigFile",
                     "group": "workspace"
                 }
             ],
             "commandPalette": [
                 {
-                    "when": "false",
-                    "command": "hamibot-assistant.markScriptFile"
+                    "command": "hamibot-assistant.markScriptFile",
+                    "when": "false"
                 },
                 {
-                    "when": "false",
-                    "command": "hamibot-assistant.markConfigFile"
+                    "command": "hamibot-assistant.markConfigFile",
+                    "when": "false"
+                },
+                {
+                    "command": "hamibot-assistant.setProjectName",
+                    "when": "hamibot-assistant.isProjectFolder"
+                },
+                {
+                    "command": "hamibot-assistant.setExecuteRobot",
+                    "when": "hamibot-assistant.isProjectFolder"
+                },
+                {
+                    "command": "hamibot-assistant.uploadScript",
+                    "when": "hamibot-assistant.isProjectFolder"
+                },
+                {
+                    "command": "hamibot-assistant.uploadAndRunScript",
+                    "when": "hamibot-assistant.isProjectFolder"
                 }
             ]
         },

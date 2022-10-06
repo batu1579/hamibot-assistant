@@ -39,6 +39,10 @@ export class HamibotConfig {
         return configObject;
     }
 
+    public isInProjectFolder(): boolean {
+        return this.workspaceUri !== undefined;
+    }
+
     public getWorkspaceUri(): Uri {
         if (!this.workspaceUri) {
             throw new Error('workspaceUri is required');
