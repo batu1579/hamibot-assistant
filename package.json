@@ -84,6 +84,11 @@
                 "category": "Hamibot Config"
             },
             {
+                "command": "hamibot-assistant.resetDialogs",
+                "title": "重置 Hamibot 提示信息",
+                "category": "Hamibot Config"
+            },
+            {
                 "command": "hamibot-assistant.setProjectName",
                 "title": "设置项目名称",
                 "category": "Hamibot Project"
