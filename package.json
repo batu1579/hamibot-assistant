@@ -44,7 +44,7 @@
                 "hamibot-assistant.showOfflineRobot": {
                     "type": "boolean",
                     "scope": "window",
-                    "default": false,
+                    "default": true,
                     "markdownDescription": "选择调试机器人时显示离线机器人。"
                 },
                 "hamibot-assistant.defaultExecuteRobot": {
@@ -132,7 +132,7 @@
                     "group": "workspace"
                 },
                 {
-                    "when": "resourceExtname == .json &&resourceFilename != hamibot.config.json && hamibot-assistant.isProjectFolder",
+                    "when": "resourceExtname == .json && resourceFilename != hamibot.config.json && hamibot-assistant.isProjectFolder",
                     "command": "hamibot-assistant.markConfigFile",
                     "group": "workspace"
                 }
