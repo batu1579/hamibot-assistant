@@ -38,7 +38,7 @@
 - `hamibot-assistant.setApiToken`: 设置 Hamibot API 令牌，在开始使用前请务必设置好。
 - `hamibot-assistant.setShowOfflineRobot`: 设置是否显示离线机器人（默认为 `false` ）。
 - `hamibot-assistant.setDefaultExecuteRobot`: 设置默认调试机器人，在创建新项目时会选择，自动使用这个作为调试机器人。
-- ``hamibot-assistant.resetDialogs`: 重置提示信息，用于恢复所有不再显示的提示信息。
+- `hamibot-assistant.resetDialogs`: 重置提示信息，用于恢复所有不再显示的提示信息。
 
 ### 项目设置（ `Hamibot Project` ）
 
@@ -49,7 +49,7 @@
 
 - `hamibot-assistant.initProject`: 新建 Hamibot 项目，会自动在远程创建对应名称的脚本。
 - `hamibot-assistant.uploadScript`: 上传标记的脚本文件。
-- `hamibot-assistant.uploadAndRunScript`: 上传并运行标记的脚本文件.
+- `hamibot-assistant.uploadAndRunScript`: 上传并运行标记的脚本文件。
 
 ## ⚙️ 扩展设置
 
