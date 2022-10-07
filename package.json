@@ -167,7 +167,7 @@
         "jsonValidation": [
             {
                 "fileMatch": "hamibot.config.json",
-                "url": "./src/ConfigSchema.json"
+                "url": "https://raw.githubusercontent.com/batu1579/hamibot-assistant/main/src/ConfigSchema.json"
             }
         ]
     },
