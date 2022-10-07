@@ -35,6 +35,7 @@ export function registerCommand(context: ExtensionContext): void {
                 for (const key of context.globalState.keys()) {
                     await context.globalState.update(key, false);
                 }
+                return Job.done;
             },
             doneInfo: "提示信息已重置"
         },
@@ -107,9 +108,9 @@ async function exceptionHandler(context: ExtensionContext, uri: Uri, c: Command)
     let needRetry = false;
 
     try {
-        await c.commandFunc(uri);
+        let jobStatus = await c.commandFunc(uri);
 
-        if (c.doneInfo) {
+        if (c.doneInfo && jobStatus === Job.done) {
             await INFO_DIALOG.showDialog(context, c.doneInfo);
         }
     } catch (error) {
@@ -137,5 +138,10 @@ interface Command {
     /**
      * @description: 指令对应的函数
      */
-    commandFunc: Function;
+    commandFunc: (...args: any[]) => Promise<Job>;
 }
+
+export enum Job {
+    done,
+    undone
+};

@@ -2,9 +2,10 @@ import { commands, Uri, window, workspace } from "vscode";
 
 import { Script } from "../lib/hamibotApi";
 import { HamibotConfig, RobotInfo } from "../lib/projectConfig";
+import { Job } from "./command";
 import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
 
-export async function uploadScript(): Promise<void> {
+export async function uploadScript(): Promise<Job> {
     let { scriptId, fileMark } = await global.currentConfig.getProjectConfig();
 
     if (!fileMark) {
@@ -27,9 +28,11 @@ export async function uploadScript(): Promise<void> {
     // 保存文件并上传
     await window.activeTextEditor?.document.save();
     await Script.uploadScript(scriptId, fileList);
+
+    return Job.done;
 }
 
-export async function uploadAndRunScript(): Promise<void> {
+export async function uploadAndRunScript(): Promise<Job> {
     let { scriptId, executeRobot } = await global.currentConfig.getProjectConfig();
 
     executeRobot = executeRobot ?? await workspace.getConfiguration("hamibot-assistant").get("defaultExecuteRobot");
@@ -40,9 +43,11 @@ export async function uploadAndRunScript(): Promise<void> {
 
     await uploadScript();
     await Script.runScript(scriptId!, [executeRobot]);
+
+    return Job.done;
 }
 
-export async function initProject(): Promise<void> {
+export async function initProject(): Promise<Job> {
     let select = await window.showOpenDialog({
         canSelectFiles: false,
         canSelectFolders: true,
@@ -50,17 +55,19 @@ export async function initProject(): Promise<void> {
         openLabel: "新建项目",
         title: "选择项目路径"
     });
-
     if (!select) {
-        return;
+        return Job.undone;
     }
 
     global.currentConfig = await HamibotConfig.newConfigFile(select[0]);
 
     // 设置项目名称
     let newProjectName = await getProjectNameByInput();
-    let { _id } = await Script.createNewScript(newProjectName);
+    if (!newProjectName) {
+        return Job.undone;
+    }
 
+    let { _id } = await Script.createNewScript(newProjectName);
     if (!_id) {
         throw new Error('使用接口创建脚本失败');
     }
@@ -78,4 +85,6 @@ export async function initProject(): Promise<void> {
 
     // 打开文件夹
     commands.executeCommand('vscode.openFolder', global.currentConfig.getWorkspaceUri());
+
+    return Job.done;
 }
