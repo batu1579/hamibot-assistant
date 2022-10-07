@@ -30,7 +30,8 @@
                 }
             },
             "title": "调试机器人信息",
-            "description": "包括机器人名称和机器人 ID ，用于描述调试脚本时远程执行用的机器人。"
+            "description": "包括机器人名称和机器人 ID ，用于描述调试脚本时远程执行用的机器人。",
+            "required": ["_id", "name"]
         },
         "fileMark": {
             "type": "object",
@@ -53,5 +54,6 @@
             "title": "文件标记",
             "description": "用于存储要上传的文件的路径"
         }
-    }
+    },
+    "required": ["scriptId"]
 }
