@@ -5,12 +5,14 @@
         "name": {
             "type": "string",
             "default": "Untitled Project",
-            "description": "项目名称"
+            "title": "项目名称",
+            "description": "hamibot 存储的脚本名称"
         },
         "scriptId": {
             "type": "string",
             "pattern": "^[0-9a-f]{24}$",
-            "description": "脚本 ID （不用自己填写，创建项目时会自动生成）"
+            "title": "脚本 ID",
+            "description": "hamibot 的脚本编号，一个 24 位 16 进制字符串。一般情况下不用自己填写，创建项目时会自动生成。"
         },
         "executeRobot": {
             "type": "object",
@@ -18,14 +20,17 @@
                 "_id": {
                     "type": "string",
                     "pattern": "^[0-9a-f]{24}$",
-                    "description": "机器人 ID （一个 24 位 16 进制字符串）"
+                    "title": "机器人 ID",
+                    "description": "在 hamibot 绑定过的机器人编号，一个 24 位 16 进制字符串。一般由指令生成，需要和机器人名称对应。"
                 },
                 "name": {
                     "type": "string",
-                    "description": "机器名称"
+                    "title": "机器人名称",
+                    "description": "在 hamibot 绑定过的机器人名称。一般由指令生成，需要和机器人 ID 对应。"
                 }
             },
-            "description": "上一次使用的机器人信息（使用 setExecuteRobot 指令修改）"
+            "title": "调试机器人信息",
+            "description": "包括机器人名称和机器人 ID ，用于描述调试脚本时远程执行用的机器人。"
         },
         "fileMark": {
             "type": "object",
@@ -34,16 +39,19 @@
                     "type": "string",
                     "default": "./config.json",
                     "pattern": "^.*\\.json$",
-                    "description": "脚本配置文件"
+                    "title": "脚本配置文件标记",
+                    "description": "用来记录脚本配置文件（JSON）的路径，在文件资源管理器中使用右键标记（可选）"
                 },
                 "scriptFile": {
                     "type": "string",
                     "default": "./index.js",
                     "pattern": "^.*\\.js$",
-                    "description": "编译后的脚本文件"
+                    "title": "用来记录脚本文件",
+                    "description": "用来记录脚本文件（js）的路径，在文件资源管理器中使用右键标记（可选）"
                 }
             },
-            "description": "文件标记，用于标记要上传的文件"
+            "title": "文件标记",
+            "description": "用于存储要上传的文件的路径"
         }
     }
 }
