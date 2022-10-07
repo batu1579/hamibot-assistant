@@ -3,9 +3,15 @@
 所有对 "hamibot-assistant" 扩展的更改都会记录在这个文件中。
 
 文档格式基于 [Keep a Changelog] ，
-此项目遵循 [语义化版本号].
+此项目遵循 [语义化版本号] 。
 
 ## [Unreleased]
+
+### Added
+
+- 项目操作指令：
+
+  - `hamibot-assistant.stopScript` : 停止脚本运行
 
 ## [0.3.1] - 2022-10-07
 
@@ -20,7 +26,7 @@
 
 - 全局设置指令:
 
-  - `hamibot-assistant.resetDialogs` : 重置跳过提示信息记录。
+  - `hamibot-assistant.resetDialogs` : 重置跳过提示信息记录
 
 - 执行指令后显示提示信息
 - 捕获全局异常以对话框展示

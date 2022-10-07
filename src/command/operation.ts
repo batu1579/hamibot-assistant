@@ -1,8 +1,8 @@
 import { commands, Uri, window, workspace } from "vscode";
 
+import { Job } from "./command";
 import { Script } from "../lib/hamibotApi";
 import { HamibotConfig, RobotInfo } from "../lib/projectConfig";
-import { Job } from "./command";
 import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
 
 export async function uploadScript(): Promise<Job> {
@@ -55,6 +55,7 @@ export async function initProject(): Promise<Job> {
         openLabel: "新建项目",
         title: "选择项目路径"
     });
+
     if (!select) {
         return Job.undone;
     }
@@ -63,12 +64,14 @@ export async function initProject(): Promise<Job> {
 
     // 设置项目名称
     let newProjectName = await getProjectNameByInput();
+
     if (!newProjectName) {
         return Job.undone;
     }
 
-    let { _id } = await Script.createNewScript(newProjectName);
-    if (!_id) {
+    let { _id: scriptId } = await Script.createNewScript(newProjectName);
+
+    if (!scriptId) {
         throw new Error('使用接口创建脚本失败');
     }
 
@@ -79,12 +82,28 @@ export async function initProject(): Promise<Job> {
     // 保存设置
     await global.currentConfig.updateProjectConfig({
         name: newProjectName,
-        scriptId: _id,
+        scriptId: scriptId,
         executeRobot: robot
     });
 
     // 打开文件夹
     commands.executeCommand('vscode.openFolder', global.currentConfig.getWorkspaceUri());
+
+    return Job.done;
+}
+
+export async function stopScript(): Promise<Job> {
+    let { scriptId, executeRobot } = await global.currentConfig.getProjectConfig();
+
+    if (!scriptId) {
+        throw new Error("未找到脚本 ID");
+    }
+
+    if (!executeRobot) {
+        throw new Error("未找到调试机器人信息");
+    }
+
+    await Script.stopScript(scriptId, [executeRobot]);
 
     return Job.done;
 }

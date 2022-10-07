@@ -122,6 +122,11 @@
                 "command": "hamibot-assistant.uploadAndRunScript",
                 "title": "上传并运行标记的脚本文件",
                 "category": "Hamibot Operation"
+            },
+            {
+                "command": "hamibot-assistant.stopScript",
+                "title": "强制停止脚本运行",
+                "category": "Hamibot Operation"
             }
         ],
         "menus": {
@@ -160,6 +165,10 @@
                 },
                 {
                     "command": "hamibot-assistant.uploadAndRunScript",
+                    "when": "hamibot-assistant.isProjectFolder"
+                },
+                {
+                    "command": "hamibot-assistant.stopScript",
                     "when": "hamibot-assistant.isProjectFolder"
                 }
             ]

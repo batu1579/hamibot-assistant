@@ -50,6 +50,7 @@
 - `hamibot-assistant.initProject`: 新建 Hamibot 项目，会自动在远程创建对应名称的脚本。
 - `hamibot-assistant.uploadScript`: 上传标记的脚本文件。
 - `hamibot-assistant.uploadAndRunScript`: 上传并运行标记的脚本文件。
+- `hamibot-assistant.stopScript`: 强制停止脚本运行。在运行前不必使用，因为 hamibot 会自动结束上一次执行的脚本。
 
 ## ⚙️ 扩展设置
 
@@ -67,7 +68,6 @@
 
 - [ ] 跟踪要发送的文件
 - [ ] 在新建项目时使用模板
-- [x] 设置默认调试机器人
 - [ ] 在控制台显示脚本调试信息
 - [ ] 在调试时加载指定的脚本配置项
 - [ ] 更多可视化方式代替指令操作

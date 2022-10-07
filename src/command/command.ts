@@ -1,9 +1,9 @@
-import { ExtensionContext, commands, Uri, window, workspace } from "vscode";
+import { ExtensionContext, commands, Uri, window } from "vscode";
 import { ERROR_DIALOG, INFO_DIALOG } from "../lib/dialog";
 import { isError } from "../lib/typeUtil";
 
 import { setApiToken, setDefaultExecuteRobot, setShowOfflineRobot } from "./globalConfig";
-import { initProject, uploadAndRunScript, uploadScript } from "./operation";
+import { initProject, stopScript, uploadAndRunScript, uploadScript } from "./operation";
 import {
     setProjectName,
     markConfigFile,
@@ -76,6 +76,11 @@ export function registerCommand(context: ExtensionContext): void {
             id: "hamibot-assistant.uploadAndRunScript",
             commandFunc: uploadAndRunScript,
             doneInfo: "开始运行脚本"
+        },
+        {
+            id: "hamibot-assistant.stopScript",
+            commandFunc: stopScript,
+            doneInfo: "脚本已停止运行"
         }
     );
 }
