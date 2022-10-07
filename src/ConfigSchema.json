@@ -15,7 +15,7 @@
         "executeRobot": {
             "type": "object",
             "properties": {
-                "id": {
+                "_id": {
                     "type": "string",
                     "pattern": "^[0-9a-f]{24}$",
                     "description": "机器人 ID （一个 24 位 16 进制字符串）"
