@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.3.1] - 2022-10-07
+
 ### Fixed
 
 - 无法取消设置项目名称的问题
@@ -92,7 +94,8 @@
 [语义化版本号]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.3.0...HEAD
+[unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/batu1579/hamibot-assistant/compare/v0.3.0..v0.3.1
 [0.3.0]: https://github.com/batu1579/hamibot-assistant/compare/v0.2.1..v0.3.0
 [0.2.1]: https://github.com/batu1579/hamibot-assistant/compare/v0.2.0..v0.2.1
 [0.2.0]: https://github.com/batu1579/hamibot-assistant/compare/v0.0.1..v0.2.0
