@@ -174,7 +174,7 @@ async function commandsHandler(context: ExtensionContext, ...commandList: Comman
 
                 // 重试循环
                 while (await exceptionHandler(context, uri, command)) {
-                    window.showInformationMessage('正在重试...');
+                    await window.showInformationMessage('正在重试...');
                 }
             })
         );
