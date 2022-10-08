@@ -1,4 +1,4 @@
-import { ExtensionContext, commands, Uri, window, workspace } from "vscode";
+import { ExtensionContext, commands, Uri, window, workspace, Range } from "vscode";
 
 import { isError } from "../lib/typeUtil";
 import { HamibotConfig } from "../lib/projectConfig";
@@ -35,18 +35,23 @@ export function registerCommand(context: ExtensionContext): void {
         {
             id: "hamibot-assistant.setShowOfflineRobot",
             commandFunc: setShowOfflineRobot,
-            doneInfo: "显示离线机器人设置已更新"
+            doneInfo: "机器人显示设置已更新"
         },
         {
             id: "hamibot-assistant.setDefaultExecuteRobot",
             commandFunc: setDefaultExecuteRobot,
-            doneInfo: "默认调试机器人已更新"
+            doneInfo: "默认调试机器人已更新",
+            requirements: [
+                new VSCodeConfigRequirement('apiToken', () => {
+                    commands.executeCommand('hamibot-assistant.setApiToken');
+                })
+            ]
         },
         {
             id: "hamibot-assistant.resetDialogs",
             commandFunc: async () => {
                 for (const key of context.globalState.keys()) {
-                    await context.globalState.update(key, false);
+                    await context.globalState.update(key, undefined);
                 }
                 return Job.done;
             },
@@ -57,7 +62,13 @@ export function registerCommand(context: ExtensionContext): void {
         {
             id: "hamibot-assistant.setProjectName",
             commandFunc: setProjectName,
-            doneInfo: "项目名称已更新"
+            doneInfo: "项目名称已更新",
+            requirements: [
+                new VSCodeConfigRequirement('apiToken', () => {
+                    commands.executeCommand('hamibot-assistant.setApiToken');
+                }),
+                new ProjectConfigRequirement('scriptId')
+            ]
         },
         {
             id: "hamibot-assistant.markScriptFile",
@@ -72,28 +83,61 @@ export function registerCommand(context: ExtensionContext): void {
         {
             id: "hamibot-assistant.setExecuteRobot",
             commandFunc: setExecuteRobot,
-            doneInfo: "调试机器人已更新"
+            doneInfo: "调试机器人已更新",
+            requirements: [
+                new VSCodeConfigRequirement('apiToken', () => {
+                    commands.executeCommand('hamibot-assistant.setApiToken');
+                }),
+            ]
         },
 
         // 操作
         {
             id: "hamibot-assistant.initProject",
-            commandFunc: initProject
+            commandFunc: initProject,
+            doneInfo: "新项目已创建",
+            requirements: [
+                new VSCodeConfigRequirement('apiToken', () => {
+                    commands.executeCommand('hamibot-assistant.setApiToken');
+                })
+            ]
         },
         {
             id: "hamibot-assistant.uploadScript",
             commandFunc: uploadScript,
-            doneInfo: "脚本文件已上传"
+            doneInfo: "脚本文件已上传",
+            requirements: [
+                new VSCodeConfigRequirement('apiToken', () => {
+                    commands.executeCommand('hamibot-assistant.setApiToken');
+                }),
+                new ProjectConfigRequirement('scriptId'),
+                new ProjectConfigRequirement('fileMark')
+            ]
         },
         {
             id: "hamibot-assistant.uploadAndRunScript",
             commandFunc: uploadAndRunScript,
-            doneInfo: "开始运行脚本"
+            doneInfo: "开始运行脚本",
+            requirements: [
+                new VSCodeConfigRequirement('apiToken', () => {
+                    commands.executeCommand('hamibot-assistant.setApiToken');
+                }),
+                new ProjectConfigRequirement('scriptId'),
+                new ProjectConfigRequirement('fileMark'),
+                new ProjectConfigRequirement('executeRobot')
+            ]
         },
         {
             id: "hamibot-assistant.stopScript",
             commandFunc: stopScript,
-            doneInfo: "脚本已停止运行"
+            doneInfo: "脚本已停止运行",
+            requirements: [
+                new VSCodeConfigRequirement('apiToken', () => {
+                    commands.executeCommand('hamibot-assistant.setApiToken');
+                }),
+                new ProjectConfigRequirement('scriptId'),
+                new ProjectConfigRequirement('executeRobot')
+            ]
         }
     );
 }
@@ -109,7 +153,17 @@ async function commandsHandler(context: ExtensionContext, ...commandList: Comman
             commands.registerCommand(command.id, async (uri: Uri) => {
                 // 指令依赖检查
                 if (command.requirements) {
-                    checkRequirements(command.requirements);
+                    try {
+                        await checkRequirements(command.requirements);
+                    } catch (error) {
+                        if (!isError(error)) {
+                            throw error;
+                        }
+
+                        // 依赖检查异常不可隐藏
+                        window.showErrorMessage(error.message);
+                        return;
+                    }
                 }
 
                 // 重试循环
@@ -128,7 +182,7 @@ async function checkRequirements(requirements: RequireInfo[]): Promise<void> {
         let isSatisfied = false;
         switch (req.type) {
             case RequireType.vscodeConfig:
-                isSatisfied = (await vscodeConfig.get(req.field)) === undefined;
+                isSatisfied = vscodeConfig.has(req.field);
                 break;
 
             case RequireType.projectConfig:
@@ -140,7 +194,9 @@ async function checkRequirements(requirements: RequireInfo[]): Promise<void> {
         }
 
         if (!isSatisfied) {
-            req.onNotSatisfied();
+            if (req.onNotSatisfied) {
+                req.onNotSatisfied();
+            }
             throw new Error(`此指令依赖于 ${req.field} 配置项，请先设置`);
         }
     }
@@ -214,10 +270,40 @@ interface RequireInfo {
     /**
      * @description: 不满足依赖时的回调函数
      */
-    onNotSatisfied: Function;
+    onNotSatisfied?: Function;
 }
 
 enum RequireType {
     vscodeConfig,
     projectConfig
+}
+
+abstract class ConfigRequirement implements RequireInfo {
+    public abstract type: RequireType;
+
+    public field: string;
+    public onNotSatisfied: Function;
+
+    constructor(field: string, onNotSatisfied?: Function) {
+        this.field = field;
+        this.onNotSatisfied = onNotSatisfied ?? this.defaultCallback;
+    }
+
+    protected async defaultCallback(): Promise<void> {}
+}
+
+class VSCodeConfigRequirement extends ConfigRequirement implements RequireInfo {
+    type: RequireType = RequireType.vscodeConfig;
+
+    protected async defaultCallback(): Promise<void> {
+        await commands.executeCommand('workbench.action.openSettingsJson');
+    };
+}
+
+class ProjectConfigRequirement extends ConfigRequirement implements RequireInfo {
+    type: RequireType = RequireType.projectConfig;
+
+    protected async defaultCallback(): Promise<void> {
+        await window.showTextDocument(global.currentConfig.getProjectConfigFileUri());
+    };
 }

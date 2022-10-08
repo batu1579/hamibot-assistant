@@ -48,6 +48,10 @@ export class HamibotConfig {
         return this.workspaceUri;
     }
 
+    public getProjectConfigFileUri(): Uri {
+        return Uri.joinPath(this.getWorkspaceUri(), HamibotConfig.configFileName);
+    }
+
     /**
      * @description: 获取完整的项目设置对象。
      * @return {Promise<ProjectConfig>} 项目设置对象。
@@ -105,7 +109,7 @@ export class HamibotConfig {
      */
     private async readProjectConfig(): Promise<ProjectConfig> {
         let configDocument = await workspace.fs.readFile(
-            Uri.joinPath(this.getWorkspaceUri(), HamibotConfig.configFileName)
+            this.getProjectConfigFileUri()
         );
         return JSON.parse(configDocument.toString());
     }
@@ -116,7 +120,7 @@ export class HamibotConfig {
      */
     private async writeProjectConfig(config: ProjectConfig): Promise<void> {
         await workspace.fs.writeFile(
-            Uri.joinPath(this.getWorkspaceUri(), HamibotConfig.configFileName),
+            this.getProjectConfigFileUri(),
             Buffer.from(JSON.stringify(config, null, 4))
         );
     }
