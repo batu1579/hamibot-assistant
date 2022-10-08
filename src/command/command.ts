@@ -1,9 +1,22 @@
-import { ExtensionContext, commands, Uri, window } from "vscode";
-import { ERROR_DIALOG, INFO_DIALOG } from "../lib/dialog";
-import { isError } from "../lib/typeUtil";
+import { ExtensionContext, commands, Uri, window, workspace } from "vscode";
 
-import { setApiToken, setDefaultExecuteRobot, setShowOfflineRobot } from "./globalConfig";
-import { initProject, stopScript, uploadAndRunScript, uploadScript } from "./operation";
+import { isError } from "../lib/typeUtil";
+import { HamibotConfig } from "../lib/projectConfig";
+import { ERROR_DIALOG, INFO_DIALOG } from "../lib/dialog";
+
+import {
+    initProject,
+    stopScript,
+    uploadAndRunScript,
+    uploadScript
+} from "./operation";
+
+import {
+    setApiToken,
+    setDefaultExecuteRobot,
+    setShowOfflineRobot
+} from "./globalConfig";
+
 import {
     setProjectName,
     markConfigFile,
@@ -94,11 +107,42 @@ async function commandsHandler(context: ExtensionContext, ...commandList: Comman
     for (const command of commandList) {
         context.subscriptions.push(
             commands.registerCommand(command.id, async (uri: Uri) => {
+                // 指令依赖检查
+                if (command.requirements) {
+                    checkRequirements(command.requirements);
+                }
+
+                // 重试循环
                 while (await exceptionHandler(context, uri, command)) {
                     window.showInformationMessage('正在重试...');
                 }
             })
         );
+    }
+}
+
+async function checkRequirements(requirements: RequireInfo[]): Promise<void> {
+    let vscodeConfig = workspace.getConfiguration('hamibot-assistant');
+    let projectConfig = await global.currentConfig.getProjectConfig();
+    for (const req of requirements) {
+        let isSatisfied = false;
+        switch (req.type) {
+            case RequireType.vscodeConfig:
+                isSatisfied = (await vscodeConfig.get(req.field)) === undefined;
+                break;
+
+            case RequireType.projectConfig:
+                isSatisfied = (HamibotConfig.getConfigByFieldName(projectConfig, req.field)) === undefined;
+                break;
+
+            default:
+                throw new Error(`依赖类型 ${req.type} 不存在`);
+        }
+
+        if (!isSatisfied) {
+            req.onNotSatisfied();
+            throw new Error(`此指令依赖于 ${req.field} 配置项，请先设置`);
+        }
     }
 }
 
@@ -144,9 +188,36 @@ interface Command {
      * @description: 指令对应的函数
      */
     commandFunc: (...args: any[]) => Promise<Job>;
+
+    /**
+     * @description: 指令依赖的信息
+     */
+    requirements?: RequireInfo[]
 }
 
 export enum Job {
     done,
     undone
 };
+
+interface RequireInfo {
+    /**
+     * @description: 依赖类型
+     */
+    type: RequireType;
+
+    /**
+     * @description: 依赖的字段
+     */
+    field: string;
+
+    /**
+     * @description: 不满足依赖时的回调函数
+     */
+    onNotSatisfied: Function;
+}
+
+enum RequireType {
+    vscodeConfig,
+    projectConfig
+}
