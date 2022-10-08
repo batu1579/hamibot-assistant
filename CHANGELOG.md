@@ -13,6 +13,9 @@
 
   - `hamibot-assistant.stopScript` : 停止脚本运行
 
+- 更详细的错误描述
+- 在指令运行前检查依赖的设置项
+
 ### Fixed
 
 - 未执行指令时显示完成信息

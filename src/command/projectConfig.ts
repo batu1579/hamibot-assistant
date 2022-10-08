@@ -2,7 +2,6 @@ import { QuickPickItem, Uri, window, workspace } from "vscode";
 
 import { Robot } from "../lib/hamibotApi";
 import { RobotInfo } from "../lib/projectConfig";
-import { isError } from "../lib/typeUtil";
 import { Job } from "./command";
 
 export async function getProjectNameByInput(): Promise<string | undefined> {
@@ -14,16 +13,14 @@ export async function getProjectNameByInput(): Promise<string | undefined> {
 }
 
 export async function setProjectName(): Promise<Job> {
-    try {
-        let projectName = await getProjectNameByInput();
-        await global.currentConfig.updateProjectConfig({ name: projectName });
-        return Job.done;
-    } catch (error) {
-        if (!isError(error) || error.message !== "必须提供项目名称") {
-            throw error;
-        }
+    let projectName = await getProjectNameByInput();
+
+    if (!projectName) {
         return Job.undone;
     }
+
+    await global.currentConfig.updateProjectConfig({ name: projectName });
+    return Job.done;
 }
 
 export async function markScriptFile(uri: Uri): Promise<Job> {
@@ -68,9 +65,12 @@ export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
 
 export async function setExecuteRobot(): Promise<Job> {
     let robot = await getExecuteRobotByInput();
+
     if (robot) {
-        await global.currentConfig.updateProjectConfig({ executeRobot: robot });
+        return Job.undone;
     }
+
+    await global.currentConfig.updateProjectConfig({ executeRobot: robot });
     return Job.done;
 }
 
