@@ -15,7 +15,7 @@ export function validToken(token?: string): void {
         throw new Error('未设置令牌');
     }
 
-    if (!!isTokenValid(token)) {
+    if (!isTokenValid(token)) {
         throw new Error('令牌格式错误');
     }
 }
