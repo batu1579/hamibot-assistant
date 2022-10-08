@@ -39,31 +39,49 @@
                     "pattern": "^hmp_[0-9a-f]{64}$",
                     "patternErrorMessage": "需要是一个以 'hmp_' 开头加 64 位 16 进制字符串。",
                     "editPresentation": "multilineText",
-                    "markdownDescription": "用于访问 Hamibot API 的开发者令牌，可以从 [控制台](https://hamibot.com/account/tokens) 申请。"
+                    "markdownDescription": "用于访问 Hamibot API 的开发者令牌，可以从 [控制台](https://hamibot.com/account/tokens) 申请。",
+                    "order": 0
                 },
                 "hamibot-assistant.showOfflineRobot": {
                     "type": "boolean",
                     "scope": "window",
                     "default": true,
-                    "markdownDescription": "选择调试机器人时显示离线机器人。"
+                    "markdownDescription": "选择调试机器人时显示离线机器人。",
+                    "order": 1
                 },
-                "hamibot-assistant.defaultExecuteRobot": {
-                    "type": "object",
-                    "scope": "window",
-                    "default": null,
-                    "properties": {
-                        "_id": {
-                            "type": "string",
-                            "scope": "window",
-                            "pattern": "^[0-9a-f]{24}$",
-                            "patternProperties": "需要是一个 24 位 16 进制字符串",
-                            "markdownDescription": "可以使用 Hamibot API 查看相关信息"
-                        },
-                        "name": {
-                            "type": "string",
-                            "scope": "window"
-                        }
-                    }
+                "hamibot-assistant.defaultExecuteRobot.enable": {
+                    "type": "boolean",
+                    "scope": "application",
+                    "default": false,
+                    "markdownDescription": "使用默认调试机器人。启用后在创建项目时会使用此机器人，当项目设置中没有配置机器人时也会使用默认调试机器人代替。",
+                    "order": 2
+                },
+                "hamibot-assistant.defaultExecuteRobot.robotInfo": {
+                    "markdownDescription": "默认调试机器人信息，只有在 `#hamibot-assistant.defaultExecuteRobot.enable#` 设置为 `true` 时才会启用",
+                    "order": 3
+                },
+                "hamibot-assistant.defaultExecuteRobot.robotInfo.name": {
+                    "type": "string",
+                    "scope": "application",
+                    "default": "",
+                    "markdownDescription": "默认调试机器人名称",
+                    "order": 4
+                },
+                "hamibot-assistant.defaultExecuteRobot.robotInfo.id": {
+                    "type": "string",
+                    "scope": "application",
+                    "default": "",
+                    "pattern": "^[0-9a-f]{24}|(?:)$",
+                    "patternErrorMessage": "需要是一个 24 位 16 进制字符串",
+                    "markdownDescription": "默认调试机器人 ID",
+                    "order": 5
+                },
+                "hamibot-assistant.useTemplate": {
+                    "type": "boolean",
+                    "scope": "application",
+                    "default": false,
+                    "markdownDescription": "在创建项目时使用模板",
+                    "order": 6
                 }
             }
         },

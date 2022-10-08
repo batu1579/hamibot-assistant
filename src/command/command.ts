@@ -129,8 +129,7 @@ export function registerCommand(context: ExtensionContext): void {
                     commands.executeCommand('hamibot-assistant.setApiToken');
                 }),
                 new ProjectConfigRequirement('scriptId'),
-                new ProjectConfigRequirement('fileMark'),
-                new ProjectConfigRequirement('executeRobot')
+                new ProjectConfigRequirement('fileMark')
             ]
         },
         {

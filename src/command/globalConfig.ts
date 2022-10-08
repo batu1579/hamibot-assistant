@@ -37,6 +37,11 @@ export async function setDefaultExecuteRobot(): Promise<Job> {
         return Job.undone;
     }
 
-    workspace.getConfiguration("hamibot-assistant").update("defaultExecuteRobot", robot, true);
+    workspace.getConfiguration("hamibot-assistant.defaultExecuteRobot")
+        .update("robotInfo", {
+            name: robot.name,
+            id: robot._id
+        }, true);
+
     return Job.done;
 }

@@ -2,6 +2,7 @@ import { commands, Uri, window, workspace } from "vscode";
 
 import { Job } from "./command";
 import { Script } from "../lib/hamibotApi";
+import { isRobotIdValid } from "../lib/valid";
 import { HamibotConfig, RobotInfo } from "../lib/projectConfig";
 import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
 
@@ -27,10 +28,14 @@ export async function uploadScript(): Promise<Job> {
 export async function uploadAndRunScript(): Promise<Job> {
     let { scriptId, executeRobot } = await global.currentConfig.getProjectConfig();
 
-    executeRobot = executeRobot ?? await workspace.getConfiguration("hamibot-assistant").get("defaultExecuteRobot");
+    executeRobot = executeRobot ?? await getDefaultExecuteRobot();
+
+    if (!executeRobot) {
+        throw new Error("未找到可用的调试机器人设置");
+    }
 
     await uploadScript();
-    await Script.runScript(scriptId!, [executeRobot!]);
+    await Script.runScript(scriptId!, [executeRobot]);
 
     return Job.done;
 }
@@ -64,8 +69,7 @@ export async function initProject(): Promise<Job> {
     }
 
     // 设置调试机器人
-    let defaultRobot: RobotInfo | undefined = await workspace.getConfiguration("hamibot-assistant").get("defaultExecuteRobot");
-    let robot = defaultRobot ? defaultRobot : await getExecuteRobotByInput();
+    let robot = (await getDefaultExecuteRobot()) ?? (await getExecuteRobotByInput());
 
     // 保存设置
     await global.currentConfig.updateProjectConfig({
@@ -84,4 +88,30 @@ export async function stopScript(): Promise<Job> {
     let { scriptId, executeRobot } = await global.currentConfig.getProjectConfig();
     await Script.stopScript(scriptId!, [executeRobot!]);
     return Job.done;
+}
+
+async function getDefaultExecuteRobot(): Promise<RobotInfo | undefined> {
+    let enableDefaultRobot: boolean | undefined = await workspace
+        .getConfiguration("hamibot-assistant.defaultExecuteRobot")
+        .get("enable");
+
+    if (!enableDefaultRobot) {
+        return undefined;
+    }
+
+    let robotName: string | undefined = await workspace
+        .getConfiguration("hamibot-assistant.defaultExecuteRobot")
+        .get("robotInfo.name");
+    let robotId: string | undefined = await workspace
+        .getConfiguration("hamibot-assistant.defaultExecuteRobot")
+        .get("robotInfo.id");
+
+    if (!robotId || !isRobotIdValid(robotId)) {
+        return undefined;
+    }
+
+    return {
+        _id: robotId,
+        name: robotName
+    };
 }

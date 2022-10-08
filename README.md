@@ -58,7 +58,11 @@
 
 - `hamibot-assistant.ApiToken`: 用于使用 Hamibot Api 的开发者令牌。
 - `hamibot-assistant.showOfflineRobot`: 选择调试机器人时显示离线机器人（默认不显示）。
-- `hamibot-assistant.defaultExecuteRobot` : 默认调试机器人。
+- `hamibot-assistant.defaultExecuteRobot.enable` : 启用默认调试机器人。启用后在创建项目时会使用此机器人，当项目设置中没有配置机器人时也会使用默认调试机器人代替。
+- `hamibot-assistant.defaultExecuteRobot.robotInfo` : 默认调试机器人信息，只有在启用默认调试机器人后才会生效。此设置包含两个字段：
+
+  - `id` : 默认调试机器人 ID 。
+  - `name` : 默认调试机器人名称。
 
 ## 📋 更新日志
 
