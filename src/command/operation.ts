@@ -8,14 +8,6 @@ import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
 export async function uploadScript(): Promise<Job> {
     let { scriptId, fileMark } = await global.currentConfig.getProjectConfig();
 
-    if (!fileMark) {
-        throw new Error("未标记脚本相关文件");
-    }
-
-    if (!scriptId) {
-        throw new Error("请填入脚本 ID 后重试");
-    }
-
     let fileList: Uri[] = [];
 
     for (let mark in fileMark) {
@@ -27,7 +19,7 @@ export async function uploadScript(): Promise<Job> {
 
     // 保存文件并上传
     await window.activeTextEditor?.document.save();
-    await Script.uploadScript(scriptId, fileList);
+    await Script.uploadScript(scriptId!, fileList);
 
     return Job.done;
 }
@@ -37,12 +29,8 @@ export async function uploadAndRunScript(): Promise<Job> {
 
     executeRobot = executeRobot ?? await workspace.getConfiguration("hamibot-assistant").get("defaultExecuteRobot");
 
-    if (!executeRobot) {
-        throw new Error("请填入测试脚本机器人的信息");
-    }
-
     await uploadScript();
-    await Script.runScript(scriptId!, [executeRobot]);
+    await Script.runScript(scriptId!, [executeRobot!]);
 
     return Job.done;
 }
@@ -52,7 +40,7 @@ export async function initProject(): Promise<Job> {
         canSelectFiles: false,
         canSelectFolders: true,
         canSelectMany: false,
-        openLabel: "新建项目",
+        openLabel: "在此新建项目",
         title: "选择项目路径"
     });
 
@@ -94,16 +82,6 @@ export async function initProject(): Promise<Job> {
 
 export async function stopScript(): Promise<Job> {
     let { scriptId, executeRobot } = await global.currentConfig.getProjectConfig();
-
-    if (!scriptId) {
-        throw new Error("未找到脚本 ID");
-    }
-
-    if (!executeRobot) {
-        throw new Error("未找到调试机器人信息");
-    }
-
-    await Script.stopScript(scriptId, [executeRobot]);
-
+    await Script.stopScript(scriptId!, [executeRobot!]);
     return Job.done;
 }
