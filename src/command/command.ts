@@ -51,7 +51,7 @@ export function registerCommand(context: ExtensionContext): void {
             id: "hamibot-assistant.resetDialogs",
             commandFunc: async () => {
                 for (const key of context.globalState.keys()) {
-                    await context.globalState.update(key, undefined);
+                    await context.globalState.update(key, false);
                 }
                 return Job.done;
             },
