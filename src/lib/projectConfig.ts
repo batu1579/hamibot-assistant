@@ -17,8 +17,6 @@ interface FileMarks {
     scriptFile?: string
 }
 
-type ConfigField = keyof ProjectConfig;
-
 export class HamibotConfig {
     private workspaceUri: Uri | undefined;
     private static readonly configFileName = 'hamibot.config.json';
@@ -54,16 +52,26 @@ export class HamibotConfig {
      * @description: 获取完整的项目设置对象。
      * @return {Promise<ProjectConfig>} 项目设置对象。
      */
-    public async getProjectConfig(): Promise<ProjectConfig>;
+    public async getProjectConfig(): Promise<ProjectConfig> {
+        return await this.readProjectConfig();
+    }
+
     /**
-     * @description: 获取项目设置中 `field` 字段对应的设置。
-     * @param {T extends ConfigField} field 要获取的字段。
-     * @return {Promise<ProjectConfig[T]>} `field` 字段对应的设置。
+     * @description: 获取对象中的对应字段的值。
+     * @param {object} config 要查询的对象。
+     * @param {string | string[]} fieldPath 要查询的字段路径。
+     * @param {any} defaultValue 当输入的路径不存在时返回的默认值。
+     * @return {unknown} 查询到的值或默认值。
+     * @example
+     * ```typescript
+     * HamibotConfig.getConfigByFieldName(config, "fileMark.configFile")
+     * ```
      */
-    public async getProjectConfig<T extends ConfigField>(field: T): Promise<ProjectConfig[T]>;
-    public async getProjectConfig<T extends ConfigField>(field?: T): Promise<ProjectConfig | ProjectConfig[T]> {
-        let config = await this.readProjectConfig();
-        return field ? config[field] : config;
+    public static getConfigByFieldName(config: object, fieldPath: string | string[], defaultValue?: any): unknown {
+        let path = Array.isArray(fieldPath) ? fieldPath : fieldPath.replace(/\[(.*?)\]/g, '.$1').split('.');
+        return path.reduce((obj: object, key: string) => {
+            return Object.getOwnPropertyDescriptor(obj ?? {}, key)?.value;
+        }, config) ?? defaultValue;
     }
 
     /**
