@@ -13,6 +13,10 @@
 
   - `hamibot-assistant.stopScript` : 停止脚本运行
 
+### Fixed
+
+- 未执行指令时显示完成信息
+
 ## [0.3.1] - 2022-10-07
 
 ### Fixed

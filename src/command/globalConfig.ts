@@ -7,6 +7,11 @@ export async function setApiToken(): Promise<Job> {
         title: "输入开发者令牌",
         ignoreFocusOut: true
     });
+
+    if (!token) {
+        return Job.undone;
+    }
+
     workspace.getConfiguration("hamibot-assistant").update("ApiToken", token, true);
     return Job.done;
 }
@@ -15,12 +20,22 @@ export async function setShowOfflineRobot(): Promise<Job> {
     let choose = await window.showQuickPick(["是", "否"], {
         title: "显示离线机器人"
     });
+
+    if (!choose) {
+        return Job.undone;
+    }
+
     workspace.getConfiguration("hamibot-assistant").update("OfflineRobot", choose === "是", true);
     return Job.done;
 }
 
 export async function setDefaultExecuteRobot(): Promise<Job> {
     let robot = await getExecuteRobotByInput();
+
+    if (!robot) {
+        return Job.undone;
+    }
+
     workspace.getConfiguration("hamibot-assistant").update("defaultExecuteRobot", robot, true);
     return Job.done;
 }
