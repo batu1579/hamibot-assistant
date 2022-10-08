@@ -13,6 +13,8 @@
 
   - `hamibot-assistant.stopScript` : 停止脚本运行
 
+- 更详细的错误描述
+
 ## [0.3.1] - 2022-10-07
 
 ### Fixed
