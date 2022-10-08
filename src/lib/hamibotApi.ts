@@ -1,10 +1,10 @@
+import * as FormData from 'form-data';
 import { Uri, workspace } from 'vscode';
 import { basename, extname } from 'path';
-import * as FormData from 'form-data';
 
 import * as request from "./request";
-import { validRobotId, validScriptId } from './valid';
 import { RobotInfo } from './projectConfig';
+import { validRobotId, validScriptId } from './valid';
 
 export class Robot {
     private constructor() { };

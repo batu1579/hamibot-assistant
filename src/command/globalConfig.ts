@@ -1,4 +1,5 @@
 import { window, workspace } from 'vscode';
+
 import { Job } from './command';
 import { getExecuteRobotByInput } from './projectConfig';
 

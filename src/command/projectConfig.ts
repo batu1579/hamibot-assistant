@@ -1,8 +1,8 @@
 import { QuickPickItem, Uri, window, workspace } from "vscode";
 
+import { Job } from "./command";
 import { Robot } from "../lib/hamibotApi";
 import { RobotInfo } from "../lib/projectConfig";
-import { Job } from "./command";
 
 export async function getProjectNameByInput(): Promise<string | undefined> {
     let projectName = await window.showInputBox({

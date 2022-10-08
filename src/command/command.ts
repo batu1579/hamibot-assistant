@@ -1,20 +1,26 @@
-import { ExtensionContext, commands, Uri, window, workspace, Range } from "vscode";
+import {
+    Uri,
+    window,
+    commands,
+    workspace,
+    ExtensionContext
+} from "vscode";
 
 import { isError } from "../lib/typeUtil";
 import { HamibotConfig } from "../lib/projectConfig";
 import { ERROR_DIALOG, INFO_DIALOG } from "../lib/dialog";
 
 import {
-    initProject,
     stopScript,
-    uploadAndRunScript,
-    uploadScript
+    initProject,
+    uploadScript,
+    uploadAndRunScript
 } from "./operation";
 
 import {
     setApiToken,
-    setDefaultExecuteRobot,
-    setShowOfflineRobot
+    setShowOfflineRobot,
+    setDefaultExecuteRobot
 } from "./globalConfig";
 
 import {
@@ -289,7 +295,7 @@ abstract class ConfigRequirement implements RequireInfo {
         this.onNotSatisfied = onNotSatisfied ?? this.defaultCallback;
     }
 
-    protected async defaultCallback(): Promise<void> {}
+    protected async defaultCallback(): Promise<void> { }
 }
 
 class VSCodeConfigRequirement extends ConfigRequirement implements RequireInfo {
