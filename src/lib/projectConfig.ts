@@ -1,10 +1,10 @@
 import { workspace, Uri } from "vscode";
 
 interface ProjectConfig {
-    name?: string,
-    scriptId?: string,
-    executeRobot?: RobotInfo,
-    fileMark?: FileMarks
+    readonly name?: string,
+    readonly scriptId?: string,
+    readonly executeRobot?: RobotInfo,
+    readonly fileMark?: FileMarks
 }
 
 export interface RobotInfo {
