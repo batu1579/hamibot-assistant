@@ -165,6 +165,20 @@ export class Script {
         return await request.post<ScriptItem>(`/v1/devscripts`, { name: scriptName });
     }
 
+    /**
+     * @description: 修改脚本名称。
+     * @param {string} scriptId 脚本 ID 。
+     * @param {string} scriptName 新的脚本名称。
+     */
+    static async changeScriptName(scriptId: string, scriptName: string): Promise<void> {
+        await request.put(`/v1/devscripts/${scriptId}`, { name: scriptName });
+    }
+
+    /**
+     * @description: 上传脚本文件。
+     * @param {string} scriptId 脚本 ID 。
+     * @param {Uri} filesUri 要上传的文件的 Uri 。
+     */
     static async uploadScript(scriptId: string, filesUri: Uri[]): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);

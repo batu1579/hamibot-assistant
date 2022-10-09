@@ -1,7 +1,7 @@
 import { QuickPickItem, Uri, window, workspace } from "vscode";
 
 import { Job } from "./command";
-import { Robot } from "../lib/hamibotApi";
+import { Robot, Script } from "../lib/hamibotApi";
 import { RobotInfo } from "../lib/projectConfig";
 
 export async function getProjectNameByInput(): Promise<string | undefined> {
@@ -14,12 +14,18 @@ export async function getProjectNameByInput(): Promise<string | undefined> {
 
 export async function setProjectName(): Promise<Job> {
     let projectName = await getProjectNameByInput();
+    let { scriptId } = await global.currentConfig.getProjectConfig();
 
     if (!projectName) {
         return Job.undone;
     }
 
+    // 更新本地名称
     await global.currentConfig.updateProjectConfig({ name: projectName });
+
+    // 更新远程名称
+    await Script.changeScriptName(scriptId!, projectName);
+
     return Job.done;
 }
 

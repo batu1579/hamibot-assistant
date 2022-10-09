@@ -42,7 +42,7 @@
 
 ### 项目设置（ `Hamibot Project` ）
 
-- `hamibot-assistant.setProjectName`: 设置项目名称，这个指令目前只是本地调试，能够远程修改还需要等待 Hamibot 开放修改接口。
+- `hamibot-assistant.setProjectName`: 设置项目名称，同时修改远程脚本名称。
 - `hamibot-assistant.setExecuteRobot`: 设置用于当前项目中调试脚本的机器人。
 
 ### 可用操作（ `Hamibot Operation` ）
