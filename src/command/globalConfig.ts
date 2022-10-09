@@ -1,4 +1,5 @@
 import { window, workspace } from 'vscode';
+import { isTokenValid } from '../lib/valid';
 
 import { Job } from './command';
 import { getExecuteRobotByInput } from './projectConfig';
@@ -6,7 +7,10 @@ import { getExecuteRobotByInput } from './projectConfig';
 export async function setApiToken(): Promise<Job> {
     let token = await window.showInputBox({
         title: "输入开发者令牌",
-        ignoreFocusOut: true
+        ignoreFocusOut: true,
+        validateInput: (value) => {
+            return isTokenValid(value) ? null : "需要是一个以 'hmp_' 开头加 64 位 16 进制字符串。";
+        }
     });
 
     if (!token) {
