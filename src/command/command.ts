@@ -184,21 +184,21 @@ async function checkRequirements(requirements: RequireInfo[]): Promise<void> {
     let vscodeConfig = workspace.getConfiguration('hamibot-assistant');
     let projectConfig = await global.currentConfig.getProjectConfig();
     for (const req of requirements) {
-        let isSatisfied = false;
+        let config;
         switch (req.type) {
             case RequireType.vscodeConfig:
-                isSatisfied = vscodeConfig.has(req.field);
+                config = await vscodeConfig.get(req.field);
                 break;
 
             case RequireType.projectConfig:
-                isSatisfied = (HamibotConfig.getConfigByFieldName(projectConfig, req.field)) === undefined;
+                config = await HamibotConfig.getConfigByFieldName(projectConfig, req.field);
                 break;
 
             default:
                 throw new Error(`依赖类型 ${req.type} 不存在`);
         }
 
-        if (!isSatisfied) {
+        if (!config) {
             if (req.onNotSatisfied) {
                 req.onNotSatisfied();
             }
