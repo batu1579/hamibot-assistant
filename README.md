@@ -58,11 +58,23 @@
 
 - `hamibot-assistant.ApiToken`: 用于使用 Hamibot Api 的开发者令牌。
 - `hamibot-assistant.showOfflineRobot`: 选择调试机器人时显示离线机器人（默认不显示）。
-- `hamibot-assistant.defaultExecuteRobot.enable` : 启用默认调试机器人。启用后在创建项目时会使用此机器人，当项目设置中没有配置机器人时也会使用默认调试机器人代替。
-- `hamibot-assistant.defaultExecuteRobot.robotInfo` : 默认调试机器人信息，只有在启用默认调试机器人后才会生效。此设置包含两个字段：
+- `hamibot-assistant.defaultExecuteRobot.enable`: 启用默认调试机器人。启用后在创建项目时会使用此机器人，当项目设置中没有配置机器人时也会使用默认调试机器人代替。
+- `hamibot-assistant.defaultExecuteRobot.robotInfo`: 默认调试机器人信息，只有在启用默认调试机器人后才会生效。此设置包含两个字段：
 
-  - `id` : 默认调试机器人 ID 。
-  - `name` : 默认调试机器人名称。
+  - `id`: 默认调试机器人 ID 。
+  - `name`: 默认调试机器人名称。
+
+- `hamibot-assistant.projectTemplate`: 项目模板设置，在创建项目时使用对应的项目模板，来快速开始。此设置包含两个字段：
+
+  - `type`: 设置模板类型，有三个可选项：
+
+    - `disabled`: 禁用通过模板创建项目
+    - `local`: 使用本地模板（本地文件夹）
+    - `remote`: 使用远程模板（ Github 仓库）
+
+  - `path`: 项目模板存放的路径，只能是绝对路径的本地文件夹或可用的 Github 远程仓库。
+
+    > 注意：路径字段需要和类型对应，否则效果等同于禁用了模板。
 
 ## 📋 更新日志
 
