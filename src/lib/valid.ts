@@ -41,7 +41,7 @@ export function isLocalPathValid(path: string): boolean {
     return /^(([A-Za-z]:)|\.)(.*)$/.test(path);
 }
 
-export function validToken(token?: string): void {
+export function validToken(token?: string): string {
     if (!token) {
         throw new Error('未设置令牌');
     }
@@ -49,9 +49,11 @@ export function validToken(token?: string): void {
     if (!isTokenValid(token)) {
         throw new Error('令牌格式错误');
     }
+
+    return token;
 }
 
-export function validRobotId(robotId?: string): void {
+export function validRobotId(robotId?: string): string {
     if (!robotId) {
         throw new Error('未设置调试机器人 ID');
     }
@@ -59,9 +61,11 @@ export function validRobotId(robotId?: string): void {
     if (!isRobotIdValid(robotId)) {
         throw new Error('机器人 ID 格式错误');
     }
+
+    return robotId;
 }
 
-export function validScriptId(scriptId?: string): void {
+export function validScriptId(scriptId?: string): string {
     if (!scriptId) {
         throw new Error('未设置脚本 ID');
     }
@@ -69,6 +73,8 @@ export function validScriptId(scriptId?: string): void {
     if (!isScriptIdValid(scriptId)) {
         throw new Error('脚本 ID 格式错误');
     }
+
+    return scriptId;
 }
 
 export function validGithubUrl(url?: string): string {
