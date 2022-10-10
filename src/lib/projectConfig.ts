@@ -143,7 +143,6 @@ export class HamibotConfig {
      * @param {any} origin 要更新的数据。
      * @return {any} 合并后的 `target` 。
      */
-    // TODO：修改返回值类型与 target 相同
     private static mergeConfig(target: any, origin: any): any {
         if (typeof target !== "object" || typeof origin === null) {
             return target;
