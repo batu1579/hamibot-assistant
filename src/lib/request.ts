@@ -67,7 +67,7 @@ export async function del<DataType extends object>(path: string, data?: object):
  */
 async function requests<DataType>(config: AxiosRequestConfig, url?: string): Promise<DataType> {
 
-    config.headers = getHeaders(config.headers);
+    config.headers = await getHeaders(config.headers);
     try {
         config.baseURL = url ?? baseUrl;
         return (await axios.request(config)).data;
@@ -106,11 +106,13 @@ async function requests<DataType>(config: AxiosRequestConfig, url?: string): Pro
  * @param {AxiosRequestHeaders} headers 额外的 headers 设置。
  * @return {AxiosRequestHeaders} 构造好的 headers 。
  */
-function getHeaders(headers?: AxiosRequestHeaders): AxiosRequestHeaders {
+async function getHeaders(headers?: AxiosRequestHeaders): Promise<AxiosRequestHeaders> {
     let version = extensions.getExtension('batu1579.hamibot-assistant')?.packageJSON?.version;
-    let token: string | undefined = workspace.getConfiguration("hamibot-assistant").get('apiToken');
-
-    validToken(token);
+    let token = validToken(
+        await workspace
+            .getConfiguration("hamibot-assistant")
+            .get('apiToken')
+    );
 
     return {
         /* eslint-disable */
