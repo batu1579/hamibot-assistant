@@ -5,8 +5,8 @@ import {
     workspace,
     ExtensionContext
 } from "vscode";
+import { isNativeError } from "util/types";
 
-import { isError } from "../lib/typeUtil";
 import { HamibotConfig } from "../lib/projectConfig";
 import { ERROR_DIALOG, INFO_DIALOG } from "../lib/dialog";
 
@@ -161,7 +161,7 @@ async function commandsHandler(context: ExtensionContext, ...commandList: Comman
                     try {
                         await checkRequirements(command.requirements);
                     } catch (error) {
-                        if (!isError(error)) {
+                        if (!isNativeError(error)) {
                             throw error;
                         }
 
@@ -224,7 +224,7 @@ async function exceptionHandler(context: ExtensionContext, uri: Uri, c: Command)
             await INFO_DIALOG.showDialog(context, c.doneInfo);
         }
     } catch (error) {
-        if (!isError(error)) {
+        if (!isNativeError(error)) {
             throw error;
         }
 
