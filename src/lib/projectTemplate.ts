@@ -9,12 +9,17 @@ import {
     TaskScope,
     workspace,
     extensions,
+    QuickPickItem,
     ShellExecution,
     TaskDefinition,
 } from "vscode";
 
 import { Job } from "../command/command";
-import { validGithubUrl, validLocalpath } from "./valid";
+import {
+    isGithubUrlValid,
+    validGithubUrl,
+    validLocalpath
+} from "./valid";
 
 interface TemplateConfig {
     type: TemplateType;
@@ -31,16 +36,26 @@ interface RemoteTemplateConfig extends TemplateConfig {
     path: string;
 }
 
+interface TemporaryTemplateConfig extends TemplateConfig {
+    type: TemplateType.askWhenCreate;
+}
+
 interface GitTaskDefinition extends TaskDefinition {
     type: "clone-template";
     repoUrl: string;
     targetPath: string;
 }
 
+type ExistTemplateConfig = LocalTemplateConfig | RemoteTemplateConfig;
+
 interface ProjectTemplate {
     name: string;
     description: string;
-    config: TemplateConfig;
+    config: ExistTemplateConfig;
+}
+
+interface QuickPickTemplate extends QuickPickItem {
+    config?: TemplateConfig;
 }
 
 export enum TemplateType {
@@ -58,8 +73,13 @@ function isRemoteTemplateConfig(value: TemplateConfig): value is RemoteTemplateC
     return value.type === TemplateType.remote && value.path !== undefined;
 }
 
+function isTemporaryTemplateConfig(value: TemplateConfig): value is TemporaryTemplateConfig {
+    return value.type === TemplateType.askWhenCreate && value.path !== undefined;
+}
+
 export async function useTemplate(targetFolder: Uri): Promise<Job> {
     let config = await getTemplateConfig();
+
     if (!config) {
         return Job.undone;
     }
@@ -96,6 +116,10 @@ async function getTemplateConfig(): Promise<TemplateConfig | undefined> {
 
     if (!config || config.type === "disabled") {
         return undefined;
+    }
+
+    if (isTemporaryTemplateConfig(config)) {
+        config = await getTemporaryTemplateByInput();
     }
 
     return config;
@@ -147,8 +171,6 @@ async function cloneGithubRepo(config: RemoteTemplateConfig, targetFolder: Uri):
     // 检查仓库路径格式
     config.path = validGithubUrl(config.path);
 
-    // TODO： 验证 Github 仓库是否存在
-
     let taskDefinition: GitTaskDefinition = {
         type: "clone-template",
         repoUrl: config.path,
@@ -165,7 +187,71 @@ async function cloneGithubRepo(config: RemoteTemplateConfig, targetFolder: Uri):
     await executeCloneTask(task);
 }
 
-export const DEFAULT_TEMPLATES: ProjectTemplate[] = [
+export async function getTemplateConfigByInput(...extraOptions: QuickPickTemplate[]): Promise<QuickPickTemplate | undefined> {
+    let options: QuickPickTemplate[] = TEMPLATE_OPTIONS.map((v) => ({
+        label: (v.config.type === TemplateType.local ? "💻 [本地] " : "🌏 [远程] ") + v.name,
+        detail: v.description,
+        config: v.config
+    }));
+    let manualOption: QuickPickTemplate = {
+        label: "👋 手动输入",
+        detail: "手动输入模板地址"
+    };
+    options.push(manualOption, ...extraOptions);
+
+    let choice = await window.showQuickPick(options, { title: "选择模板" });
+
+    if (choice && choice.label === manualOption.label) {
+        choice.config = await getTemporaryTemplateByInput();
+    }
+
+    return choice;
+}
+
+async function getTemporaryTemplateByInput(): Promise<ExistTemplateConfig | undefined> {
+    let type = await window.showQuickPick([
+        {
+            label: "💻 [本地模板]",
+            detail: "存放本地模板的绝对路径",
+            type: TemplateType.local,
+        },
+        {
+            label: "🌏 [远程模板]",
+            detail: "存放远程模板的 Github 仓库地址（ SSH/HTTPS ）",
+            type: TemplateType.remote,
+        }
+    ], { title: "选择模板类型" });
+
+    if (!type) {
+        return undefined;
+    }
+
+    let isInputRemote = type.type === TemplateType.remote;
+    let path = await window.showInputBox({
+        title: isInputRemote ? "输入远程模板地址" : "输入本地模板路径",
+        ignoreFocusOut: true,
+        validateInput: isInputRemote ? validateGithubUrl : validateLocalPath
+    });
+
+    if (!path) {
+        return undefined;
+    }
+
+    return {
+        type: isInputRemote ? TemplateType.remote : TemplateType.remote,
+        path: path
+    };
+}
+
+async function validateGithubUrl(value: string): Promise<string | null> {
+    return isGithubUrlValid(value) ? null : "只接受远程 Github 仓库地址（ SSH/HTTPS ）";
+}
+
+async function validateLocalPath(value: string): Promise<string | null> {
+    return isAbsolute(value) ? null : "只接受本地绝对路径";
+}
+
+const TEMPLATE_OPTIONS: ProjectTemplate[] = [
     {
         name: "单文件模板（ JS ）",
         description: "SimpleJS",
@@ -182,20 +268,4 @@ export const DEFAULT_TEMPLATES: ProjectTemplate[] = [
             path: "git@github.com:batu1579/hamibot-starter.git"
         }
     },
-    {
-        name: "⌨️ 创建时输入",
-        description: "每次创建新项目时手动输入",
-        config: {
-            type: TemplateType.askWhenCreate,
-            path: ""
-        }
-    },
-    {
-        name: "❌ 禁用模板",
-        description: "在创建新项目时不使用项目模板",
-        config: {
-            type: TemplateType.disable,
-            path: ""
-        }
-    }
 ];

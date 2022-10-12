@@ -15,6 +15,8 @@
 
   - `hamibot-assistant.choseDefaultTemplate` : 从默认提供的模板中选择
 
+- 添加了创建时使用手动指定模板的功能
+
 ### Changed
 
 - 使用指令设置开发者令牌时会检查格式

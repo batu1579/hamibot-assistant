@@ -3,7 +3,7 @@ import { window, workspace } from 'vscode';
 import { Job } from './command';
 import { isTokenValid } from '../lib/valid';
 import { getExecuteRobotByInput } from './projectConfig';
-import { DEFAULT_TEMPLATES, TemplateType } from '../lib/projectTemplate';
+import { TemplateType, getTemplateConfigByInput } from '../lib/projectTemplate';
 
 export async function setApiToken(): Promise<Job> {
     let token = await window.showInputBox({
@@ -57,32 +57,23 @@ export async function setDefaultExecuteRobot(): Promise<Job> {
 }
 
 export async function choseDefaultTemplate(): Promise<Job> {
-    let choose = await window.showQuickPick(DEFAULT_TEMPLATES.map((value) => {
-        let mark;
-        switch (value.config.type) {
-            case TemplateType.local:
-                mark = "💻 [本地] ";
-                break;
-            case TemplateType.remote:
-                mark = "🌏 [远程] ";
-                break;
-            default:
-                mark = "";
-        }
+    let options = await getTemplateConfigByInput({
+        label: "⌨️ 创建时输入",
+        detail: "每次创建新项目时手动输入",
+        config: { type: TemplateType.askWhenCreate }
+    },
+    {
+        label: "❌ 禁用模板",
+        detail: "在创建新项目时不使用项目模板",
+        config: { type: TemplateType.disable }
+    });
 
-        return {
-            label: mark + value.name,
-            detail: value.description,
-            config: value.config
-        };
-    }));
-
-    if (!choose) {
+    if (!options || !options.config) {
         return Job.undone;
     }
 
     await workspace
         .getConfiguration("hamibot-assistant")
-        .update("projectTemplate", choose.config, true);
+        .update("projectTemplate", options.config, true);
     return Job.done;
 }
