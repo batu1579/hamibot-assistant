@@ -179,7 +179,7 @@ async function commandsHandler(context: ExtensionContext, ...commandList: Comman
 
                 // 重试循环
                 while (await exceptionHandler(context, uri, command)) {
-                    await window.showInformationMessage('正在重试...');
+                    window.showInformationMessage('正在重试...');
                 }
             })
         );
