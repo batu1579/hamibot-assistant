@@ -1,4 +1,10 @@
-import { QuickPickItem, Uri, window, workspace } from "vscode";
+import {
+    Uri,
+    window,
+    workspace,
+    QuickPick,
+    QuickPickItem,
+} from "vscode";
 
 import { Job } from "./command";
 import { Robot, Script } from "../lib/hamibotApi";
@@ -47,32 +53,51 @@ export async function markConfigFile(uri: Uri): Promise<Job> {
     return Job.done;
 }
 
-export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
-    while (true) {
-        let select = await window.showQuickPick(
-            [...(await getQuickPickList()), {
-                label: "🔃 刷新",
-                detail: "重新获取机器人列表",
-                alwaysShow: true,
-            }],
-            {
-                title: "选择调试机器人",
-                matchOnDetail: true,
-            }
-        );
+async function createQuickPickRobot(): Promise<QuickPick<RobotQuickPickItem>> {
+    const dialog = window.createQuickPick<RobotQuickPickItem>();
+    dialog.title = "选择调试机器人";
+    dialog.matchOnDetail = true;
 
-        if (!select) {
-            return undefined;
-        } else if (isRobotQuickPickItem(select)) {
-            return select.robotInfo;
+    const refreshItem = async () => {
+        dialog.items = [];
+        dialog.busy = true;
+        dialog.items = [...(await getQuickPickRobot()), {
+            label: "🔃 刷新",
+            detail: "重新获取机器人列表",
+            alwaysShow: true,
+            robotInfo: undefined
+        }];
+        dialog.busy = false;
+    };
+
+    dialog.onDidAccept(() => {
+        if (dialog.activeItems[0].robotInfo !== undefined) {
+            dialog.hide();
+        } else {
+            refreshItem();
         }
-    }
+    });
+
+    dialog.show();
+    await refreshItem();
+    return dialog;
+}
+
+export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
+    let dialog = await createQuickPickRobot();
+    return new Promise<RobotInfo | undefined>((resolve) => {
+        let disposable = dialog.onDidHide(() => {
+            let select = dialog.selectedItems;
+            dialog.dispose();
+            resolve(select ? select[0].robotInfo : select);
+        });
+    });
 }
 
 export async function setExecuteRobot(): Promise<Job> {
     let robot = await getExecuteRobotByInput();
 
-    if (robot) {
+    if (!robot) {
         return Job.undone;
     }
 
@@ -80,11 +105,7 @@ export async function setExecuteRobot(): Promise<Job> {
     return Job.done;
 }
 
-function isRobotQuickPickItem(item: RobotQuickPickItem | QuickPickItem): item is RobotQuickPickItem {
-    return "robotInfo" in item;
-}
-
-async function getQuickPickList(): Promise<RobotQuickPickItem[]> {
+async function getQuickPickRobot(): Promise<RobotQuickPickItem[]> {
     let robotList: RobotQuickPickItem[] = [];
     let showOffline: boolean = workspace.getConfiguration("hamibot-assistant").get("showOfflineRobot")!;
 
@@ -109,5 +130,5 @@ async function getQuickPickList(): Promise<RobotQuickPickItem[]> {
 }
 
 interface RobotQuickPickItem extends QuickPickItem {
-    robotInfo: RobotInfo
+    robotInfo?: RobotInfo
 }
