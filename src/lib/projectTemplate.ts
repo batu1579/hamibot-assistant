@@ -1,7 +1,7 @@
 import { isAbsolute, resolve } from "path";
 import { existsSync } from 'fs';
 import { isNativeError } from "util/types";
-import { extensions, Uri, window, workspace } from "vscode";
+import { extensions, ShellExecution, Task, TaskDefinition, tasks, TaskScope, Uri, window, workspace } from "vscode";
 
 import { Job } from "../command/command";
 import { validGithubUrl, validLocalpath } from "./valid";
@@ -78,18 +78,6 @@ async function getTemplateConfig(): Promise<TemplateConfig | undefined> {
     return config;
 }
 
-async function cloneGithubRepo(config: RemoteTemplateConfig, targetFolder: Uri): Promise<void> {
-    // 检查仓库路径格式
-    config.path = validGithubUrl(config.path);
-
-    // TODO： 验证 Github 仓库是否存在
-
-    let terminal = window.createTerminal({
-        cwd: targetFolder,
-
-    });
-}
-
 async function copyLocalFolder(config: LocalTemplateConfig, targetFolder: Uri): Promise<void> {
     let sourceFolder: Uri = Uri.file("");
 
@@ -113,4 +101,49 @@ async function copyLocalFolder(config: LocalTemplateConfig, targetFolder: Uri): 
     await workspace.fs.copy(sourceFolder, targetFolder, {
         overwrite: true,
     });
+}
+
+function isCloneTask(task: Task) {
+    return task.definition.type === "clone-template";
+}
+
+async function executeCloneTask(task: Task): Promise<void> {
+    const EXECUTION = await tasks.executeTask(task);
+
+    return new Promise<void>((resolve) => {
+        let disposable = tasks.onDidEndTask((event) => {
+            if (isCloneTask(event.execution.task)) {
+                disposable.dispose();
+                resolve();
+            }
+        });
+    });
+}
+
+async function cloneGithubRepo(config: RemoteTemplateConfig, targetFolder: Uri): Promise<void> {
+    // 检查仓库路径格式
+    config.path = validGithubUrl(config.path);
+
+    // TODO： 验证 Github 仓库是否存在
+
+    let taskDefinition: GitTaskDefinition = {
+        type: "clone-template",
+        repoUrl: config.path,
+        targetPath: targetFolder.fsPath
+    };
+
+    let task = new Task(taskDefinition, TaskScope.Workspace, "克隆项目模板", "git",
+        new ShellExecution(
+            `git clone ${config.path} .`,
+            { cwd: targetFolder.fsPath }
+        )
+    );
+
+    await executeCloneTask(task);
+}
+
+interface GitTaskDefinition extends TaskDefinition {
+    type: "clone-template";
+    repoUrl: string;
+    targetPath: string;
 }

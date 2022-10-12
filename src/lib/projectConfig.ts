@@ -1,4 +1,7 @@
+import { existsSync } from "fs";
 import { workspace, Uri } from "vscode";
+
+import { useTemplate } from "./projectTemplate";
 
 interface ProjectConfig {
     readonly name?: string,
@@ -125,16 +128,23 @@ export class HamibotConfig {
         );
     }
 
+    private isProjectFileExists(): boolean {
+        return existsSync(this.getProjectConfigFileUri().fsPath);
+    }
+
     private async checkConfigFile(config: ProjectConfig): Promise<void> {
-        try {
-            let oldConfig = await this.getProjectConfig();
-            await this.updateProjectConfig(config, oldConfig);
-        } catch (error: any) {
-            if (error.code !== 'FileNotFound') {
-                throw error;
-            }
-            await this.writeProjectConfig(config);
+        if (!this.isProjectFileExists()) {
+            // 复制模板文件
+            await useTemplate(this.workspaceUri!);
         }
+
+        if (!this.isProjectFileExists()) {
+            // 确保项目配置文件存在
+            await this.writeProjectConfig({});
+        }
+
+        // 存入要更新的内容
+        await this.updateProjectConfig(config);
     }
 
     /**

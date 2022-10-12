@@ -215,6 +215,25 @@
                 "fileMatch": "hamibot.config.json",
                 "url": "./schemas/ConfigSchema.json"
             }
+        ],
+        "taskDefinitions": [
+            {
+                "type": "clone-template",
+                "required": [
+                    "repoUrl",
+                    "targetPath"
+                ],
+                "properties": {
+                    "repoUrl": {
+                        "type": "string",
+                        "description": "模板仓库 URL"
+                    },
+                    "targetPath": {
+                        "type": "string",
+                        "description": "目标目录"
+                    }
+                }
+            }
         ]
     },
     "scripts": {
