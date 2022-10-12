@@ -21,7 +21,7 @@ import {
     setApiToken,
     setShowOfflineRobot,
     setDefaultExecuteRobot,
-    choseDefaultTemplate
+    setProjectTemplate
 } from "./globalConfig";
 
 import {
@@ -65,8 +65,8 @@ export function registerCommand(context: ExtensionContext): void {
             doneInfo: "提示信息已重置"
         },
         {
-            id: "hamibot-assistant.choseDefaultTemplate",
-            commandFunc: choseDefaultTemplate,
+            id: "hamibot-assistant.setProjectTemplate",
+            commandFunc: setProjectTemplate,
             doneInfo: "模板设置已更新"
         },
 

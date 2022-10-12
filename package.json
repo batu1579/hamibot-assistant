@@ -136,8 +136,8 @@
                 "category": "Hamibot Config"
             },
             {
-                "command": "hamibot-assistant.choseDefaultTemplate",
-                "title": "从默认提供的模板中选择",
+                "command": "hamibot-assistant.setProjectTemplate",
+                "title": "设置创建项目时使用的模板",
                 "category": "Hamibot Config"
             },
             {

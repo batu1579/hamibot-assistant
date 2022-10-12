@@ -56,7 +56,7 @@ export async function setDefaultExecuteRobot(): Promise<Job> {
     return Job.done;
 }
 
-export async function choseDefaultTemplate(): Promise<Job> {
+export async function setProjectTemplate(): Promise<Job> {
     let options = await getTemplateConfigByInput({
         label: "⌨️ 创建时输入",
         detail: "每次创建新项目时手动输入",
