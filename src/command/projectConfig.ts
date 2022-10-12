@@ -6,7 +6,7 @@ import { RobotInfo } from "../lib/projectConfig";
 
 export async function getProjectNameByInput(): Promise<string | undefined> {
     let projectName = await window.showInputBox({
-        title: "修改项目名称",
+        title: "设置项目名称",
         prompt: "请输入新的项目名称"
     });
     return projectName;
