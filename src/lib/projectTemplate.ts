@@ -1,7 +1,17 @@
-import { isAbsolute, resolve } from "path";
-import { existsSync } from 'fs';
+import { existsSync } from "fs";
+import { isAbsolute } from "path";
 import { isNativeError } from "util/types";
-import { extensions, ShellExecution, Task, TaskDefinition, tasks, TaskScope, Uri, window, workspace } from "vscode";
+import {
+    Uri,
+    Task,
+    tasks,
+    window,
+    TaskScope,
+    workspace,
+    extensions,
+    ShellExecution,
+    TaskDefinition,
+} from "vscode";
 
 import { Job } from "../command/command";
 import { validGithubUrl, validLocalpath } from "./valid";
@@ -21,10 +31,23 @@ interface RemoteTemplateConfig extends TemplateConfig {
     path: string;
 }
 
-enum TemplateType {
-    disable = 'disabled',
-    local = 'local',
-    remote = 'remote',
+interface GitTaskDefinition extends TaskDefinition {
+    type: "clone-template";
+    repoUrl: string;
+    targetPath: string;
+}
+
+interface ProjectTemplate {
+    name: string;
+    description: string;
+    config: TemplateConfig;
+}
+
+export enum TemplateType {
+    disable = "disabled",
+    local = "local",
+    remote = "remote",
+    askWhenCreate = "askWhenCreate"
 }
 
 function isLocalTemplateConfig(value: TemplateConfig): value is LocalTemplateConfig {
@@ -71,7 +94,7 @@ async function getTemplateConfig(): Promise<TemplateConfig | undefined> {
         .getConfiguration("hamibot-assistant")
         .get("projectTemplate");
 
-    if (!config || config.type === 'disabled') {
+    if (!config || config.type === "disabled") {
         return undefined;
     }
 
@@ -142,8 +165,37 @@ async function cloneGithubRepo(config: RemoteTemplateConfig, targetFolder: Uri):
     await executeCloneTask(task);
 }
 
-interface GitTaskDefinition extends TaskDefinition {
-    type: "clone-template";
-    repoUrl: string;
-    targetPath: string;
-}
+export const DEFAULT_TEMPLATES: ProjectTemplate[] = [
+    {
+        name: "单文件模板（ JS ）",
+        description: "SimpleJS",
+        config: {
+            type: TemplateType.local,
+            path: "./template/simpleJS"
+        }
+    },
+    {
+        name: "多文件模板（ TS ）",
+        description: "MultiFile",
+        config: {
+            type: TemplateType.remote,
+            path: "git@github.com:batu1579/hamibot-starter.git"
+        }
+    },
+    {
+        name: "⌨️ 创建时输入",
+        description: "每次创建新项目时手动输入",
+        config: {
+            type: TemplateType.askWhenCreate,
+            path: ""
+        }
+    },
+    {
+        name: "❌ 禁用模板",
+        description: "在创建新项目时不使用项目模板",
+        config: {
+            type: TemplateType.disable,
+            path: ""
+        }
+    }
+];

@@ -11,6 +11,9 @@
 
 - 添加了使用本地模板的功能
 - 添加了使用 Github 远程模板的功能
+- 全局设置指令：
+
+  - `hamibot-assistant.choseDefaultTemplate` : 从默认提供的模板中选择
 
 ### Changed
 

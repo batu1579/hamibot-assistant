@@ -20,7 +20,8 @@ import {
 import {
     setApiToken,
     setShowOfflineRobot,
-    setDefaultExecuteRobot
+    setDefaultExecuteRobot,
+    choseDefaultTemplate
 } from "./globalConfig";
 
 import {
@@ -62,6 +63,11 @@ export function registerCommand(context: ExtensionContext): void {
                 return Job.done;
             },
             doneInfo: "提示信息已重置"
+        },
+        {
+            id: "hamibot-assistant.choseDefaultTemplate",
+            commandFunc: choseDefaultTemplate,
+            doneInfo: "模板设置已更新"
         },
 
         // 项目设置
