@@ -53,7 +53,7 @@ export async function markConfigFile(uri: Uri): Promise<Job> {
     return Job.done;
 }
 
-async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
+export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
     const dialog = window.createQuickPick<RobotQuickPickItem>();
     dialog.title = "选择调试机器人";
     dialog.matchOnDetail = true;
