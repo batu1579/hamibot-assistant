@@ -50,6 +50,17 @@ export class Robot {
         validRobotId(robotId);
         await request.post(`/v1/robots/${robotId}/messages`, msg);
     }
+
+    /**
+     * @description: 重命名机器人。
+     * @param {string} robotId 机器人 ID 。
+     * @param {string} newName 机器人的新名称。
+     */
+    static async rename(robotId: string, newName: string): Promise<void> {
+        // 校验机器人 ID 格式
+        validRobotId(robotId);
+        await request.put(`/v1/robots/${robotId}`, { name: newName });
+    }
 }
 
 export interface RobotList {

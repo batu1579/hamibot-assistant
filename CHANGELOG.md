@@ -7,6 +7,12 @@
 
 ## [Unreleased]
 
+### Added
+
+- 在选择机器人时可以修改机器人名称
+
+  ![alt](./images/gif/renameRobot.gif)
+
 ### Fixed
 
 - 修复无法更新开发者令牌的问题 [#9](https://github.com/batu1579/hamibot-assistant/issues/9)
