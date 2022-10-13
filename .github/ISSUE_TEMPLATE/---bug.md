@@ -1,7 +1,7 @@
 ---
 name: 提交 Bug
 about: 提交一份错误报告来帮助我们修复
-title: "[BUG]"
+title: "[Bug]"
 labels: bug
 assignees: batu1579
 
