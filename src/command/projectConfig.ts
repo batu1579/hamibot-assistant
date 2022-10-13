@@ -2,13 +2,13 @@ import {
     Uri,
     window,
     workspace,
-    QuickPick,
+    ThemeIcon,
     QuickPickItem,
 } from "vscode";
 
 import { Job } from "./command";
-import { Robot, Script } from "../lib/hamibotApi";
 import { RobotInfo } from "../lib/projectConfig";
+import { Robot, Script } from "../lib/hamibotApi";
 
 export async function getProjectNameByInput(): Promise<string | undefined> {
     let projectName = await window.showInputBox({
@@ -53,10 +53,11 @@ export async function markConfigFile(uri: Uri): Promise<Job> {
     return Job.done;
 }
 
-async function createQuickPickRobot(): Promise<QuickPick<RobotQuickPickItem>> {
+async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
     const dialog = window.createQuickPick<RobotQuickPickItem>();
     dialog.title = "选择调试机器人";
     dialog.matchOnDetail = true;
+    dialog.ignoreFocusOut = true;
 
     const refreshItem = async () => {
         dialog.items = [];
@@ -70,26 +71,33 @@ async function createQuickPickRobot(): Promise<QuickPick<RobotQuickPickItem>> {
         dialog.busy = false;
     };
 
-    dialog.onDidAccept(() => {
-        if (dialog.activeItems[0].robotInfo !== undefined) {
-            dialog.hide();
-        } else {
-            refreshItem();
+    dialog.onDidTriggerItemButton(async (event) => {
+        let robotInfo = event.item.robotInfo!;
+        let name = await window.showInputBox({
+            title: "新机器人名称",
+            value: robotInfo.name
+        });
+
+        if (name) {
+            Robot.rename(robotInfo._id!, name);
         }
+
+        dialog.show();
+        await refreshItem();
     });
 
     dialog.show();
     await refreshItem();
-    return dialog;
-}
 
-export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
-    let dialog = await createQuickPickRobot();
     return new Promise<RobotInfo | undefined>((resolve) => {
-        let disposable = dialog.onDidHide(() => {
-            let select = dialog.selectedItems;
-            dialog.dispose();
-            resolve(select ? select[0].robotInfo : select);
+        dialog.onDidAccept(() => {
+            let item = dialog.selectedItems[0];
+            if (item.robotInfo !== undefined) {
+                dialog.dispose();
+                resolve(item.robotInfo);
+            } else {
+                refreshItem();
+            }
         });
     });
 }
@@ -122,7 +130,10 @@ async function getQuickPickRobot(): Promise<RobotQuickPickItem[]> {
             robotInfo: {
                 _id: _id,
                 name: name,
-            }
+            },
+            buttons: [{
+                iconPath: new ThemeIcon("settings-edit")
+            }]
         });
     }
 
