@@ -4,6 +4,3 @@ node_modules
 .vscode-test/
 *.vsix
 *.code-workspace
-/images
-!/images/logo.png
-!/images/logo.svg
