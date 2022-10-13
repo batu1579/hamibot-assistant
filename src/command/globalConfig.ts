@@ -20,7 +20,7 @@ export async function setApiToken(): Promise<Job> {
 
     await workspace
         .getConfiguration("hamibot-assistant")
-        .update("ApiToken", token, true);
+        .update("apiToken", token, true);
     return Job.done;
 }
 

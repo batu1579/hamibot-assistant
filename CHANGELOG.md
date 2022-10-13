@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 修复无法更新开发者令牌的问题 [#9](https://github.com/batu1579/hamibot-assistant/issues/9)
+
 ## [0.5.0] - 2022-10-12
 
 ### Added
