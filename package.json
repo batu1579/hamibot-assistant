@@ -24,7 +24,15 @@
     ],
     "icon": "images/logo.png",
     "activationEvents": [
-        "*"
+        "workspaceContains:hamibot.config.json",
+
+        "onCommand:hamibot-assistant.setApiToken",
+        "onCommand:hamibot-assistant.setShowOfflineRobot",
+        "onCommand:hamibot-assistant.setDefaultExecuteRobot",
+        "onCommand:hamibot-assistant.resetDialogs",
+        "onCommand:hamibot-assistant.setProjectTemplate",
+
+        "onCommand:hamibot-assistant.initProject"
     ],
     "main": "./dist/extension.js",
     "contributes": {
