@@ -18,7 +18,7 @@
 
 ## 🚀 使用方法
 
-> 因为此插件依赖于 Hamibot API ，所以在使用之前请先设置开发者令牌，见 [全局设置](#全局设置-hamibot-config-) 。
+> 因为此插件依赖于 Hamibot API ，所以在使用之前请先设置开发者令牌。
 
 1. 使用 `新建 Hamibot 项目` 指令创建新的脚本。
 2. 编写代码。
@@ -39,6 +39,7 @@
 - `hamibot-assistant.setShowOfflineRobot`: 设置是否显示离线机器人（默认为 `false` ）。
 - `hamibot-assistant.setDefaultExecuteRobot`: 设置默认调试机器人，在创建新项目时会选择，自动使用这个作为调试机器人。
 - `hamibot-assistant.resetDialogs`: 重置提示信息，用于恢复所有不再显示的提示信息。
+- `setProjectTemplate`: 设置创建项目时使用的模板。
 
 ### 项目设置（ `Hamibot Project` ）
 
@@ -71,6 +72,7 @@
     - `disabled`: 禁用通过模板创建项目
     - `local`: 使用本地模板（本地文件夹）
     - `remote`: 使用远程模板（ Github 仓库）
+    - `askWhenCreate`: 每次创建项目时询问
 
   - `path`: 项目模板存放的路径，只能是绝对路径的本地文件夹或可用的 Github 远程仓库。
 
