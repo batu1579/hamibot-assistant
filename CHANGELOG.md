@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 修复无法从空窗口中新建项目的问题 [#10](https://github.com/batu1579/hamibot-assistant/issues/10)
+
 ## [0.6.0] - 2022-10-13
 
 ### Added

@@ -187,17 +187,26 @@ async function commandsHandler(context: ExtensionContext, ...commandList: Comman
 }
 
 async function checkRequirements(requirements: RequireInfo[]): Promise<void> {
-    let vscodeConfig = workspace.getConfiguration('hamibot-assistant');
-    let projectConfig = await global.currentConfig.getProjectConfig();
+    let projectConfig = undefined;
+
     for (const req of requirements) {
-        let config;
+        let config = undefined;
         switch (req.type) {
             case RequireType.vscodeConfig:
-                config = await vscodeConfig.get(req.field);
+                config = await workspace
+                    .getConfiguration('hamibot-assistant')
+                    .get(req.field);
                 break;
 
             case RequireType.projectConfig:
-                config = await HamibotConfig.getConfigByFieldName(projectConfig, req.field);
+                // 延迟到有需要的时候读取
+                if (!projectConfig) {
+                    projectConfig = await global.currentConfig.getProjectConfig();
+                }
+                config = await HamibotConfig.getConfigByFieldName(
+                    projectConfig,
+                    req.field
+                );
                 break;
 
             default:

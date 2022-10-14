@@ -46,7 +46,7 @@ export class HamibotConfig {
 
     public getWorkspaceUri(): Uri {
         if (!this.workspaceUri) {
-            throw new Error('workspaceUri is required');
+            throw new Error('未找到打开的工作区或文件夹');
         }
         return this.workspaceUri;
     }
