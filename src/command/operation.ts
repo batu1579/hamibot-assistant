@@ -5,6 +5,7 @@ import { Script } from "../lib/hamibotApi";
 import { isRobotIdValid } from "../lib/valid";
 import { HamibotConfig, RobotInfo } from "../lib/projectConfig";
 import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
+import { useTemplate } from "../lib/projectTemplate";
 
 export async function uploadScript(): Promise<Job> {
     let { scriptId, fileMark } = await global.currentConfig.getProjectConfig();
@@ -48,22 +49,24 @@ export async function initProject(): Promise<Job> {
         openLabel: "在此新建项目",
         title: "选择项目路径"
     });
-
     if (!select) {
         return Job.undone;
     }
 
-    global.currentConfig = await HamibotConfig.newConfigFile(select[0]);
+    let folderUri = select[0];
+
+    // 使用项目模板
+    await useTemplate(folderUri);
+
+    global.currentConfig = await HamibotConfig.newConfigFile(folderUri);
 
     // 设置项目名称
     let newProjectName = await getProjectNameByInput();
-
     if (!newProjectName) {
         return Job.undone;
     }
 
     let { _id: scriptId } = await Script.createNewScript(newProjectName);
-
     if (!scriptId) {
         throw new Error('使用接口创建脚本失败');
     }

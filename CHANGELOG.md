@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 修复新建项目时显示克隆模板失败的问题 [#12](https://github.com/batu1579/hamibot-assistant/issues/12)
+
 ## [0.6.1] - 2022-10-14
 
 ### Fixed
