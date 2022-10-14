@@ -39,7 +39,7 @@
 - `hamibot-assistant.setShowOfflineRobot`: 设置是否显示离线机器人（默认为 `false` ）。
 - `hamibot-assistant.setDefaultExecuteRobot`: 设置默认调试机器人，在创建新项目时会选择，自动使用这个作为调试机器人。
 - `hamibot-assistant.resetDialogs`: 重置提示信息，用于恢复所有不再显示的提示信息。
-- `setProjectTemplate`: 设置创建项目时使用的模板。
+- `hamibot-assistant.setProjectTemplate`: 设置创建项目时使用的模板。
 
 ### 项目设置（ `Hamibot Project` ）
 
