@@ -49,9 +49,7 @@ export function registerCommand(context: ExtensionContext): void {
             commandFunc: setDefaultExecuteRobot,
             doneInfo: "默认调试机器人已更新",
             requirements: [
-                new VSCodeConfigRequirement('apiToken', () => {
-                    commands.executeCommand('hamibot-assistant.setApiToken');
-                })
+                NEED_API_TOKEN,
             ]
         },
         {
@@ -76,9 +74,7 @@ export function registerCommand(context: ExtensionContext): void {
             commandFunc: setProjectName,
             doneInfo: "项目名称已更新",
             requirements: [
-                new VSCodeConfigRequirement('apiToken', () => {
-                    commands.executeCommand('hamibot-assistant.setApiToken');
-                }),
+                NEED_API_TOKEN,
                 new ProjectConfigRequirement('scriptId')
             ]
         },
@@ -97,9 +93,7 @@ export function registerCommand(context: ExtensionContext): void {
             commandFunc: setExecuteRobot,
             doneInfo: "调试机器人已更新",
             requirements: [
-                new VSCodeConfigRequirement('apiToken', () => {
-                    commands.executeCommand('hamibot-assistant.setApiToken');
-                }),
+                NEED_API_TOKEN,
             ]
         },
 
@@ -109,9 +103,7 @@ export function registerCommand(context: ExtensionContext): void {
             commandFunc: initProject,
             doneInfo: "新项目已创建",
             requirements: [
-                new VSCodeConfigRequirement('apiToken', () => {
-                    commands.executeCommand('hamibot-assistant.setApiToken');
-                })
+                NEED_API_TOKEN,
             ]
         },
         {
@@ -119,9 +111,7 @@ export function registerCommand(context: ExtensionContext): void {
             commandFunc: uploadScript,
             doneInfo: "脚本文件已上传",
             requirements: [
-                new VSCodeConfigRequirement('apiToken', () => {
-                    commands.executeCommand('hamibot-assistant.setApiToken');
-                }),
+                NEED_API_TOKEN,
                 new ProjectConfigRequirement('scriptId'),
                 new ProjectConfigRequirement('fileMark')
             ]
@@ -131,9 +121,7 @@ export function registerCommand(context: ExtensionContext): void {
             commandFunc: uploadAndRunScript,
             doneInfo: "开始运行脚本",
             requirements: [
-                new VSCodeConfigRequirement('apiToken', () => {
-                    commands.executeCommand('hamibot-assistant.setApiToken');
-                }),
+                NEED_API_TOKEN,
                 new ProjectConfigRequirement('scriptId'),
                 new ProjectConfigRequirement('fileMark')
             ]
@@ -143,9 +131,7 @@ export function registerCommand(context: ExtensionContext): void {
             commandFunc: stopScript,
             doneInfo: "脚本已停止运行",
             requirements: [
-                new VSCodeConfigRequirement('apiToken', () => {
-                    commands.executeCommand('hamibot-assistant.setApiToken');
-                }),
+                NEED_API_TOKEN,
                 new ProjectConfigRequirement('scriptId'),
                 new ProjectConfigRequirement('executeRobot')
             ]
@@ -327,3 +313,7 @@ class ProjectConfigRequirement extends ConfigRequirement implements RequireInfo 
         await window.showTextDocument(global.currentConfig.getProjectConfigFileUri());
     };
 }
+
+const NEED_API_TOKEN = new VSCodeConfigRequirement("apiToken", () => {
+    commands.executeCommand('hamibot-assistant.setApiToken');
+});
