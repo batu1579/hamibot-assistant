@@ -27,6 +27,10 @@ export class HamibotConfig {
         this.workspaceUri = workspaceUri ?? HamibotConfig.getCurrentWorkspaceUri();
     }
 
+    public static initConfig(workspaceUri?: Uri): HamibotConfig {
+        return new HamibotConfig(workspaceUri);
+    }
+
     public static async newConfigFile(workspaceUri?: Uri, config?: ProjectConfig): Promise<HamibotConfig> {
         let configObject = new HamibotConfig(workspaceUri);
 
@@ -38,8 +42,8 @@ export class HamibotConfig {
         return configObject;
     }
 
-    public isInProjectFolder(): boolean {
-        return this.workspaceUri !== undefined;
+    public isProjectFileExists(): boolean {
+        return existsSync(this.getProjectConfigFileUri().fsPath);
     }
 
     public getWorkspaceUri(): Uri {
@@ -124,10 +128,6 @@ export class HamibotConfig {
             this.getProjectConfigFileUri(),
             Buffer.from(JSON.stringify(config, null, 4))
         );
-    }
-
-    private isProjectFileExists(): boolean {
-        return existsSync(this.getProjectConfigFileUri().fsPath);
     }
 
     private async checkConfigFile(config: ProjectConfig): Promise<void> {

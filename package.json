@@ -24,8 +24,7 @@
     ],
     "icon": "images/logo.png",
     "activationEvents": [
-        "workspaceContains:hamibot.config.json",
-        "onCommand:hamibot-assistant.initProject"
+        "*"
     ],
     "main": "./dist/extension.js",
     "contributes": {

@@ -7,13 +7,13 @@ export async function activate(context: ExtensionContext) {
 	console.log('hamibot-assistant is now active!');
 
 	// 创建当前工作区的配置文件
-	global.currentConfig = await HamibotConfig.newConfigFile();
+	global.currentConfig = HamibotConfig.initConfig();
 
 	// 创建指令显示判断上下文
 	commands.executeCommand(
 		'setContext',
 		'hamibot-assistant.isProjectFolder',
-		global.currentConfig.isInProjectFolder()
+		global.currentConfig.isProjectFileExists()
 	);
 
 	// 注册指令
