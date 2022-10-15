@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 修复指令无法使用的问题 [#11](https://github.com/batu1579/hamibot-assistant/issues/11)
+
 ## [0.6.3] - 2022-10-14
 
 ### Changed

@@ -31,8 +31,8 @@ import {
     setExecuteRobot
 } from "./projectConfig";
 
-export function registerCommand(context: ExtensionContext): void {
-    commandsHandler(context,
+export async function registerCommand(context: ExtensionContext): Promise<void> {
+    await commandsHandler(context,
         // 全局设置
         {
             id: "hamibot-assistant.setApiToken",

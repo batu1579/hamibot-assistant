@@ -43,6 +43,9 @@ export class HamibotConfig {
     }
 
     public isProjectFileExists(): boolean {
+        if (!this.workspaceUri) {
+            return false;
+        }
         return existsSync(this.getProjectConfigFileUri().fsPath);
     }
 

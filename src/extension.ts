@@ -17,7 +17,13 @@ export async function activate(context: ExtensionContext) {
 	);
 
 	// 注册指令
-	registerCommand(context);
+	await registerCommand(context);
+
+	commands.executeCommand(
+		'setContext',
+		'hamibot-assistant.isEnabled',
+		true
+	);
 }
 
 export function deactivate() {

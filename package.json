@@ -24,15 +24,7 @@
     ],
     "icon": "images/logo.png",
     "activationEvents": [
-        "workspaceContains:hamibot.config.json",
-
-        "onCommand:hamibot-assistant.setApiToken",
-        "onCommand:hamibot-assistant.setShowOfflineRobot",
-        "onCommand:hamibot-assistant.setDefaultExecuteRobot",
-        "onCommand:hamibot-assistant.resetDialogs",
-        "onCommand:hamibot-assistant.setProjectTemplate",
-
-        "onCommand:hamibot-assistant.initProject"
+        "onStartupFinished"
     ],
     "main": "./dist/extension.js",
     "contributes": {
@@ -191,17 +183,37 @@
         "menus": {
             "explorer/context": [
                 {
-                    "when": "resourceExtname == .js && hamibot-assistant.isProjectFolder",
                     "command": "hamibot-assistant.markScriptFile",
-                    "group": "workspace"
+                    "group": "workspace",
+                    "when": "hamibot-assistant.isEnabled && resourceExtname == .js && hamibot-assistant.isProjectFolder"
                 },
                 {
-                    "when": "resourceExtname == .json && resourceFilename != hamibot.config.json && hamibot-assistant.isProjectFolder",
                     "command": "hamibot-assistant.markConfigFile",
-                    "group": "workspace"
+                    "group": "workspace",
+                    "when": "hamibot-assistant.isEnabled && resourceExtname == .json && resourceFilename != hamibot.config.json && hamibot-assistant.isProjectFolder"
                 }
             ],
             "commandPalette": [
+                {
+                    "command": "hamibot-assistant.setApiToken",
+                    "when": "hamibot-assistant.isEnabled"
+                },
+                {
+                    "command": "hamibot-assistant.setShowOfflineRobot",
+                    "when": "hamibot-assistant.isEnabled"
+                },
+                {
+                    "command": "hamibot-assistant.setDefaultExecuteRobot",
+                    "when": "hamibot-assistant.isEnabled"
+                },
+                {
+                    "command": "hamibot-assistant.resetDialogs",
+                    "when": "hamibot-assistant.isEnabled"
+                },
+                {
+                    "command": "hamibot-assistant.setProjectTemplate",
+                    "when": "hamibot-assistant.isEnabled"
+                },
                 {
                     "command": "hamibot-assistant.markScriptFile",
                     "when": "false"
@@ -212,23 +224,27 @@
                 },
                 {
                     "command": "hamibot-assistant.setProjectName",
-                    "when": "hamibot-assistant.isProjectFolder"
+                    "when": "hamibot-assistant.isEnabled && hamibot-assistant.isProjectFolder"
                 },
                 {
                     "command": "hamibot-assistant.setExecuteRobot",
-                    "when": "hamibot-assistant.isProjectFolder"
+                    "when": "hamibot-assistant.isEnabled && hamibot-assistant.isProjectFolder"
+                },
+                {
+                    "command": "hamibot-assistant.initProject",
+                    "when": "hamibot-assistant.isEnabled"
                 },
                 {
                     "command": "hamibot-assistant.uploadScript",
-                    "when": "hamibot-assistant.isProjectFolder"
+                    "when": "hamibot-assistant.isEnabled && hamibot-assistant.isProjectFolder"
                 },
                 {
                     "command": "hamibot-assistant.uploadAndRunScript",
-                    "when": "hamibot-assistant.isProjectFolder"
+                    "when": "hamibot-assistant.isEnabled && hamibot-assistant.isProjectFolder"
                 },
                 {
                     "command": "hamibot-assistant.stopScript",
-                    "when": "hamibot-assistant.isProjectFolder"
+                    "when": "hamibot-assistant.isEnabled && hamibot-assistant.isProjectFolder"
                 }
             ]
         },
