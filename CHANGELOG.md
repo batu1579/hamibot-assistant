@@ -11,6 +11,10 @@
 
 - 修复指令无法使用的问题 [#11](https://github.com/batu1579/hamibot-assistant/issues/11)
 
+### Changed
+
+- 当项目模板设置为 `创建时询问` 时也可以选择默认模板
+
 ## [0.6.3] - 2022-10-14
 
 ### Changed

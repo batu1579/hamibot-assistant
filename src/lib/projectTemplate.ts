@@ -119,7 +119,7 @@ async function getTemplateConfig(): Promise<TemplateConfig | undefined> {
     }
 
     if (isTemporaryTemplateConfig(config)) {
-        config = await getTemporaryTemplateByInput();
+        config = (await getTemplateConfigByInput())?.config;
     }
 
     return config;
@@ -254,7 +254,7 @@ async function validateLocalPath(value: string): Promise<string | null> {
 const TEMPLATE_OPTIONS: ProjectTemplate[] = [
     {
         name: "单文件模板（ JS ）",
-        description: "SimpleJS",
+        description: "简易的单文件项目模板，但是没有代码提示",
         config: {
             type: TemplateType.local,
             path: "./template/simpleJS"
@@ -262,7 +262,7 @@ const TEMPLATE_OPTIONS: ProjectTemplate[] = [
     },
     {
         name: "多文件模板（ TS ）",
-        description: "MultiFile",
+        description: "远程多文件模板，提供完整的代码提示，但是需要 npm 和 Git",
         config: {
             type: TemplateType.remote,
             path: "git@github.com:batu1579/hamibot-starter.git"
