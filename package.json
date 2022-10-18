@@ -267,7 +267,25 @@
                         "description": "模板仓库 URL"
                     },
                     "targetPath": {
+                        "type": "object",
+                        "description": "目标目录"
+                    }
+                }
+            },
+            {
+                "type": "execute-script",
+                "required": [
+                    "scriptPath",
+                    "targetPath"
+                ],
+                "properties": {
+                    "scriptPath": {
                         "type": "string",
+                        "description": "模板初始化脚本",
+                        "pattern": "\\.bat"
+                    },
+                    "targetPath": {
+                        "type": "object",
                         "description": "目标目录"
                     }
                 }
