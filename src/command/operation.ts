@@ -42,18 +42,10 @@ export async function uploadAndRunScript(): Promise<Job> {
 }
 
 export async function initProject(): Promise<Job> {
-    let select = await window.showOpenDialog({
-        canSelectFiles: false,
-        canSelectFolders: true,
-        canSelectMany: false,
-        openLabel: "在此新建项目",
-        title: "选择项目路径"
-    });
-    if (!select) {
+    let folderUri = await getFolderUriByInput();
+    if (!folderUri) {
         return Job.undone;
     }
-
-    let folderUri = select[0];
 
     // 使用项目模板
     await useTemplate(folderUri);
@@ -85,6 +77,17 @@ export async function initProject(): Promise<Job> {
     commands.executeCommand('vscode.openFolder', global.currentConfig.getWorkspaceUri());
 
     return Job.done;
+}
+
+async function getFolderUriByInput(): Promise<Uri | undefined> {
+    let select = await window.showOpenDialog({
+        canSelectFiles: false,
+        canSelectFolders: true,
+        canSelectMany: false,
+        openLabel: "在此新建项目",
+        title: "选择项目路径"
+    });
+    return select ? select[0] : select;
 }
 
 export async function stopScript(): Promise<Job> {
