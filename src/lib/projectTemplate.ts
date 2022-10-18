@@ -3,21 +3,16 @@ import { isAbsolute } from "path";
 import { isNativeError } from "util/types";
 import {
     Uri,
-    Task,
-    tasks,
     window,
-    TaskScope,
     workspace,
     extensions,
     QuickPickItem,
-    ShellExecution,
-    TaskDefinition,
 } from "vscode";
 
 import { Job } from "../command/command";
+import { cloneGithubRepo } from "./task";
 import {
     isGithubUrlValid,
-    validGithubUrl,
     validLocalpath
 } from "./valid";
 
@@ -38,12 +33,6 @@ interface RemoteTemplateConfig extends TemplateConfig {
 
 interface TemporaryTemplateConfig extends TemplateConfig {
     type: TemplateType.askWhenCreate;
-}
-
-interface GitTaskDefinition extends TaskDefinition {
-    type: "clone-template";
-    repoUrl: string;
-    targetPath: string;
 }
 
 type ExistTemplateConfig = LocalTemplateConfig | RemoteTemplateConfig;
@@ -86,9 +75,9 @@ export async function useTemplate(targetFolder: Uri): Promise<Job> {
 
     try {
         if (isLocalTemplateConfig(config)) {
-            await copyLocalFolder(config, targetFolder);
+            await copyLocalFolder(config.path, targetFolder);
         } else if (isRemoteTemplateConfig(config)) {
-            await cloneGithubRepo(config, targetFolder);
+            await cloneGithubRepo(config.path, targetFolder);
         } else if (config.path === undefined) {
             throw new Error("未设置模板路径");
         } else {
@@ -125,19 +114,19 @@ async function getTemplateConfig(): Promise<TemplateConfig | undefined> {
     return config;
 }
 
-async function copyLocalFolder(config: LocalTemplateConfig, targetFolder: Uri): Promise<void> {
+async function copyLocalFolder(templatePath: string, targetFolder: Uri): Promise<void> {
     let sourceFolder: Uri = Uri.file("");
 
     // 路径检查格式
-    validLocalpath(config.path);
+    validLocalpath(templatePath);
 
-    if (isAbsolute(config.path)) {
-        sourceFolder = Uri.file(config.path);
+    if (isAbsolute(templatePath)) {
+        sourceFolder = Uri.file(templatePath);
     } else {
         let extensionUri = extensions
             .getExtension("batu1579.hamibot-assistant")
             ?.extensionUri!;
-        sourceFolder = Uri.joinPath(extensionUri, config.path);
+        sourceFolder = Uri.joinPath(extensionUri, templatePath);
     }
 
     // 检查模板文件夹是否存在
@@ -148,43 +137,6 @@ async function copyLocalFolder(config: LocalTemplateConfig, targetFolder: Uri): 
     await workspace.fs.copy(sourceFolder, targetFolder, {
         overwrite: true,
     });
-}
-
-function isCloneTask(task: Task) {
-    return task.definition.type === "clone-template";
-}
-
-async function executeCloneTask(task: Task): Promise<void> {
-    const EXECUTION = await tasks.executeTask(task);
-
-    return new Promise<void>((resolve) => {
-        let disposable = tasks.onDidEndTask((event) => {
-            if (isCloneTask(event.execution.task)) {
-                disposable.dispose();
-                resolve();
-            }
-        });
-    });
-}
-
-async function cloneGithubRepo(config: RemoteTemplateConfig, targetFolder: Uri): Promise<void> {
-    // 检查仓库路径格式
-    config.path = validGithubUrl(config.path);
-
-    let taskDefinition: GitTaskDefinition = {
-        type: "clone-template",
-        repoUrl: config.path,
-        targetPath: targetFolder.fsPath
-    };
-
-    let task = new Task(taskDefinition, TaskScope.Workspace, "克隆项目模板", "git",
-        new ShellExecution(
-            `git clone ${config.path} .`,
-            { cwd: targetFolder.fsPath }
-        )
-    );
-
-    await executeCloneTask(task);
 }
 
 export async function getTemplateConfigByInput(...extraOptions: QuickPickTemplate[]): Promise<QuickPickTemplate | undefined> {
@@ -262,7 +214,7 @@ const TEMPLATE_OPTIONS: ProjectTemplate[] = [
     },
     {
         name: "多文件模板（ TS ）",
-        description: "远程多文件模板，但是需要配置过 npm 和 Git",
+        description: "多文件模板，但是需要配置过 npm 和 Git",
         config: {
             type: TemplateType.remote,
             path: "git@github.com:batu1579/hamibot-starter.git"
