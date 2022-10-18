@@ -30,6 +30,26 @@ export async function cloneGithubRepo(templatePath: string, targetFolder: Uri): 
     await executeTask(task, (task) => task.definition.type === "clone-template");
 }
 
+export async function executeTemplateScript(scriptPath: string, targetFolder: Uri): Promise<void> {
+    if (!existsSync(scriptPath) || !/\.bat/.test(scriptPath)) {
+        return;
+    }
+
+    let taskDefinition: ScriptTaskDefinition = {
+        type: "execute-script",
+        scriptPath: scriptPath,
+    };
+
+    let task = new Task(taskDefinition, TaskScope.Workspace, "execute-script", "cmd",
+        new ShellExecution(
+            scriptPath,
+            { cwd: targetFolder.fsPath }
+        )
+    );
+
+    await executeTask(task, (task) => task.definition.type === "execute-script");
+}
+
 async function executeTask(task: Task, isTargetTask: TaskIdentifier): Promise<void> {
     const EXECUTION = await tasks.executeTask(task);
 
@@ -49,4 +69,9 @@ interface GitTaskDefinition extends TaskDefinition {
     type: "clone-template";
     repoUrl: string;
     targetPath: string;
+}
+
+interface ScriptTaskDefinition extends TaskDefinition {
+    type: "execute-script";
+    scriptPath: string;
 }
