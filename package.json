@@ -267,25 +267,25 @@
                         "description": "模板仓库 URL"
                     },
                     "targetPath": {
-                        "type": "object",
+                        "type": "string",
                         "description": "目标目录"
                     }
                 }
             },
             {
-                "type": "execute-script",
+                "type": "execute-batch",
                 "required": [
-                    "scriptPath",
+                    "batchFilePath",
                     "targetPath"
                 ],
                 "properties": {
-                    "scriptPath": {
+                    "batchFilePath": {
                         "type": "string",
-                        "description": "模板初始化脚本",
+                        "description": "模板初始化批处理文件路径",
                         "pattern": "\\.bat"
                     },
                     "targetPath": {
-                        "type": "object",
+                        "type": "string",
                         "description": "目标目录"
                     }
                 }

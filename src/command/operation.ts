@@ -4,8 +4,8 @@ import { Job } from "./command";
 import { Script } from "../lib/hamibotApi";
 import { isRobotIdValid } from "../lib/valid";
 import { HamibotConfig, RobotInfo } from "../lib/projectConfig";
+import { initTemplate, useTemplate } from "../lib/projectTemplate";
 import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
-import { useTemplate } from "../lib/projectTemplate";
 
 export async function uploadScript(): Promise<Job> {
     let { scriptId, fileMark } = await global.currentConfig.getProjectConfig();
@@ -72,6 +72,9 @@ export async function initProject(): Promise<Job> {
         scriptId: scriptId,
         executeRobot: robot
     });
+
+    // 初始化模板
+    await initTemplate(folderUri, newProjectName);
 
     // 打开文件夹
     commands.executeCommand('vscode.openFolder', global.currentConfig.getWorkspaceUri());

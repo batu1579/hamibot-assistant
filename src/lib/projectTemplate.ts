@@ -10,11 +10,8 @@ import {
 } from "vscode";
 
 import { Job } from "../command/command";
-import { cloneGithubRepo } from "./task";
-import {
-    isGithubUrlValid,
-    validLocalpath
-} from "./valid";
+import { isGithubUrlValid, validLocalpath } from "./valid";
+import { cloneGithubRepo, executeTemplateScript } from "./task";
 
 interface TemplateConfig {
     type: TemplateType;
@@ -66,6 +63,17 @@ function isTemporaryTemplateConfig(value: TemplateConfig): value is TemporaryTem
     return value.type === TemplateType.askWhenCreate && value.path !== undefined;
 }
 
+export async function initTemplate(projectUri: Uri, projectName: string): Promise<void> {
+    let batchFile = Uri.joinPath(projectUri, "init.bat");
+
+    if (existsSync(batchFile.fsPath)) {
+        // 调用初始化脚本
+        await executeTemplateScript(batchFile.fsPath, projectUri);
+        // 删除初始化脚本
+        await workspace.fs.delete(batchFile);
+    }
+}
+
 export async function useTemplate(targetFolder: Uri): Promise<Job> {
     let config = await getTemplateConfig();
 
@@ -115,7 +123,7 @@ async function getTemplateConfig(): Promise<TemplateConfig | undefined> {
 }
 
 async function copyLocalFolder(templatePath: string, targetFolder: Uri): Promise<void> {
-    let sourceFolder: Uri = Uri.file("");
+    let sourceFolder: Uri;
 
     // 路径检查格式
     validLocalpath(templatePath);

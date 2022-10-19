@@ -6,13 +6,12 @@ import {
     TaskDefinition,
     ShellExecution,
 } from "vscode";
-import { existsSync } from "fs";
 
-import { validGithubUrl } from "./valid";
+import { validBatchFilePath, validGithubUrl } from "./valid";
 
 export async function cloneGithubRepo(templatePath: string, targetFolder: Uri): Promise<void> {
     // 检查仓库路径格式
-    templatePath = validGithubUrl(templatePath);
+    validGithubUrl(templatePath);
 
     let taskDefinition: GitTaskDefinition = {
         type: "clone-template",
@@ -30,24 +29,24 @@ export async function cloneGithubRepo(templatePath: string, targetFolder: Uri): 
     await executeTask(task, (task) => task.definition.type === "clone-template");
 }
 
-export async function executeTemplateScript(scriptPath: string, targetFolder: Uri): Promise<void> {
-    if (!existsSync(scriptPath) || !/\.bat/.test(scriptPath)) {
-        return;
-    }
+export async function executeTemplateScript(batchFilePath: string, targetFolder: Uri): Promise<void> {
+    // 检查批处理文件路径格式
+    validBatchFilePath(batchFilePath);
 
     let taskDefinition: ScriptTaskDefinition = {
-        type: "execute-script",
-        scriptPath: scriptPath,
+        type: "execute-batch",
+        batchFilePath: batchFilePath,
+        targetPath: targetFolder.fsPath
     };
 
-    let task = new Task(taskDefinition, TaskScope.Workspace, "execute-script", "cmd",
+    let task = new Task(taskDefinition, TaskScope.Workspace, "execute-batch", "bash",
         new ShellExecution(
-            scriptPath,
+            batchFilePath,
             { cwd: targetFolder.fsPath }
         )
     );
 
-    await executeTask(task, (task) => task.definition.type === "execute-script");
+    await executeTask(task, (task) => task.definition.type === "execute-batch");
 }
 
 async function executeTask(task: Task, isTargetTask: TaskIdentifier): Promise<void> {
@@ -72,6 +71,7 @@ interface GitTaskDefinition extends TaskDefinition {
 }
 
 interface ScriptTaskDefinition extends TaskDefinition {
-    type: "execute-script";
-    scriptPath: string;
+    type: "execute-batch";
+    batchFilePath: string;
+    targetPath: string;
 }

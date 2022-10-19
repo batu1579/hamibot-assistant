@@ -41,6 +41,10 @@ export function isLocalPathValid(path: string): boolean {
     return /^(([A-Za-z]:)|\.)(.*)$/.test(path);
 }
 
+export function isBatchFilePathValid(path: string): boolean {
+    return /\.bat/.test(path);
+}
+
 export function validToken(token?: string): string {
     if (!token) {
         throw new Error('未设置令牌');
@@ -96,6 +100,14 @@ export function validLocalpath(path?: string): string {
 
     if (!isLocalPathValid(path)) {
         throw new Error('本地路径格式错误');
+    }
+
+    return path;
+}
+
+export function validBatchFilePath(path: string): string {
+    if (!isBatchFilePathValid(path)) {
+        throw new Error('模板批处理文件路径格式错误');
     }
 
     return path;
