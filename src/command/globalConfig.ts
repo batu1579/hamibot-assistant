@@ -58,8 +58,8 @@ export async function setDefaultExecuteRobot(): Promise<Job> {
 
 export async function setProjectTemplate(): Promise<Job> {
     let options = await getTemplateConfigByInput({
-        label: "⌨️ 创建时输入",
-        detail: "每次创建新项目时手动输入",
+        label: "⌨️ 创建时选择",
+        detail: "每次创建新项目时询问要使用的模板",
         config: { type: TemplateType.askWhenCreate }
     },
     {
