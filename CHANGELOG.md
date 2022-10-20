@@ -17,6 +17,14 @@
 
   在需要构建的模板中添加 `.vscode/tasks.json` 默认任务，在上传之前会自动执行任务。默认任务需要将任务配置中的 `group.isDefault` 字段设为 `true` 。
 
+- 添加填充说明文档的功能
+
+  插件会自动查找项目根目录下名为 `readme` 的 MarkDown 文件（大小写不限）。然后使用类似文件模板的方式填充内容，使用 `{{}}` 包裹要填充的字段，例如： `{{ projectName }}` 。目前可用的字段有：
+
+  - `projectName` - 项目名称
+  - `createDate` - 创建日期
+  - `scriptId` - 脚本 ID
+
 - 添加单文件模板的代码提示
 
 ### Changed

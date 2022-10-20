@@ -79,7 +79,7 @@ export async function initProject(): Promise<Job> {
     });
 
     // 初始化模板
-    await initTemplate(folderUri, newProjectName);
+    await initTemplate(folderUri);
 
     // 打开文件夹
     commands.executeCommand('vscode.openFolder', global.currentConfig.getWorkspaceUri());

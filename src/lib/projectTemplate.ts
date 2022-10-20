@@ -63,7 +63,7 @@ function isTemporaryTemplateConfig(value: TemplateConfig): value is TemporaryTem
     return value.type === TemplateType.askWhenCreate && value.path !== undefined;
 }
 
-export async function initTemplate(projectUri: Uri, projectName: string): Promise<void> {
+export async function initTemplate(projectUri: Uri): Promise<void> {
     let batchFile = Uri.joinPath(projectUri, "init.bat");
 
     if (existsSync(batchFile.fsPath)) {
@@ -72,6 +72,44 @@ export async function initTemplate(projectUri: Uri, projectName: string): Promis
         // 删除初始化脚本
         await workspace.fs.delete(batchFile);
     }
+
+    // 填充说明文件
+    let files = await workspace.fs.readDirectory(projectUri);
+    let readmeFileInfo = files.find((value) => {
+        return value[1] === 1 && /[Rr][Ee][Aa][Dd][Mm][Ee]\.md/.test(value[0]);
+    });
+
+    if (!readmeFileInfo) {
+        return;
+    }
+
+    let readmeFileUri = Uri.joinPath(projectUri, readmeFileInfo[0]);
+    if (existsSync(readmeFileUri.fsPath)) {
+        await fillReadmeFile(readmeFileUri);
+    }
+}
+
+async function fillReadmeFile(fileUri: Uri): Promise<void> {
+    let { name, scriptId } = await global.currentConfig.getProjectConfig();
+    let fields = {
+        projectName: name,
+        scriptId: scriptId,
+        createDate: new Date().toLocaleDateString(),
+    };
+
+    // 读取文件
+    let content = (await workspace.fs.readFile(fileUri)).toString();
+
+    // 替换文本
+    for (const field of Object.keys(fields)) {
+        content = content.replace(
+            new RegExp(`{{\\s*${field}\\s*}}`, "gm"),
+            Object.getOwnPropertyDescriptor(fields, field)?.value
+        );
+    }
+
+    // 保存文件
+    await workspace.fs.writeFile(fileUri, Buffer.from(content));
 }
 
 export async function useTemplate(targetFolder: Uri): Promise<Job> {
