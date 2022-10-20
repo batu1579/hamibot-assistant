@@ -1,6 +1,7 @@
 import { commands, Uri, window, workspace } from "vscode";
 
 import { Job } from "./command";
+import { buildScript } from "../lib/task";
 import { Script } from "../lib/hamibotApi";
 import { isRobotIdValid } from "../lib/valid";
 import { HamibotConfig, RobotInfo } from "../lib/projectConfig";
@@ -9,6 +10,11 @@ import { getExecuteRobotByInput, getProjectNameByInput } from "./projectConfig";
 
 export async function uploadScript(): Promise<Job> {
     let { scriptId, fileMark } = await global.currentConfig.getProjectConfig();
+
+    // 保存文件
+    await window.activeTextEditor?.document.save();
+    // 执行构建任务
+    await buildScript();
 
     let fileList: Uri[] = [];
 
@@ -19,8 +25,7 @@ export async function uploadScript(): Promise<Job> {
         ));
     }
 
-    // 保存文件并上传
-    await window.activeTextEditor?.document.save();
+    // 上传
     await Script.uploadScript(scriptId!, fileList);
 
     return Job.done;

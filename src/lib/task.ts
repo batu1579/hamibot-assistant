@@ -19,14 +19,14 @@ export async function cloneGithubRepo(templatePath: string, targetFolder: Uri): 
         targetPath: targetFolder.fsPath
     };
 
-    let task = new Task(taskDefinition, TaskScope.Workspace, "clone", "git",
+    let cloneTask = new Task(taskDefinition, TaskScope.Workspace, "clone", "git",
         new ShellExecution(
             `git clone ${templatePath} .`,
             { cwd: targetFolder.fsPath }
         )
     );
 
-    await executeTask(task, (task) => task.definition.type === "clone-template");
+    await executeTask(cloneTask, (task) => task.definition.type === "clone-template");
 }
 
 export async function executeTemplateScript(batchFilePath: string, targetFolder: Uri): Promise<void> {
@@ -39,14 +39,34 @@ export async function executeTemplateScript(batchFilePath: string, targetFolder:
         targetPath: targetFolder.fsPath
     };
 
-    let task = new Task(taskDefinition, TaskScope.Workspace, "execute-batch", "bash",
+    let batchTask = new Task(taskDefinition, TaskScope.Workspace, "execute-batch", "bash",
         new ShellExecution(
             batchFilePath,
             { cwd: targetFolder.fsPath }
         )
     );
 
-    await executeTask(task, (task) => task.definition.type === "execute-batch");
+    await executeTask(batchTask, (task) => task.definition.type === "execute-batch");
+}
+
+const BUILD_TASK_IDENTIFIER = (task: Task) => task.group?.isDefault === true;
+
+async function getBuildTasks(): Promise<Task[]> {
+    return new Promise<Task[]>(resolve => {
+        tasks.fetchTasks().then((tasks) => {
+            resolve(tasks.filter(BUILD_TASK_IDENTIFIER));
+        });
+    });
+}
+
+export async function buildScript(): Promise<void> {
+    let bulidTasks: Task[] = await getBuildTasks();
+
+    if (bulidTasks.length <= 0) {
+        return;
+    }
+
+    await executeTask(bulidTasks[0], BUILD_TASK_IDENTIFIER);
 }
 
 async function executeTask(task: Task, isTargetTask: TaskIdentifier): Promise<void> {
