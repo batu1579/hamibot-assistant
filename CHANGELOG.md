@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.7.1] - 2022-10-21
+
 ### Changed
 
 - 优先修改远程名称，成功后再修改本地名称，防止出现名称不同步的问题
@@ -249,7 +251,8 @@
 [语义化版本号]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.0...HEAD
+[unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.1...HEAD
+[0.7.1]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.0..v0.7.1
 [0.7.0]: https://github.com/batu1579/hamibot-assistant/compare/v0.6.4..v0.7.0
 [0.6.4]: https://github.com/batu1579/hamibot-assistant/compare/v0.6.3..v0.6.4
 [0.6.3]: https://github.com/batu1579/hamibot-assistant/compare/v0.6.2..v0.6.3
