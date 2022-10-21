@@ -1,3 +1,4 @@
+import { existsSync } from "fs";
 import { commands, Uri, window, workspace } from "vscode";
 
 import { Job } from "./command";
@@ -47,15 +48,10 @@ export async function uploadAndRunScript(): Promise<Job> {
 }
 
 export async function initProject(): Promise<Job> {
-    let folderUri = await getFolderUriByInput();
-    if (!folderUri) {
+    let selectUri = await getFolderUriByInput();
+    if (!selectUri) {
         return Job.undone;
     }
-
-    // 使用项目模板
-    await useTemplate(folderUri);
-
-    global.currentConfig = await HamibotConfig.newConfigFile(folderUri);
 
     // 设置项目名称
     let newProjectName = await getProjectNameByInput();
@@ -63,6 +59,14 @@ export async function initProject(): Promise<Job> {
         return Job.undone;
     }
 
+    // 使用项目模板
+    let folderUri = Uri.joinPath(selectUri, newProjectName);
+    if (existsSync(folderUri.fsPath)) {
+        throw new Error('项目已存在，无法重复创建');
+    }
+    await useTemplate(folderUri);
+
+    // 创建远程脚本
     let { _id: scriptId } = await Script.createNewScript(newProjectName);
     if (!scriptId) {
         throw new Error('使用接口创建脚本失败');
@@ -72,6 +76,7 @@ export async function initProject(): Promise<Job> {
     let robot = (await getDefaultExecuteRobot()) ?? (await getExecuteRobotByInput());
 
     // 保存设置
+    global.currentConfig = await HamibotConfig.newConfigFile(folderUri);
     await global.currentConfig.updateProjectConfig({
         name: newProjectName,
         scriptId: scriptId,

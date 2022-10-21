@@ -180,9 +180,7 @@ async function copyLocalFolder(templatePath: string, targetFolder: Uri): Promise
         throw new Error(`模板文件夹不存在`);
     }
 
-    await workspace.fs.copy(sourceFolder, targetFolder, {
-        overwrite: true,
-    });
+    await workspace.fs.copy(sourceFolder, targetFolder);
 }
 
 export async function getTemplateConfigByInput(...extraOptions: QuickPickTemplate[]): Promise<QuickPickTemplate | undefined> {
