@@ -1,3 +1,4 @@
+import { existsSync } from "fs";
 import {
     Uri,
     Task,
@@ -5,6 +6,7 @@ import {
     TaskScope,
     TaskDefinition,
     ShellExecution,
+    workspace,
 } from "vscode";
 
 import { validBatchFilePath, validGithubUrl } from "./valid";
@@ -12,6 +14,9 @@ import { validBatchFilePath, validGithubUrl } from "./valid";
 export async function cloneGithubRepo(templatePath: string, targetFolder: Uri): Promise<void> {
     // 检查仓库路径格式
     validGithubUrl(templatePath);
+
+    // 创建文件夹
+    workspace.fs.createDirectory(targetFolder);
 
     let taskDefinition: GitTaskDefinition = {
         type: "clone-template",
