@@ -1,5 +1,6 @@
 import { existsSync } from "fs";
 import { isAbsolute } from "path";
+import { platform } from "process";
 import { isNativeError } from "util/types";
 import {
     Uri,
@@ -11,7 +12,7 @@ import {
 
 import { Job } from "../command/command";
 import { isGithubUrlValid, validLocalpath } from "./valid";
-import { cloneGithubRepo, executeTemplateScript } from "./task";
+import { cloneGithubRepo, executeInitScript } from "./task";
 
 interface TemplateConfig {
     type: TemplateType;
@@ -64,18 +65,26 @@ function isTemporaryTemplateConfig(value: TemplateConfig): value is TemporaryTem
 }
 
 export async function initTemplate(projectUri: Uri): Promise<void> {
-    let batchFile = Uri.joinPath(projectUri, "init.bat");
+    // 调用初始化脚本
+    let batchFiles = {
+        win32: Uri.joinPath(projectUri, 'init.bat'),
+        linux: Uri.joinPath(projectUri, 'init.sh'),
+    };
 
-    if (existsSync(batchFile.fsPath)) {
-        // 调用初始化脚本
-        await executeTemplateScript(batchFile.fsPath, projectUri);
-        // 删除初始化脚本
-        await workspace.fs.delete(batchFile);
+    for (const key of Object.keys(batchFiles)) {
+        let fileUri: Uri = Object.getOwnPropertyDescriptor(batchFiles, key)?.value;
+        if (existsSync(fileUri.fsPath)) {
+            if (key === platform) {
+                await executeInitScript(fileUri.fsPath, projectUri);
+            }
+            await workspace.fs.delete(fileUri);
+        }
     }
 
     // 填充说明文件
     let files = await workspace.fs.readDirectory(projectUri);
     let readmeFileInfo = files.find((value) => {
+        // 查找类型为文件且文件名为 readme.md 的项
         return value[1] === 1 && /[Rr][Ee][Aa][Dd][Mm][Ee]\.md/.test(value[0]);
     });
 

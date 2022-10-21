@@ -33,7 +33,7 @@ export async function cloneGithubRepo(templatePath: string, targetFolder: Uri): 
     await executeTask(cloneTask, (task) => task.definition.type === "clone-template");
 }
 
-export async function executeTemplateScript(batchFilePath: string, targetFolder: Uri): Promise<void> {
+export async function executeInitScript(batchFilePath: string, targetFolder: Uri): Promise<void> {
     // 检查批处理文件路径格式
     validBatchFilePath(batchFilePath);
 
