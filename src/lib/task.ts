@@ -1,12 +1,11 @@
-import { existsSync } from "fs";
 import {
     Uri,
     Task,
     tasks,
     TaskScope,
+    workspace,
     TaskDefinition,
     ShellExecution,
-    workspace,
 } from "vscode";
 
 import { validBatchFilePath, validGithubUrl } from "./valid";
