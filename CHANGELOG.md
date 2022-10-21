@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 修复请求接口失败后显示的错误信息不正确的问题 [#15](https://github.com/batu1579/hamibot-assistant/issues/15)
+
 ## [0.7.0] - 2022-10-20
 
 ### Added

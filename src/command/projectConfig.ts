@@ -57,7 +57,6 @@ export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
     const dialog = window.createQuickPick<RobotQuickPickItem>();
     dialog.title = "选择调试机器人";
     dialog.matchOnDetail = true;
-    dialog.ignoreFocusOut = true;
 
     const refreshItem = async () => {
         dialog.items = [];

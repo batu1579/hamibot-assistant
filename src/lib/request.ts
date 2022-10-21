@@ -4,8 +4,8 @@ import { AxiosRequestHeaders, AxiosRequestConfig } from "axios";
 
 import { validToken } from './valid';
 
-const baseUrl = 'https://api.hamibot.cn';
-const backupUrl = 'https://api.hamibot.com';
+const BASE_URL = 'https://api.hamibot.cn';
+const BACKUP_URL = 'https://api.hamibot.com';
 
 /**
  * @description: 向 hamibot 服务器发送 GET 请求。
@@ -69,34 +69,39 @@ async function requests<DataType>(config: AxiosRequestConfig, url?: string): Pro
 
     config.headers = await getHeaders(config.headers);
     try {
-        config.baseURL = url ?? baseUrl;
+        config.baseURL = url ?? BASE_URL;
         return (await axios.request(config)).data;
     } catch (error: any) {
-        if (error.status >= 500 && config.baseURL === baseUrl) {
-            // 如果是服务器异常尝试访问备用域名
-            return await requests(config, backupUrl);
-        }
+        let stateCode = error.response.status;
 
-        switch (error.status) {
-            case 401:
-                // Token 有误
-                throw new Error("开发者令牌无效，请重新设置！");
+        if (error.code === "ENOTFOUND") {
+            throw new Error("无法连接到服务器，请检查网络后重试！");
+        } else if (stateCode >= 400 && stateCode < 500) {
+            switch (stateCode) {
+                case 401:
+                    // Token 有误
+                    throw new Error("开发者令牌无效，请重新设置！");
 
-            case 422:
-                // 参数有误
-                throw new Error("请求参数格式有误，请检查！");
+                case 422:
+                    // 参数有误
+                    throw new Error("请求参数格式有误，请检查！");
 
-            case 429:
-                // 频率限制
-                throw new Error("本月 API 调用次数已达上限！");
+                case 429:
+                    // 频率限制
+                    throw new Error("本月 API 调用次数已达上限！");
 
-            default:
-                if (error.status >= 500) {
-                    throw new Error("服务器异常，请向 Hamibot 官方反馈！");
-                } else if (error.code === "ENOTFOUND") {
-                    throw new Error("无法连接到服务器，请检查网络后重试！");
-                }
-                throw new Error(`未知的客户端异常，请在仓库提交 issue 。详细信息：${error.message}`);
+                default:
+                    throw new Error(`未知的客户端异常，请在仓库提交 issue 。详细信息：${error.message}`);
+            }
+        } else if (stateCode >= 500) {
+            if (config.baseURL === BASE_URL) {
+                // 如果是服务器异常尝试访问备用域名
+                return await requests(config, BACKUP_URL);
+            } else {
+                throw new Error("服务器异常，请向 Hamibot 官方反馈！");
+            }
+        } else {
+            throw new Error(`未知异常，请在仓库提交 issue 。详细信息：${error.message}`);
         }
     }
 }
