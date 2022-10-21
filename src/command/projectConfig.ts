@@ -26,11 +26,11 @@ export async function setProjectName(): Promise<Job> {
         return Job.undone;
     }
 
-    // 更新本地名称
-    await global.currentConfig.updateProjectConfig({ name: projectName });
-
     // 更新远程名称
     await Script.changeScriptName(scriptId!, projectName);
+
+    // 更新本地名称
+    await global.currentConfig.updateProjectConfig({ name: projectName });
 
     return Job.done;
 }

@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- 优先修改远程名称，成功后再修改本地名称，防止出现名称不同步的问题
+
 ### Fixed
 
 - 修复请求接口失败后显示的错误信息不正确的问题 [#15](https://github.com/batu1579/hamibot-assistant/issues/15)
