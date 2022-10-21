@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { extensions, workspace } from 'vscode';
+import { commands, extensions, workspace } from 'vscode';
 import { AxiosRequestHeaders, AxiosRequestConfig } from "axios";
 
 import { validToken } from './valid';
@@ -80,6 +80,7 @@ async function requests<DataType>(config: AxiosRequestConfig, url?: string): Pro
             switch (stateCode) {
                 case 401:
                     // Token 有误
+                    commands.executeCommand('hamibot-assistant.setApiToken');
                     throw new Error("开发者令牌无效，请重新设置！");
 
                 case 422:
