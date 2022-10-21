@@ -14,6 +14,7 @@
 ### Fixed
 
 - 修复请求接口失败后显示的错误信息不正确的问题 [#15](https://github.com/batu1579/hamibot-assistant/issues/15)
+- 修复选择机器人时出错对话框不消失的问题
 
 ## [0.7.0] - 2022-10-20
 

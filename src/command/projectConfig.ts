@@ -3,6 +3,7 @@ import {
     window,
     workspace,
     ThemeIcon,
+    QuickPick,
     QuickPickItem,
 } from "vscode";
 
@@ -53,22 +54,28 @@ export async function markConfigFile(uri: Uri): Promise<Job> {
     return Job.done;
 }
 
-export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
-    const dialog = window.createQuickPick<RobotQuickPickItem>();
-    dialog.title = "选择调试机器人";
-    dialog.matchOnDetail = true;
+async function loadQuickPickItem(dialog: QuickPick<RobotQuickPickItem>): Promise<void> {
+    dialog.items = [];
+    dialog.busy = true;
 
-    const refreshItem = async () => {
-        dialog.items = [];
-        dialog.busy = true;
-        dialog.items = [...(await getQuickPickRobot()), {
+    await getQuickPickRobot().then((items) => {
+        dialog.items = [...items, {
             label: "🔃 刷新",
             detail: "重新获取机器人列表",
             alwaysShow: true,
             robotInfo: undefined
         }];
         dialog.busy = false;
-    };
+    }).catch((error) => {
+        dialog.hide();
+        throw error;
+    });
+}
+
+export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
+    const dialog = window.createQuickPick<RobotQuickPickItem>();
+    dialog.title = "选择调试机器人";
+    dialog.matchOnDetail = true;
 
     dialog.onDidTriggerItemButton(async (event) => {
         let robotInfo = event.item.robotInfo!;
@@ -82,21 +89,30 @@ export async function getExecuteRobotByInput(): Promise<RobotInfo | undefined> {
         }
 
         dialog.show();
-        await refreshItem();
+        await loadQuickPickItem(dialog);
     });
 
+    dialog.onDidAccept(() => {
+        let item = dialog.selectedItems[0];
+        if (item.alwaysShow === true) {
+            loadQuickPickItem(dialog);
+        } else {
+            dialog.hide();
+        }
+    });
+
+    // 第一次显示时获取选项
     dialog.show();
-    await refreshItem();
+    await loadQuickPickItem(dialog);
 
     return new Promise<RobotInfo | undefined>((resolve) => {
-        dialog.onDidAccept(() => {
-            let item = dialog.selectedItems[0];
-            if (item.robotInfo !== undefined) {
-                dialog.dispose();
-                resolve(item.robotInfo);
+        dialog.onDidHide(() => {
+            if (dialog.selectedItems.length !== 0) {
+                resolve(dialog.selectedItems[0].robotInfo);
             } else {
-                refreshItem();
+                resolve(undefined);
             }
+            dialog.dispose();
         });
     });
 }
