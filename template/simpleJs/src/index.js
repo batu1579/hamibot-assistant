@@ -1,10 +1,18 @@
-/*
- * @Author: BATU1579
- * @CreateDate: 2022-05-24 16:58:03
- * @LastEditor: BATU1579
- * @LastTime: 2022-10-17 16:01:07
- * @FilePath: \\template\\simpleJs\\src\\index.js
- * @Description: 脚本入口
- */
+// 获取脚本配置
+const { SHOW_CONSOLE } = hamibot.env;
 
-toastLog("hello Hamibot");
+// 等待开启无障碍权限
+auto.waitFor();
+
+// 显示控制台
+if (SHOW_CONSOLE) {
+    console.show();
+    sleep(300);
+    // 修改控制台位置
+    console.setPosition(0, 100);
+    // 修改控制台大小
+    console.setSize(device.width, device.height / 4);
+}
+
+// 在控制台输出 Hello Hamibot
+toastLog("Hello Hamibot");
