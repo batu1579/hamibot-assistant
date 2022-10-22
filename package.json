@@ -56,7 +56,25 @@
                     "order": 2
                 },
                 "hamibot-assistant.defaultExecuteRobot.robotInfo": {
-                    "markdownDescription": "默认调试机器人信息，只有在 `#hamibot-assistant.defaultExecuteRobot.enable#` 设置为 `true` 时才会启用",
+                    "type": "object",
+                    "scope": "application",
+                    "required": [
+                        "name",
+                        "id"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "markdownDescription": "默认调试机器人名称"
+                        },
+                        "id": {
+                            "type": "string",
+                            "pattern": "^[0-9a-f]{24}|(?:)$",
+                            "patternErrorMessage": "需要是一个 24 位 16 进制字符串",
+                            "markdownDescription": "默认调试机器人 ID"
+                        }
+                    },
+                    "markdownDescription": "默认调试机器人信息，只有在 `#hamibot-assistant.defaultExecuteRobot.enable#` 设置为 `true` 时才会启用\n\n建议使用指令设置",
                     "order": 3
                 },
                 "hamibot-assistant.defaultExecuteRobot.robotInfo.name": {
@@ -76,7 +94,32 @@
                     "order": 5
                 },
                 "hamibot-assistant.projectTemplate": {
-                    "markdownDescription": "设置项目模板",
+                    "type": "object",
+                    "scope": "application",
+                    "required": [
+                        "type"
+                    ],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "scope": "application",
+                            "enum": [
+                                "disabled",
+                                "local",
+                                "remote",
+                                "askWhenCreate"
+                            ],
+                            "markdownDescription": "描述模板路径的类型，需要注意的是此项设置需要和 `#hamibot-assistant.projectTemplate.path#` 对应\n\n- `loacl` 需要在路径中填入本地的绝对路径地址\n- `remote` 需要在路径中填入有效的 Github 远程仓库地址（ SSH 或 HTTPS ），同时还必须安装过 Git\n"
+                        },
+                        "path": {
+                            "type": "string",
+                            "scope": "application",
+                            "pattern": "^(((([A-Za-z]:)|\\.)(.*))|(((git@)|(https?:\\/\\/))github.com[:\\/][\\w-_]*?\\/[\\w-_]*?(\\.git)?))|(?:)$",
+                            "patternErrorMessage": "只能是一个本地绝对路径或 Github 远程仓库地址",
+                            "markdownDescription": "项目模板存放的路径。\n\n请勿手动设置相对路径！"
+                        }
+                    },
+                    "markdownDescription": "设置项目模板\n\n建议使用指令设置",
                     "order": 6
                 },
                 "hamibot-assistant.projectTemplate.type": {
