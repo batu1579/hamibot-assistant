@@ -77,16 +77,12 @@
                 },
                 "hamibot-assistant.projectTemplate": {
                     "markdownDescription": "设置项目模板",
-                    "default": {
-                        "type": "loacl",
-                        "path": "./template/simpleJS"
-                    },
                     "order": 6
                 },
                 "hamibot-assistant.projectTemplate.type": {
                     "type": "string",
                     "scope": "application",
-                    "default": "disabled",
+                    "default": "askWhenCreate",
                     "enum": [
                         "disabled",
                         "local",
@@ -99,7 +95,7 @@
                         "使用远程模板（ Github 仓库）",
                         "在每次创建项目时询问"
                     ],
-                    "markdownDescription": "描述模板路径的类型，需要注意的是此项设置需要和 `#hamibot-assistant.projectTemplate.path#` 对应\n\n- `loacl` 需要在路径中填入本地的绝对路径地址\n\n- `remote` 需要在路径中填入有效的 Github 远程仓库地址（ SSH 或 HTTPS ），同时还必须安装过 Git",
+                    "markdownDescription": "描述模板路径的类型，需要注意的是此项设置需要和 `#hamibot-assistant.projectTemplate.path#` 对应\n\n- `loacl` 需要在路径中填入本地的绝对路径地址\n- `remote` 需要在路径中填入有效的 Github 远程仓库地址（ SSH 或 HTTPS ），同时还必须安装过 Git\n",
                     "order": 7
                 },
                 "hamibot-assistant.projectTemplate.path": {
