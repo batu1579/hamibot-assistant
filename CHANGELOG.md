@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- 添加新的 eslint 规则禁止返回 await
+
 ## [0.7.2] - 2022-10-22
 
 ### Changed

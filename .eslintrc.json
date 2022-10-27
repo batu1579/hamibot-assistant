@@ -14,7 +14,9 @@
         "curly": "warn",
         "eqeqeq": "warn",
         "no-throw-literal": "warn",
-        "semi": "off"
+        "semi": "off",
+        "no-return-await": "error",
+        "no-lonely-if": "error"
     },
     "ignorePatterns": [
         "out",

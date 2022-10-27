@@ -65,7 +65,7 @@ export class HamibotConfig {
      * @return {Promise<ProjectConfig>} 项目设置对象。
      */
     public async getProjectConfig(): Promise<ProjectConfig> {
-        return await this.readProjectConfig();
+        return this.readProjectConfig();
     }
 
     /**

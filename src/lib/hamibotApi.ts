@@ -14,7 +14,7 @@ export class Robot {
      * @return {Promise<RobotList>} 机器人列表。
      */
     static async getRobotList(): Promise<RobotList> {
-        return await request.get<RobotList>('/v1/robots');
+        return request.get<RobotList>('/v1/robots');
     }
 
     /**
@@ -25,7 +25,7 @@ export class Robot {
     static async getRobotById(robotId: string): Promise<RobotItem> {
         // 校验机器人 ID 格式
         validRobotId(robotId);
-        return await request.get<RobotItem>(`/v1/robots/${robotId}`);
+        return request.get<RobotItem>(`/v1/robots/${robotId}`);
     }
 
     /**
@@ -116,7 +116,7 @@ export class Script {
      * @return {Promise<ScriptList>} 开发中的脚本列表。
      */
     static async getScriptList(): Promise<ScriptList> {
-        return await request.get<ScriptList>('/v1/devscripts');
+        return request.get<ScriptList>('/v1/devscripts');
     }
 
     /**
@@ -127,7 +127,7 @@ export class Script {
     static async getScriptById(scriptId: string): Promise<ScriptItem> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
-        return await request.get<ScriptItem>(`/v1/devscripts/${scriptId}`);
+        return request.get<ScriptItem>(`/v1/devscripts/${scriptId}`);
     }
 
     /**
@@ -173,7 +173,7 @@ export class Script {
      * @return {Promise<ScriptItem>} 创建脚本的详细信息。
      */
     static async createNewScript(scriptName: string): Promise<ScriptItem> {
-        return await request.post<ScriptItem>(`/v1/devscripts`, { name: scriptName });
+        return request.post<ScriptItem>(`/v1/devscripts`, { name: scriptName });
     }
 
     /**

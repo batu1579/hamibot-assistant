@@ -97,7 +97,7 @@ async function requests<DataType>(config: AxiosRequestConfig, url?: string): Pro
         } else if (stateCode >= 500) {
             if (config.baseURL === BASE_URL) {
                 // 如果是服务器异常尝试访问备用域名
-                return await requests(config, BACKUP_URL);
+                return requests(config, BACKUP_URL);
             } else {
                 throw new Error("服务器异常，请向 Hamibot 官方反馈！");
             }

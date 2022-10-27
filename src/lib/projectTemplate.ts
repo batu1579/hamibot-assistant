@@ -71,14 +71,20 @@ export async function initTemplate(projectUri: Uri): Promise<void> {
         linux: Uri.joinPath(projectUri, 'init.sh'),
     };
 
-    for (const key of Object.keys(batchFiles)) {
-        let fileUri: Uri = Object.getOwnPropertyDescriptor(batchFiles, key)?.value;
-        if (existsSync(fileUri.fsPath)) {
-            if (key === platform) {
-                await executeInitScript(fileUri.fsPath, projectUri);
-            }
-            await workspace.fs.delete(fileUri);
+    // win32
+    if (existsSync(batchFiles.win32.fsPath)) {
+        if (platform === 'win32') {
+            await executeInitScript(batchFiles.win32.fsPath, projectUri);
         }
+        await workspace.fs.delete(batchFiles.win32);
+    }
+
+    // linux
+    if (existsSync(batchFiles.linux.fsPath)) {
+        if (platform === 'linux') {
+            await executeInitScript(batchFiles.linux.fsPath, projectUri);
+        }
+        await workspace.fs.delete(batchFiles.linux);
     }
 
     // 填充说明文件
