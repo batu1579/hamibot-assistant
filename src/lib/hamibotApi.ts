@@ -194,22 +194,21 @@ export class Script {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
-        let jobs: Promise<any>[] = [];
-        const files: FileInfo[] = Script.transUriToFileInfo(filesUri);
+        const fileData = new FormData();
 
-        for (const file of files) {
-            // 向任务队列添加要上传的文件
+        let jobs: Promise<any>[] = [];
+        for (let i = 0; i < filesUri.length; i++) {
+            let file = Script.transUriToFileInfo(filesUri[i]);
             jobs.push((async () => {
-                const fileData = new FormData();
                 fileData.append('file', await workspace.fs.readFile(file.uri), {
                     contentType: file.fileType,
                     filename: basename(file.uri.fsPath),
                 });
-                await request.put(`/v1/devscripts/${scriptId}/files`, fileData);
             })());
         }
-
         await Promise.all(jobs);
+
+        await request.put(`/v1/devscripts/${scriptId}/files`, fileData);
     }
 
     /**
@@ -222,26 +221,24 @@ export class Script {
         await request.del(`/v1/devscripts/${scriptId}`);
     }
 
-    private static transUriToFileInfo(files: Uri[]): FileInfo[] {
-        return files.map((value) => {
-            let fileType: string;
+    private static transUriToFileInfo(fileUri: Uri): FileInfo {
+        let fileType: string;
 
-            switch (extname(value.fsPath)) {
-                case '.json':
-                    fileType = "application/json";
-                    break;
-                case '.js':
-                    fileType = "application/javascript";
-                    break;
-                default:
-                    throw new Error(`不支持上传文件类型： ${extname(value.fsPath)} 。`);
-            }
+        switch (extname(fileUri.fsPath)) {
+            case '.json':
+                fileType = "application/json";
+                break;
+            case '.js':
+                fileType = "application/javascript";
+                break;
+            default:
+                throw new Error(`不支持上传文件类型： ${extname(fileUri.fsPath)} 。`);
+        }
 
-            return {
-                uri: value,
-                fileType: fileType
-            };
-        });
+        return {
+            uri: fileUri,
+            fileType: fileType
+        };
     }
 }
 

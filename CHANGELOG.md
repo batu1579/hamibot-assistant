@@ -11,6 +11,10 @@
 
 - 添加新的 eslint 规则禁止返回 await
 
+### Fixed
+  
+- 修复标记两个文件时无法使用 `上传并运行标记的脚本` 指令的问题 [#16](https://github.com/batu1579/hamibot-assistant/issues/16)
+
 ## [0.7.2] - 2022-10-22
 
 ### Changed
