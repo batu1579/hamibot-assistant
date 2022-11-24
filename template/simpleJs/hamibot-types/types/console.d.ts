@@ -2,8 +2,8 @@
  * @Author: BATU1579
  * @CreateDate: 2022-05-25 17:07:59
  * @LastEditor: BATU1579
- * @LastTime: 2022-09-11 10:56:22
- * @FilePath: \\src\\types\\console.d.ts
+ * @LastTime: 2022-10-28 15:51:42
+ * @FilePath: \\types\\console.d.ts
  * @Description: 控制台模块
  */
 
@@ -13,7 +13,7 @@ declare module 'console' {
         /**
          * @description: 控制台模块提供了一个和 Web 浏览器中相似的用于调试的控制台。用于输出一些调试信息、中间结果等。 console 模块中的一些函数也可以直接作为全局函数使用，例如 `log` , `print` 等。
          */
-        var console: Console
+        let console: Console;
 
         interface Console {
             /**
@@ -218,9 +218,9 @@ declare module 'console' {
 
             /**
              * @description: 向控制台输出信息，相当于 `console.log(text)` 。
-             * @param {Object} text 要打印到控制台的信息。
+             * @param {unknown} text 要打印到控制台的信息。
              */
-            print(text: Object): void;
+            print(text: unknown): void;
         }
 
         // 声明全局函数
@@ -246,9 +246,9 @@ declare module 'console' {
 
         /**
          * @description: 向控制台输出信息，相当于 `log(text)` 。
-         * @param {string} text 要打印到控制台的信息。
+         * @param {unknown} text 要打印到控制台的信息。
          */
-        function print(text: Object): void;
+        function print(text: unknown): void;
     }
 
     interface LogConfig {

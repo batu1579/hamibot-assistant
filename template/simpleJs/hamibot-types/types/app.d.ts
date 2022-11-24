@@ -2,8 +2,8 @@
  * @Author: BATU1579
  * @CreateDate: 2022-05-25 00:20:15
  * @LastEditor: BATU1579
- * @LastTime: 2022-09-11 10:23:59
- * @FilePath: \\src\\types\\app.d.ts
+ * @LastTime: 2022-10-28 14:01:17
+ * @FilePath: \\types\\app.d.ts
  * @Description: app 模块
  */
 declare module 'app' {
@@ -261,6 +261,20 @@ declare module 'app' {
         startActivity(name: string): void;
 
         /**
+         * @description: 根据选项构造一个 `Intent` ，并启动该 `Activity` 。
+         * @param {IntentOptions} options 意图选项。
+         * @example
+         * ```typescript
+         * app.startActivity({
+         *     action: 'SEND',
+         *     type: 'text/plain',
+         *     data: 'file:///sdcard/1.txt',
+         * });
+         * ```
+         */
+        startActivity(options: IntentOptions): void;
+
+        /**
          * @description: 根据选项，构造一个意图 `Intent` 对象。需要注意的是，除非应用专门暴露 `Activity` 出来，否则在没有 `root` 权限的情况下使用 `Intent` 是无法跳转到特定 `Activity` 、应用的特定界面的。例如我们能通过 `Intent` 跳转到QQ的分享界面，是因为QQ对外暴露了分享的 `Activity` ；而在没有 `root` 权限的情况下，我们无法通过 `Intent` 跳转到QQ的设置界面，因为QQ并没有暴露这个 `Activity` 。更多信息，参见 [Intent] 。
          * 
          * [Intent]: https://developer.android.com/guide/components/intents-filters.html#Types
@@ -277,20 +291,6 @@ declare module 'app' {
          * ```
          */
         intent(options: IntentOptions): void;
-
-        /**
-         * @description: 根据选项构造一个 `Intent` ，并启动该 `Activity` 。
-         * @param {IntentOptions} options 意图选项。
-         * @example
-         * ```typescript
-         * app.startActivity({
-         *     action: 'SEND',
-         *     type: 'text/plain',
-         *     data: 'file:///sdcard/1.txt',
-         * });
-         * ```
-         */
-        startActivity(options: IntentOptions): void;
 
         /**
          * @description: 根据选项构造一个 `Intent` ，并启动该服务。
@@ -837,12 +837,12 @@ declare module 'app' {
         /**
          * @description: 公共可用部分 splitSourceDirs完整路径，包括资源和清单。
          */
-        readonly splitPublicSourceDirs: String[];
+        readonly splitPublicSourceDirs: string[];
 
         /**
          * @description: 完整路径到零个或多个拆分APK，当与 sourceDir定义的基本APK结合时，形成一个完整的应用程序。
          */
-        readonly splitSourceDirs: String[];
+        readonly splitSourceDirs: string[];
 
         /**
          * @description: 正在检测的应用程序包的名称。

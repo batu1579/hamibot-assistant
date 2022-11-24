@@ -7,7 +7,7 @@
         "module": "ES2015",
         "strict": true,
         "typeRoots": [
-            "types",
+            "**/types",
         ],
         "outDir": "build",
         "forceConsistentCasingInFileNames": true,

@@ -2,8 +2,8 @@
  * @Author: BATU1579
  * @CreateDate: 2022-07-12 19:58:53
  * @LastEditor: BATU1579
- * @LastTime: 2022-09-11 10:51:30
- * @FilePath: \\src\\types\\threads.d.ts
+ * @LastTime: 2022-10-28 15:57:14
+ * @FilePath: \\types\\threads.d.ts
  * @Description: 多线程模块
  */
 declare module 'threads' {
@@ -24,10 +24,10 @@ declare module 'threads' {
 
         /**
          * @description: 给函数 `func` 加上同步锁并作为一个新函数返回。
-         * @param {Function} func 要加锁的函数。
-         * @return {Function} 加锁包装后的函数。
+         * @param {T} func 要加锁的函数。
+         * @return {T} 加锁包装后的函数。
          */
-        function sync(func: Function): Function;
+        function sync<T extends Callback>(func: T): T;
     }
 
     interface Threads {
@@ -39,7 +39,7 @@ declare module 'threads' {
          * - 启动新线程的时候不能使用箭头函数！
          * - 通过 `threads.start()` 启动的所有线程会在脚本被强制停止时自动停止。
          * 
-         * @param {Function} action
+         * @param {Callback} action
          * @return {Thread} 新建的线程对象。
          * @example
          * ```typescript
@@ -55,7 +55,7 @@ declare module 'threads' {
          * }
          * ```
          */
-        start(action: Function): Thread;
+        start(action: Callback): Thread;
 
         /**
          * @description: 停止所有通过 `threads.start()` 启动的子线程。
@@ -171,12 +171,12 @@ declare module 'threads' {
          * - 定时器仍然是单线程的。如果脚本主体有耗时操作或死循环，则设定的定时器不能被及时执行。
          * - 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出 `IllegalStateException` 。
          * 
-         * @param {Function} callback 当定时器到点时要调用的函数。
+         * @param {Callback} callback 当定时器到点时要调用的函数。
          * @param {number} delay 调用 `callback` 之前要等待的毫秒数。当 `delay` 小于 0 时， `delay` 会被设为 0。
          * @param {array} [args] 当调用 `callback` 时要传入的可选参数。
          * @return {IntervalID} 返回一个用于 `clearInterval()` 的定时器 id 。
          */
-        setInterval(callback: Function, delay: number, ...args: any[]): IntervalID;
+        setInterval(callback: Callback, delay: number, ...args: any[]): IntervalID;
 
         /**
          * @description: 预定在 `delay` 毫秒之后执行的单次 `callback` 。
@@ -187,12 +187,12 @@ declare module 'threads' {
          * -  `callback` 可能不会精确地在 `delay` 毫秒被调用。 Hamibot 不能保证回调被触发的确切时间，也不能保证它们的顺序。 回调会在尽可能接近所指定的时间上调用。
          * - 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出 `IllegalStateException` 。
          * 
-         * @param {Function} callback 当定时器到点时要调用的函数。
+         * @param {Callback} callback 当定时器到点时要调用的函数。
          * @param {number} delay 调用 `callback` 之前要等待的毫秒数。当 `delay` 小于 0 时， `delay` 会被设为 0。
          * @param {array} [args] 当调用 `callback` 时要传入的可选参数。
          * @return {TimeoutID} 返回一个用于 `clearTimeout()` 的定时器 id 。
          */
-        setTimeout(callback: Function, delay: number, ...args: any[]): TimeoutID;
+        setTimeout(callback: Callback, delay: number, ...args: any[]): TimeoutID;
 
         /**
          * @description: 预定立即执行的 callback，它是在 I/O 事件的回调之后被触发。
@@ -203,11 +203,11 @@ declare module 'threads' {
          * 
          * - 该定时器会在该线程执行。如果当前线程仍未开始执行或已经执行结束，则抛出 `IllegalStateException` 。
          * 
-         * @param {Function} callback 在 Looper 循环的当前回合结束时要调用的函数。
+         * @param {Callback} callback 在 Looper 循环的当前回合结束时要调用的函数。
          * @param {array} [args] 当调用 `callback` 时要传入的可选参数。
          * @return {ImmediateID} 返回一个用于 `clearImmediate()` 的 id。
          */
-        setImmediate(callback: Function, ...args: any[]): ImmediateID;
+        setImmediate(callback: Callback, ...args: any[]): ImmediateID;
 
         /**
          * @description: 取消一个由 `setInterval()` 创建的循环定时任务。
@@ -639,18 +639,6 @@ declare module 'threads' {
         await(): void;
 
         /**
-         * @description: 导致当前线程等待直到发出信号。
-         */
-        awaitUninterruptibly(): void;
-
-        /**
-         * @description: 导致当前线程等待，直到发出信号或中断，或者指定的等待时间过去。
-         * @param {Long} nanosTimeout 等待的最长时间，单位纳秒。
-         * @return {Long} 该方法返回在给定返回时提供的 `nanosTimeout` 值时等待的剩余纳秒数的估计值，或者如果超时则返回小于或等于零的值。 此值可用于确定在等待返回但等待条件仍未成立的情况下是否以及等待多长时间。
-         */
-        awaitNanos(nanosTimeout: Long): Long;
-
-        /**
          * @description: 导致当前线程等待，直到发出信号或中断，或者指定的等待时间过去。
          * 
          * 此方法在行为上等同于：
@@ -662,6 +650,18 @@ declare module 'threads' {
          * @return {boolean} 如果在从方法返回之前检测到等待时间返回 `false` 否则 `true` 。
          */
         await(time: Long, unit: TimeUnit): boolean;
+
+        /**
+         * @description: 导致当前线程等待直到发出信号。
+         */
+        awaitUninterruptibly(): void;
+
+        /**
+         * @description: 导致当前线程等待，直到发出信号或中断，或者指定的等待时间过去。
+         * @param {Long} nanosTimeout 等待的最长时间，单位纳秒。
+         * @return {Long} 该方法返回在给定返回时提供的 `nanosTimeout` 值时等待的剩余纳秒数的估计值，或者如果超时则返回小于或等于零的值。 此值可用于确定在等待返回但等待条件仍未成立的情况下是否以及等待多长时间。
+         */
+        awaitNanos(nanosTimeout: Long): Long;
 
         /**
          * @description: 导致当前线程等待，直到发出信号或中断，或者指定的截止时间过去。
@@ -775,4 +775,6 @@ declare module 'threads' {
     class Long extends Number { }
 
     class Double extends Number { }
+
+    type Callback = (...args: any[]) => any;
 }

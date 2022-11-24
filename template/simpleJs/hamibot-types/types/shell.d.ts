@@ -2,8 +2,8 @@
  * @Author: BATU1579
  * @CreateDate: 2022-07-31 02:26:26
  * @LastEditor: BATU1579
- * @LastTime: 2022-08-01 17:04:02
- * @FilePath: \\src\\types\\shell.d.ts
+ * @LastTime: 2022-10-28 14:36:49
+ * @FilePath: \\types\\shell.d.ts
  * @Description: 终端模块
  */
 declare module 'shell' {
@@ -15,7 +15,6 @@ declare module 'shell' {
          * @return {CMDResult} 命令运行的结果。
          */
         function shell(cmd: string, root?: boolean): CMDResult;
-
 
         /**
          * @description: `shell()` 函数通过用来一次性执行单条命令并获取结果。如果有多条命令需要执行，用 Shell 对象的效率更高。这是因为，每次运行 `shell()` 函数都会打开一个单独的 shell 进程并在运行结束后关闭他，这个过程需要一定的时间；而 `Shell` 对象自始至终使用同一个 shell 进程。

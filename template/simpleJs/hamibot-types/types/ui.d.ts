@@ -3,8 +3,8 @@
  * @Author: BATU1579
  * @CreateDate: 2022-08-07 17:39:23
  * @LastEditor: BATU1579
- * @LastTime: 2022-09-11 10:51:25
- * @FilePath: \\src\\types\\ui.d.ts
+ * @LastTime: 2022-10-28 15:57:57
+ * @FilePath: \\types\\ui.d.ts
  * @Description: 
  */
 declare module 'ui' {
@@ -105,9 +105,9 @@ declare module 'ui' {
         /**
          * @description: 注册一个自定义组件。
          * @param {string} name 组件名称。
-         * @param {Function} widget 组件。
+         * @param {() => void} widget 组件。
          */
-        registerWidget(name: string, widget: Function): void;
+        registerWidget(name: string, widget: () => void): void;
 
         /**
          * @description: 查看当前线程是否是 UI 线程。
@@ -147,17 +147,17 @@ declare module 'ui' {
          * @description: 将 `callback` 加到 UI 线程的消息循环中，并延迟 `delay` 毫秒后执行（不能准确保证一定在 `delay` 毫秒后执行）。
          * 
          * 此函数可以用于 UI 线程中延时执行动作（ `sleep()` 不能在 UI 线程中使用），也可以用于子线程中更新 UI。
-         * @param {Function} callback 回调函数。
+         * @param {() => void} callback 回调函数。
          * @param {number} [delay] 延迟，单位毫秒。
          */
-        post(callback: Function, delay?: number): void;
+        post(callback: () => void, delay?: number): void;
 
         /**
          * @description: 将 `callback` 在 UI 线程中执行。如果当前已经在 UI 线程中，则直接执行 `callback` ；否则将 `callback` 抛到 UI 线程中执行（加到 UI 线程的消息循环的末尾），并等待 `callback` 执行结束（阻塞当前线程）。
-         * @param {Function} callback 回调函数。
+         * @param {() => void} callback 回调函数。
          * @return {any} `callback` 的执行结果
          */
-        run(callback: Function): any;
+        run(callback: () => void): any;
 
         /**
          * @description: 设置当前界面的状态栏颜色。

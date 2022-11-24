@@ -2,8 +2,8 @@
  * @Author: BATU1579
  * @CreateDate: 2022-05-31 13:19:44
  * @LastEditor: BATU1579
- * @LastTime: 2022-09-22 17:54:37
- * @FilePath: \\src\\types\\widget-operation.d.ts
+ * @LastTime: 2022-11-19 12:29:43
+ * @FilePath: \\types\\widget-operation.d.ts
  * @Description: 控件操作
  */
 declare module 'widget-operation' {
@@ -987,74 +987,74 @@ declare module 'widget-operation' {
             depth(): number;
 
             /**
-             * @description: 控件在屏幕中的范围。
+             * @description: 获取控件是否被勾选。
              */
-            readonly boundsInScreen: Rect;
+            checked(): boolean;
 
             /**
-             * @description: 控件的应用包名称。
+             * @description: 获取控件的应用包名称。
              */
-            readonly packageName: string;
+            packageName(): string;
 
             /**
-             * @description: 控件的 `className` 属性。
+             * @description: 获取控件的 `className` 属性。
              */
-            readonly className: string;
+            className(): string;
+
+            /**
+             * @description: 检查控件是否可勾选。
+             */
+            checkable(): boolean;
+
+            /**
+             * @description: 检查控件的 `focusable` 属性。
+             */
+            focusable(): boolean;
+
+            /**
+             * @description: 检查控件是否为焦点。
+             */
+            focused(): boolean;
+
+            /**
+             * @description: 检查控件是否被选中。
+             */
+            selected(): boolean;
+
+            /**
+             * @description: 检查控件是否可点击。
+             */
+            clickable(): boolean;
+
+            /**
+             * @description: 检查控件是否可长按。
+             */
+            longClickable(): boolean;
+
+            /**
+             * @description: 检查控件是否已启用。
+             */
+            enabled(): boolean;
+
+            /**
+             * @description: 检查控件是否是密码。
+             */
+            password(): boolean;
+
+            /**
+             * @description: 检查控件是否可滑动。
+             */
+            scrollable(): boolean;
+
+            /**
+             * @description: 获取控件描述。
+             */
+            desc(): string;
 
             /**
              * @description: 控件的 `desc` 属性。
              */
             readonly contentDescription: string | null;
-
-            /**
-             * @description: 控件是否可勾选。
-             */
-            readonly checkable: boolean;
-
-            /**
-             * @description: 控件是否被勾选。
-             */
-            readonly checked: boolean;
-
-            /**
-             * @description: 控件的 `focusable` 属性。
-             */
-            readonly focusable: boolean;
-
-            /**
-             * @description: 控件是否为焦点。
-             */
-            readonly focused: boolean;
-
-            /**
-             * @description: 控件是否被选中。
-             */
-            readonly selected: boolean;
-
-            /**
-             * @description: 控件是否可点击。
-             */
-            readonly clickable: boolean;
-
-            /**
-             * @description: 控件是否可长按。
-             */
-            readonly longClickable: boolean;
-
-            /**
-             * @description: 控件是否已启用。
-             */
-            readonly enabled: boolean;
-
-            /**
-             * @description: 控件是否是密码。
-             */
-            readonly password: boolean;
-
-            /**
-             * @description: 控件是否可滑动。
-             */
-            readonly scrollable: boolean;
         }
 
         /**
@@ -1128,7 +1128,6 @@ declare module 'widget-operation' {
              * let clickableNames = names.find(clickable());
              * ```
              */
-            // @ts-ignore
             find(selector: UiSelector): UiCollection;
 
             /**

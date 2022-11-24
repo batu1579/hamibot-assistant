@@ -2,12 +2,12 @@
  * @Author: BATU1579
  * @CreateDate: 2022-06-19 09:21:11
  * @LastEditor: BATU1579
- * @LastTime: 2022-08-16 04:21:42
- * @FilePath: \\src\\types\\floaty.d.ts
+ * @LastTime: 2022-10-25 15:45:56
+ * @FilePath: \\types\\floaty.d.ts
  * @Description: 悬浮窗模块
  */
 declare module 'floaty' {
-    import { View } from 'ui'
+    import { View } from 'ui';
 
     global {
         /**

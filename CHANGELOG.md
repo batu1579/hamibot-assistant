@@ -10,6 +10,7 @@
 ### Changed
 
 - 添加新的 eslint 规则禁止返回 await
+- 更新本地模板的类型声明 [hamibot-types v0.1.2](https://github.com/batu1579/hamibot-types/releases/tag/v0.1.2)
 
 ### Fixed
   

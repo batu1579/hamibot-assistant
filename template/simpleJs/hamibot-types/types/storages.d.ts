@@ -2,8 +2,8 @@
  * @Author: BATU1579
  * @CreateDate: 2022-07-12 15:05:54
  * @LastEditor: BATU1579
- * @LastTime: 2022-09-11 10:56:18
- * @FilePath: \\src\\types\\storages.d.ts
+ * @LastTime: 2022-10-28 15:56:21
+ * @FilePath: \\types\\storages.d.ts
  * @Description: 存储模块
  */
 declare module 'storages' {
@@ -53,10 +53,10 @@ declare module 'storages' {
          * - 返回的数据可能是任意数据类型，这取决于使用 `Storage.put` 保存该键值的数据时的数据类型。
          * 
          * @param {string} key 要读取的键名
-         * @param {any} [defaultValue] 键对应的默认值
-         * @return {any | undefined} 键为 `key` 的数据。如果该存储中不包含该数据，这时若指定了默认值参数则返回默认值，否则返回 undefined。
+         * @param {unknown} [defaultValue] 键对应的默认值
+         * @return {unknown} 键为 `key` 的数据。如果该存储中不包含该数据，这时若指定了默认值参数则返回默认值，否则返回 undefined。
          */
-        get(key: string, defaultValue?: any): any | undefined;
+        get(key: string, defaultValue?: unknown): unknown;
 
         /**
          * @description: 把值 `value` 保存到本地存储中。 `value` 可以是 `undefined` 以外的任意数据类型。如果 `value` 为 `undefined` 则抛出 `TypeError` 。
@@ -66,9 +66,9 @@ declare module 'storages' {
          * - 存储的过程实际上是使用 `JSON.stringify` 把 `value` 转换为字符串再保存，因此 `value` 必须是可 JSON 化的才能被接受。
          * 
          * @param {string} key 键名
-         * @param {Object | null} value 要存储的值
+         * @param {unknown} value 要存储的值
          */
-        put(key: string, value: Object | null): void;
+        put(key: string, value: unknown): void;
 
         /**
          * @description: 移除键值为 `key` 的数据。
