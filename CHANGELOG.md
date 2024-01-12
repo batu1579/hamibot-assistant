@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Security
+
+- Axios 旧版本有漏洞，更新版本到 1.6.5
+
 ## [0.7.3] - 2022-11-24
 
 ### Changed
