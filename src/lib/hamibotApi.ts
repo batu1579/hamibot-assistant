@@ -1,20 +1,20 @@
-import * as FormData from 'form-data';
-import { Uri, workspace } from 'vscode';
-import { basename, extname } from 'path';
+import * as FormData from "form-data";
+import { Uri, workspace } from "vscode";
+import { basename, extname } from "path";
 
-import * as request from "./request";
-import { RobotInfo } from './projectConfig';
-import { validRobotId, validScriptId } from './valid';
+import { Request } from "./request";
+import { RobotInfo } from "./projectConfig";
+import { validRobotId, validScriptId } from "./valid";
 
 export class Robot {
-    private constructor() { };
+    private constructor() {}
 
     /**
      * @description: 获取机器人列表。
      * @return {Promise<RobotList>} 机器人列表。
      */
     static async getRobotList(): Promise<RobotList> {
-        return request.get<RobotList>('/v1/robots');
+        return Request.get<RobotList>("/v1/robots");
     }
 
     /**
@@ -25,7 +25,7 @@ export class Robot {
     static async getRobotById(robotId: string): Promise<RobotItem> {
         // 校验机器人 ID 格式
         validRobotId(robotId);
-        return request.get<RobotItem>(`/v1/robots/${robotId}`);
+        return Request.get<RobotItem>(`/v1/robots/${robotId}`);
     }
 
     /**
@@ -35,7 +35,7 @@ export class Robot {
     static async stopRobotById(robotId: string): Promise<void> {
         // 校验机器人 ID 格式
         validRobotId(robotId);
-        await request.put(`/v1/robots/${robotId}/stop`);
+        await Request.put(`/v1/robots/${robotId}/stop`);
     }
 
     /**
@@ -48,7 +48,7 @@ export class Robot {
     static async sendMessage(robotId: string, msg: PostMessage): Promise<void> {
         // 校验机器人 ID 格式
         validRobotId(robotId);
-        await request.post(`/v1/robots/${robotId}/messages`, msg);
+        await Request.post(`/v1/robots/${robotId}/messages`, msg);
     }
 
     /**
@@ -59,7 +59,7 @@ export class Robot {
     static async rename(robotId: string, newName: string): Promise<void> {
         // 校验机器人 ID 格式
         validRobotId(robotId);
-        await request.put(`/v1/robots/${robotId}`, { name: newName });
+        await Request.put(`/v1/robots/${robotId}`, { name: newName });
     }
 }
 
@@ -109,14 +109,14 @@ interface PostMessage {
 }
 
 export class Script {
-    private constructor() { };
+    private constructor() {}
 
     /**
      * @description: 获取正在开发中的脚本列表。
      * @return {Promise<ScriptList>} 开发中的脚本列表。
      */
     static async getScriptList(): Promise<ScriptList> {
-        return request.get<ScriptList>('/v1/devscripts');
+        return Request.get<ScriptList>("/v1/devscripts");
     }
 
     /**
@@ -127,7 +127,7 @@ export class Script {
     static async getScriptById(scriptId: string): Promise<ScriptItem> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
-        return request.get<ScriptItem>(`/v1/devscripts/${scriptId}`);
+        return Request.get<ScriptItem>(`/v1/devscripts/${scriptId}`);
     }
 
     /**
@@ -136,7 +136,11 @@ export class Script {
      * @param {RobotInfo} robots 机器人标记。
      * @param {object} scriptConfig 运行时加载的脚本配置。
      */
-    static async runScript(scriptId: string, robots: RobotInfo[], scriptConfig?: object): Promise<void> {
+    static async runScript(
+        scriptId: string,
+        robots: RobotInfo[],
+        scriptConfig?: object
+    ): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
@@ -149,7 +153,7 @@ export class Script {
             data.vars = scriptConfig;
         }
 
-        await request.post(`/v1/devscripts/${scriptId}/run`, data);
+        await Request.post(`/v1/devscripts/${scriptId}/run`, data);
     }
 
     /**
@@ -157,14 +161,17 @@ export class Script {
      * @param {string} scriptId 脚本 ID 。
      * @param {RobotInfo} robots 机器人标记。
      */
-    static async stopScript(scriptId: string, robots: RobotInfo[]): Promise<void> {
+    static async stopScript(
+        scriptId: string,
+        robots: RobotInfo[]
+    ): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
         // 校验机器人 ID 格式
         robots.forEach((value) => validRobotId(value._id));
 
-        await request.del(`/v1/devscripts/${scriptId}/run`, { robots: robots });
+        await Request.del(`/v1/devscripts/${scriptId}/run`, { robots: robots });
     }
 
     /**
@@ -173,7 +180,7 @@ export class Script {
      * @return {Promise<ScriptItem>} 创建脚本的详细信息。
      */
     static async createNewScript(scriptName: string): Promise<ScriptItem> {
-        return request.post<ScriptItem>(`/v1/devscripts`, { name: scriptName });
+        return Request.post<ScriptItem>(`/v1/devscripts`, { name: scriptName });
     }
 
     /**
@@ -181,8 +188,11 @@ export class Script {
      * @param {string} scriptId 脚本 ID 。
      * @param {string} scriptName 新的脚本名称。
      */
-    static async changeScriptName(scriptId: string, scriptName: string): Promise<void> {
-        await request.put(`/v1/devscripts/${scriptId}`, { name: scriptName });
+    static async changeScriptName(
+        scriptId: string,
+        scriptName: string
+    ): Promise<void> {
+        await Request.put(`/v1/devscripts/${scriptId}`, { name: scriptName });
     }
 
     /**
@@ -190,7 +200,10 @@ export class Script {
      * @param {string} scriptId 脚本 ID 。
      * @param {Uri} filesUri 要上传的文件的 Uri 。
      */
-    static async uploadScript(scriptId: string, filesUri: Uri[]): Promise<void> {
+    static async uploadScript(
+        scriptId: string,
+        filesUri: Uri[]
+    ): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
 
@@ -199,16 +212,22 @@ export class Script {
         let jobs: Promise<any>[] = [];
         for (let i = 0; i < filesUri.length; i++) {
             let file = Script.transUriToFileInfo(filesUri[i]);
-            jobs.push((async () => {
-                fileData.append('file', await workspace.fs.readFile(file.uri), {
-                    contentType: file.fileType,
-                    filename: basename(file.uri.fsPath),
-                });
-            })());
+            jobs.push(
+                (async () => {
+                    fileData.append(
+                        "file",
+                        await workspace.fs.readFile(file.uri),
+                        {
+                            contentType: file.fileType,
+                            filename: basename(file.uri.fsPath),
+                        }
+                    );
+                })()
+            );
         }
         await Promise.all(jobs);
 
-        await request.put(`/v1/devscripts/${scriptId}/files`, fileData);
+        await Request.put(`/v1/devscripts/${scriptId}/files`, fileData);
     }
 
     /**
@@ -218,26 +237,28 @@ export class Script {
     static async deleteScript(scriptId: string): Promise<void> {
         // 校验脚本 ID 格式
         validScriptId(scriptId);
-        await request.del(`/v1/devscripts/${scriptId}`);
+        await Request.del(`/v1/devscripts/${scriptId}`);
     }
 
     private static transUriToFileInfo(fileUri: Uri): FileInfo {
         let fileType: string;
 
         switch (extname(fileUri.fsPath)) {
-            case '.json':
+            case ".json":
                 fileType = "application/json";
                 break;
-            case '.js':
+            case ".js":
                 fileType = "application/javascript";
                 break;
             default:
-                throw new Error(`不支持上传文件类型： ${extname(fileUri.fsPath)} 。`);
+                throw new Error(
+                    `不支持上传文件类型： ${extname(fileUri.fsPath)} 。`
+                );
         }
 
         return {
             uri: fileUri,
-            fileType: fileType
+            fileType: fileType,
         };
     }
 }
