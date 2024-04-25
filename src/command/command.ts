@@ -147,6 +147,8 @@ async function commandsHandler(
                     try {
                         await checkRequirements(command.requirements);
                     } catch (error) {
+                        console.error("error", error);
+
                         if (!isNativeError(error)) {
                             throw error;
                         }
@@ -224,6 +226,8 @@ async function exceptionHandler(
             await INFO_DIALOG.showDialog(context, c.doneInfo);
         }
     } catch (error) {
+        console.error(error);
+
         if (!isNativeError(error)) {
             throw error;
         }
