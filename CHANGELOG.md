@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.7.4] - 2024-04-25
+
 ### Fixed
 
 - 修复创建项目会出现 Unexpected end of JSON input 的问题 [#21](https://github.com/batu1579/hamibot-assistant/issues/21)
@@ -279,7 +281,8 @@
 [语义化版本号]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.3...HEAD
+[unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.4...HEAD
+[0.7.4]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.3..v0.7.4
 [0.7.3]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.2..v0.7.3
 [0.7.2]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.1..v0.7.2
 [0.7.1]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.0..v0.7.1
