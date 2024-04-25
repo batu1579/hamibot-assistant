@@ -74,7 +74,10 @@ export class HamibotConfig {
      * @return {Promise<ProjectConfig>} 项目设置对象。
      */
     public async getProjectConfig(): Promise<ProjectConfig> {
-        return this.readProjectConfig();
+        let configDocument = await workspace.fs.readFile(
+            this.getProjectConfigFileUri()
+        );
+        return JSON.parse(configDocument.toString());
     }
 
     /**
@@ -126,17 +129,6 @@ export class HamibotConfig {
     private static getCurrentWorkspaceUri(): Uri | undefined {
         const workspaceFolders = workspace.workspaceFolders;
         return workspaceFolders ? workspaceFolders[0].uri : undefined;
-    }
-
-    /**
-     * @description: 从配置文件中读取项目设置。
-     * @return {Promise<ProjectConfig>} 项目设置对象。
-     */
-    private async readProjectConfig(): Promise<ProjectConfig> {
-        let configDocument = await workspace.fs.readFile(
-            this.getProjectConfigFileUri()
-        );
-        return JSON.parse(configDocument.toString());
     }
 
     /**
