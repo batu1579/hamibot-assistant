@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 修复创建项目会出现 Unexpected end of JSON input 的问题 [#21](https://github.com/batu1579/hamibot-assistant/issues/21)
+
 ### Security
 
 - Axios 旧版本有漏洞，更新版本到 1.6.5
