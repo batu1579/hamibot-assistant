@@ -1,10 +1,4 @@
-import {
-    Uri,
-    window,
-    commands,
-    workspace,
-    ExtensionContext
-} from "vscode";
+import { Uri, window, commands, workspace, ExtensionContext } from "vscode";
 import { isNativeError } from "util/types";
 
 import { HamibotConfig } from "../lib/projectConfig";
@@ -14,43 +8,44 @@ import {
     stopScript,
     initProject,
     uploadScript,
-    uploadAndRunScript
+    uploadAndRunScript,
 } from "./operation";
 
 import {
     setApiToken,
     setShowOfflineRobot,
     setDefaultExecuteRobot,
-    setProjectTemplate
+    setProjectTemplate,
 } from "./globalConfig";
 
 import {
     setProjectName,
     markConfigFile,
     markScriptFile,
-    setExecuteRobot
+    setExecuteRobot,
 } from "./projectConfig";
 
-export async function registerCommand(context: ExtensionContext): Promise<void> {
-    await commandsHandler(context,
+export async function registerCommand(
+    context: ExtensionContext
+): Promise<void> {
+    await commandsHandler(
+        context,
         // 全局设置
         {
             id: "hamibot-assistant.setApiToken",
             commandFunc: setApiToken,
-            doneInfo: "开发者令牌已更新"
+            doneInfo: "开发者令牌已更新",
         },
         {
             id: "hamibot-assistant.setShowOfflineRobot",
             commandFunc: setShowOfflineRobot,
-            doneInfo: "机器人显示设置已更新"
+            doneInfo: "机器人显示设置已更新",
         },
         {
             id: "hamibot-assistant.setDefaultExecuteRobot",
             commandFunc: setDefaultExecuteRobot,
             doneInfo: "默认调试机器人已更新",
-            requirements: [
-                NEED_API_TOKEN,
-            ]
+            requirements: [NEED_API_TOKEN],
         },
         {
             id: "hamibot-assistant.resetDialogs",
@@ -60,12 +55,12 @@ export async function registerCommand(context: ExtensionContext): Promise<void> 
                 }
                 return Job.done;
             },
-            doneInfo: "提示信息已重置"
+            doneInfo: "提示信息已重置",
         },
         {
             id: "hamibot-assistant.setProjectTemplate",
             commandFunc: setProjectTemplate,
-            doneInfo: "模板设置已更新"
+            doneInfo: "模板设置已更新",
         },
 
         // 项目设置
@@ -75,26 +70,24 @@ export async function registerCommand(context: ExtensionContext): Promise<void> 
             doneInfo: "项目名称已更新",
             requirements: [
                 NEED_API_TOKEN,
-                new ProjectConfigRequirement('scriptId')
-            ]
+                new ProjectConfigRequirement("scriptId"),
+            ],
         },
         {
             id: "hamibot-assistant.markScriptFile",
             commandFunc: markScriptFile,
-            doneInfo: "脚本文件标记已更新"
+            doneInfo: "脚本文件标记已更新",
         },
         {
             id: "hamibot-assistant.markConfigFile",
             commandFunc: markConfigFile,
-            doneInfo: "配置文件标记已更新"
+            doneInfo: "配置文件标记已更新",
         },
         {
             id: "hamibot-assistant.setExecuteRobot",
             commandFunc: setExecuteRobot,
             doneInfo: "调试机器人已更新",
-            requirements: [
-                NEED_API_TOKEN,
-            ]
+            requirements: [NEED_API_TOKEN],
         },
 
         // 操作
@@ -102,9 +95,7 @@ export async function registerCommand(context: ExtensionContext): Promise<void> 
             id: "hamibot-assistant.initProject",
             commandFunc: initProject,
             doneInfo: "新项目已创建",
-            requirements: [
-                NEED_API_TOKEN,
-            ]
+            requirements: [NEED_API_TOKEN],
         },
         {
             id: "hamibot-assistant.uploadScript",
@@ -112,9 +103,9 @@ export async function registerCommand(context: ExtensionContext): Promise<void> 
             doneInfo: "脚本文件已上传",
             requirements: [
                 NEED_API_TOKEN,
-                new ProjectConfigRequirement('scriptId'),
-                new ProjectConfigRequirement('fileMark')
-            ]
+                new ProjectConfigRequirement("scriptId"),
+                new ProjectConfigRequirement("fileMark"),
+            ],
         },
         {
             id: "hamibot-assistant.uploadAndRunScript",
@@ -122,9 +113,9 @@ export async function registerCommand(context: ExtensionContext): Promise<void> 
             doneInfo: "开始运行脚本",
             requirements: [
                 NEED_API_TOKEN,
-                new ProjectConfigRequirement('scriptId'),
-                new ProjectConfigRequirement('fileMark')
-            ]
+                new ProjectConfigRequirement("scriptId"),
+                new ProjectConfigRequirement("fileMark"),
+            ],
         },
         {
             id: "hamibot-assistant.stopScript",
@@ -132,9 +123,9 @@ export async function registerCommand(context: ExtensionContext): Promise<void> 
             doneInfo: "脚本已停止运行",
             requirements: [
                 NEED_API_TOKEN,
-                new ProjectConfigRequirement('scriptId'),
-                new ProjectConfigRequirement('executeRobot')
-            ]
+                new ProjectConfigRequirement("scriptId"),
+                new ProjectConfigRequirement("executeRobot"),
+            ],
         }
     );
 }
@@ -144,7 +135,10 @@ export async function registerCommand(context: ExtensionContext): Promise<void> 
  * @param {ExtensionContext} context 扩展上下文。
  * @param {Command} commandList 要包装的指令对象。
  */
-async function commandsHandler(context: ExtensionContext, ...commandList: Command[]): Promise<void> {
+async function commandsHandler(
+    context: ExtensionContext,
+    ...commandList: Command[]
+): Promise<void> {
     for (const command of commandList) {
         context.subscriptions.push(
             commands.registerCommand(command.id, async (uri: Uri) => {
@@ -165,7 +159,7 @@ async function commandsHandler(context: ExtensionContext, ...commandList: Comman
 
                 // 重试循环
                 while (await exceptionHandler(context, uri, command)) {
-                    window.showInformationMessage('正在重试...');
+                    window.showInformationMessage("正在重试...");
                 }
             })
         );
@@ -180,14 +174,15 @@ async function checkRequirements(requirements: RequireInfo[]): Promise<void> {
         switch (req.type) {
             case RequireType.vscodeConfig:
                 config = await workspace
-                    .getConfiguration('hamibot-assistant')
+                    .getConfiguration("hamibot-assistant")
                     .get(req.field);
                 break;
 
             case RequireType.projectConfig:
                 // 延迟到有需要的时候读取
                 if (!projectConfig) {
-                    projectConfig = await global.currentConfig.getProjectConfig();
+                    projectConfig =
+                        await global.currentConfig.getProjectConfig();
                 }
                 config = await HamibotConfig.getConfigByFieldName(
                     projectConfig,
@@ -215,7 +210,11 @@ async function checkRequirements(requirements: RequireInfo[]): Promise<void> {
  * @param {Command} c 在指令对应的函数外添加异常处理。
  * @return {Promise<boolean>} 是否需要重试。
  */
-async function exceptionHandler(context: ExtensionContext, uri: Uri, c: Command): Promise<boolean> {
+async function exceptionHandler(
+    context: ExtensionContext,
+    uri: Uri,
+    c: Command
+): Promise<boolean> {
     let needRetry = false;
 
     try {
@@ -230,7 +229,7 @@ async function exceptionHandler(context: ExtensionContext, uri: Uri, c: Command)
         }
 
         needRetry = await ERROR_DIALOG.showDialog(context, error.message);
-    };
+    }
 
     return needRetry;
 }
@@ -254,13 +253,13 @@ interface Command {
     /**
      * @description: 指令依赖的信息
      */
-    requirements?: RequireInfo[]
+    requirements?: RequireInfo[];
 }
 
 export enum Job {
     done,
-    undone
-};
+    undone,
+}
 
 interface RequireInfo {
     /**
@@ -281,7 +280,7 @@ interface RequireInfo {
 
 enum RequireType {
     vscodeConfig,
-    projectConfig
+    projectConfig,
 }
 
 abstract class ConfigRequirement implements RequireInfo {
@@ -295,25 +294,30 @@ abstract class ConfigRequirement implements RequireInfo {
         this.onNotSatisfied = onNotSatisfied ?? this.defaultCallback;
     }
 
-    protected async defaultCallback(): Promise<void> { }
+    protected async defaultCallback(): Promise<void> {}
 }
 
 class VSCodeConfigRequirement extends ConfigRequirement implements RequireInfo {
     type: RequireType = RequireType.vscodeConfig;
 
     protected async defaultCallback(): Promise<void> {
-        await commands.executeCommand('workbench.action.openSettingsJson');
-    };
+        await commands.executeCommand("workbench.action.openSettingsJson");
+    }
 }
 
-class ProjectConfigRequirement extends ConfigRequirement implements RequireInfo {
+class ProjectConfigRequirement
+    extends ConfigRequirement
+    implements RequireInfo
+{
     type: RequireType = RequireType.projectConfig;
 
     protected async defaultCallback(): Promise<void> {
-        await window.showTextDocument(global.currentConfig.getProjectConfigFileUri());
-    };
+        await window.showTextDocument(
+            global.currentConfig.getProjectConfigFileUri()
+        );
+    }
 }
 
 const NEED_API_TOKEN = new VSCodeConfigRequirement("apiToken", () => {
-    commands.executeCommand('hamibot-assistant.setApiToken');
+    commands.executeCommand("hamibot-assistant.setApiToken");
 });
