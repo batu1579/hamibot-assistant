@@ -2,41 +2,47 @@ import { existsSync } from "fs";
 import { workspace, Uri } from "vscode";
 
 interface ProjectConfig {
-    readonly name?: string,
-    readonly scriptId?: string,
-    readonly executeRobot?: RobotInfo,
-    readonly fileMark?: FileMarks
+    readonly name?: string;
+    readonly scriptId?: string;
+    readonly executeRobot?: RobotInfo;
+    readonly fileMark?: FileMarks;
 }
 
 export interface RobotInfo {
-    _id?: string,
-    name?: string
+    _id?: string;
+    name?: string;
 }
 
 interface FileMarks {
-    configFile?: string,
-    scriptFile?: string
+    configFile?: string;
+    scriptFile?: string;
 }
 
 export class HamibotConfig {
     private workspaceUri: Uri | undefined;
-    private static readonly configFileName = 'hamibot.config.json';
+    private static readonly configFileName = "hamibot.config.json";
     private static readonly defaultConfig = {};
 
     private constructor(workspaceUri?: Uri) {
-        this.workspaceUri = workspaceUri ?? HamibotConfig.getCurrentWorkspaceUri();
+        this.workspaceUri =
+            workspaceUri ?? HamibotConfig.getCurrentWorkspaceUri();
     }
 
     public static initConfig(workspaceUri?: Uri): HamibotConfig {
         return new HamibotConfig(workspaceUri);
     }
 
-    public static async newConfigFile(workspaceUri?: Uri, config?: ProjectConfig): Promise<HamibotConfig> {
+    public static async newConfigFile(
+        workspaceUri?: Uri,
+        config?: ProjectConfig
+    ): Promise<HamibotConfig> {
         let configObject = new HamibotConfig(workspaceUri);
 
         if (configObject.workspaceUri) {
             // 检查是否存在配置文件（不存在则创建）
-            await configObject.checkConfigFile(config ?? HamibotConfig.defaultConfig);
+            await configObject.checkConfigFile(
+                config ?? HamibotConfig.defaultConfig
+            );
         }
 
         return configObject;
@@ -51,13 +57,16 @@ export class HamibotConfig {
 
     public getWorkspaceUri(): Uri {
         if (!this.workspaceUri) {
-            throw new Error('未找到打开的工作区或文件夹');
+            throw new Error("未找到打开的工作区或文件夹");
         }
         return this.workspaceUri;
     }
 
     public getProjectConfigFileUri(): Uri {
-        return Uri.joinPath(this.getWorkspaceUri(), HamibotConfig.configFileName);
+        return Uri.joinPath(
+            this.getWorkspaceUri(),
+            HamibotConfig.configFileName
+        );
     }
 
     /**
@@ -79,11 +88,19 @@ export class HamibotConfig {
      * HamibotConfig.getConfigByFieldName(config, "fileMark.configFile")
      * ```
      */
-    public static getConfigByFieldName(config: object, fieldPath: string | string[], defaultValue?: any): unknown {
-        let path = Array.isArray(fieldPath) ? fieldPath : fieldPath.replace(/\[(.*?)\]/g, '.$1').split('.');
-        return path.reduce((obj: object, key: string) => {
-            return Object.getOwnPropertyDescriptor(obj ?? {}, key)?.value;
-        }, config) ?? defaultValue;
+    public static getConfigByFieldName(
+        config: object,
+        fieldPath: string | string[],
+        defaultValue?: any
+    ): unknown {
+        if (!Array.isArray(fieldPath)) {
+            fieldPath = fieldPath.replace(/\[(.*?)\]/g, ".$1").split(".");
+        }
+        return (
+            fieldPath.reduce((obj: object, key: string) => {
+                return Object.getOwnPropertyDescriptor(obj ?? {}, key)?.value;
+            }, config) ?? defaultValue
+        );
     }
 
     /**
