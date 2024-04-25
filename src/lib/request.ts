@@ -4,10 +4,10 @@ import { commands, extensions, workspace } from "vscode";
 import { validToken } from "./valid";
 
 export class Request {
-    public static readonly baseUrls: Set<string> = new Set([
+    public static readonly baseUrls: string[] = [
         "https://api.hamibot.cn",
         "https://api.hamibot.com",
-    ]);
+    ];
 
     /**
      * @description: 获取 headers 中的重要信息，包括：
@@ -24,7 +24,7 @@ export class Request {
         )!;
         const token = workspace
             .getConfiguration("hamibot-assistant")
-            .get<string>("token");
+            .get<string>("apiToken");
 
         return {
             /* eslint-disable */
@@ -79,12 +79,13 @@ export class Request {
         config: AxiosRequestConfig
     ): Promise<DataType> {
         config.headers = { ...config.headers, ...this.getHeaders() };
-        const requests = [...this.baseUrls].map((_url) =>
-            axios.request<DataType>(config)
-        );
 
         try {
-            return (await Promise.race(requests)).data;
+            const requestTasks = this.baseUrls.map((_baseUrl) => {
+                config.baseURL = _baseUrl;
+                return axios.request<DataType>(config);
+            });
+            return (await Promise.race(requestTasks)).data;
         } catch (error: any) {
             if (isAxiosError(error)) {
                 this.handleRequestError(error);
