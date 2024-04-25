@@ -116,10 +116,18 @@ export class HamibotConfig {
      * @param {ProjectConfig} newConfig 新的设置项。
      * @param {ProjectConfig} oldConfig 原有的设置项，主要用来避免频繁读取配置文件。但是如果读取时间和使用时间相隔很久，则建议直接从文件中重新读取，防止期间手动修改过配置文件。
      */
-    public async updateProjectConfig(newConfig: ProjectConfig, oldConfig: ProjectConfig): Promise<void>;
-    public async updateProjectConfig(newConfig: ProjectConfig, oldConfig?: ProjectConfig): Promise<void> {
-        oldConfig = oldConfig ?? await this.getProjectConfig();
-        this.writeProjectConfig(HamibotConfig.mergeConfig(oldConfig, newConfig));
+    public async updateProjectConfig(
+        newConfig: ProjectConfig,
+        oldConfig: ProjectConfig
+    ): Promise<void>;
+    public async updateProjectConfig(
+        newConfig: ProjectConfig,
+        oldConfig?: ProjectConfig
+    ): Promise<void> {
+        oldConfig = oldConfig ?? (await this.getProjectConfig());
+        return this.writeProjectConfig(
+            HamibotConfig.mergeConfig(oldConfig, newConfig)
+        );
     }
 
     /**
@@ -136,7 +144,7 @@ export class HamibotConfig {
      * @param {ProjectConfig} config 项目设置对象。
      */
     private async writeProjectConfig(config: ProjectConfig): Promise<void> {
-        await workspace.fs.writeFile(
+        return workspace.fs.writeFile(
             this.getProjectConfigFileUri(),
             Buffer.from(JSON.stringify(config, null, 4))
         );
@@ -149,7 +157,7 @@ export class HamibotConfig {
         }
 
         // 存入要更新的内容
-        await this.updateProjectConfig(config);
+        return this.updateProjectConfig(config);
     }
 
     /**
