@@ -2,6 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig, isAxiosError } from "axios";
 import { commands, extensions, workspace } from "vscode";
 
 import { validToken } from "./valid";
+import * as FormData from "form-data";
 
 export class Request {
     public static readonly baseUrls: string[] = [
@@ -11,6 +12,7 @@ export class Request {
 
     /**
      * @description: 获取 headers 中的重要信息，包括：
+     * @argument {boolean} includeFiles 请求中是否包含文件，默认为 false 。
      *
      * - `Authorization`
      * - `Content-Type`
@@ -18,7 +20,7 @@ export class Request {
      *
      * @return {object} 包含信息的对象。
      */
-    private static getHeaders(): object {
+    private static getHeaders(includeFiles: boolean = false): object {
         const { packageJSON } = extensions.getExtension(
             "batu1579.hamibot-assistant"
         )!;
@@ -29,7 +31,9 @@ export class Request {
         return {
             /* eslint-disable */
             Authorization: `token ${validToken(token)}`,
-            "Content-Type": "application/json",
+            "Content-Type": includeFiles
+                ? "multipart/form-data"
+                : "application/json",
             "User-Agent": `hamibot-assistant ${packageJSON.version}`,
             /* eslint-enable */
         };
@@ -78,7 +82,10 @@ export class Request {
     private static async sendRequest<DataType>(
         config: AxiosRequestConfig
     ): Promise<DataType> {
-        config.headers = { ...config.headers, ...this.getHeaders() };
+        config.headers = {
+            ...config.headers,
+            ...this.getHeaders(config.data instanceof FormData),
+        };
 
         try {
             const requestTasks = this.baseUrls.map((_baseUrl) => {

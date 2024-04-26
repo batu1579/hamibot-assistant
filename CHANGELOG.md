@@ -7,6 +7,10 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- 修复在上传文件时会出现 400 错误码的问题 [#26](https://github.com/batu1579/hamibot-assistant/issues/26)
+
 ## [0.7.4] - 2024-04-25
 
 ### Fixed
