@@ -64,36 +64,38 @@ export class Request {
     /**
      * @description: 处理请求中出现的异常，给出更精确的错误描述
      * @param {AxiosError} error 捕获到的请求异常对象
+     * @returns {RequestError} 处理后的异常对象
      */
-    private static handleRequestError(error: AxiosError): never {
+    private static createRequestError(error: AxiosError): RequestError {
         if (!error.response) {
-            throw new Error("未收到响应数据，请稍后重试");
+            return new RequestError("未收到响应数据，请稍后重试", true);
         }
 
         const { status } = error.response;
 
         if (status >= 500) {
-            throw new Error("服务器异常，请向 Hamibot 官方反馈！");
+            return new RequestError("服务器异常，请向 Hamibot 官方反馈", true);
         }
 
         switch (status) {
             case 401:
                 // Token 有误
                 commands.executeCommand("hamibot-assistant.setApiToken");
-                throw new Error("开发者令牌无效，请重新设置！");
+                return new RequestError("开发者令牌无效，请重新设置！");
 
             case 422:
                 // 参数有误
-                throw new Error("请求参数格式有误，请检查！");
+                return new RequestError("请求参数格式有误，请检查！");
 
             case 429:
                 // 频率限制
-                throw new Error("本月 API 调用次数已达上限！");
-        }
+                return new RequestError("本月 API 调用次数已达上限！");
 
-        throw new Error(
-            `未知错误码，请在仓库提交 issue 。详细信息：${error.message}`
-        );
+            default:
+                return new RequestError(
+                    `未知客户端错误，错误码 ${status} ，请在仓库提交 issue 。详细信息：${error.message}`
+                );
+        }
     }
 
     /**
