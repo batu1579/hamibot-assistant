@@ -4,6 +4,28 @@ import { commands, extensions, workspace } from "vscode";
 import { validToken } from "./valid";
 import * as FormData from "form-data";
 
+export class RequestError extends Error {
+    public readonly retriable: boolean;
+
+    constructor(message: string, retriable: boolean = false) {
+        super(message);
+        this.name = "RequestError";
+        this.retriable = retriable;
+    }
+
+    public static isRequestError(error: any): error is RequestError {
+        return (
+            error.name === "RequestError" &&
+            typeof error.retriable === "boolean"
+        );
+    }
+
+    public attachWith(error: Error): this {
+        this.stack = error.stack;
+        return this;
+    }
+}
+
 export class Request {
     public static readonly baseUrls: string[] = [
         "https://api.hamibot.cn",
@@ -42,36 +64,38 @@ export class Request {
     /**
      * @description: 处理请求中出现的异常，给出更精确的错误描述
      * @param {AxiosError} error 捕获到的请求异常对象
+     * @returns {RequestError} 处理后的异常对象
      */
-    private static handleRequestError(error: AxiosError): never {
+    private static createRequestError(error: AxiosError): RequestError {
         if (!error.response) {
-            throw new Error("未收到响应数据，请稍后重试");
+            return new RequestError("未收到响应数据，请稍后重试", true);
         }
 
         const { status } = error.response;
 
         if (status >= 500) {
-            throw new Error("服务器异常，请向 Hamibot 官方反馈！");
+            return new RequestError("服务器异常，请向 Hamibot 官方反馈", true);
         }
 
         switch (status) {
             case 401:
                 // Token 有误
                 commands.executeCommand("hamibot-assistant.setApiToken");
-                throw new Error("开发者令牌无效，请重新设置！");
+                return new RequestError("开发者令牌无效，请重新设置！");
 
             case 422:
                 // 参数有误
-                throw new Error("请求参数格式有误，请检查！");
+                return new RequestError("请求参数格式有误，请检查！");
 
             case 429:
                 // 频率限制
-                throw new Error("本月 API 调用次数已达上限！");
-        }
+                return new RequestError("本月 API 调用次数已达上限！");
 
-        throw new Error(
-            `未知错误码，请在仓库提交 issue 。详细信息：${error.message}`
-        );
+            default:
+                return new RequestError(
+                    `未知客户端错误，错误码 ${status} ，请在仓库提交 issue 。详细信息：${error.message}`
+                );
+        }
     }
 
     /**
@@ -87,21 +111,43 @@ export class Request {
             ...this.getHeaders(config.data instanceof FormData),
         };
 
-        try {
-            const requestTasks = this.baseUrls.map((_baseUrl) => {
-                config.baseURL = _baseUrl;
-                return axios.request<DataType>(config);
-            });
-            return (await Promise.race(requestTasks)).data;
-        } catch (error: any) {
-            if (isAxiosError(error)) {
-                this.handleRequestError(error);
-            } else {
-                throw new Error(
-                    `未知异常，请在仓库提交 issue 。详细信息：${error.message}`
-                );
+        if (this.baseUrls.length <= 0) {
+            throw new RequestError("没有可用的 Hamibot 服务器！");
+        }
+
+        for (let index = 0; index < this.baseUrls.length; index++) {
+            config.baseURL = this.baseUrls[index];
+
+            try {
+                const response = await axios.request<DataType>(config);
+                return response.data;
+            } catch (error: any) {
+                if (!isAxiosError(error)) {
+                    throw new RequestError(
+                        `未知异常，请在仓库提交 issue 。详细信息：${error.message}`
+                    ).attachWith(error);
+                }
+
+                const requestError = this.createRequestError(error);
+
+                if (
+                    requestError.retriable &&
+                    index < this.baseUrls.length - 1
+                ) {
+                    console.log(
+                        `请求失败，正在重试 BaseURL: ${
+                            this.baseUrls[index + 1]
+                        }`
+                    );
+                    continue;
+                }
+
+                throw requestError.attachWith(error);
             }
         }
+
+        // 理论上不应该运行到这里
+        throw new RequestError("请求模块异常，在仓库提交 issue 。");
     }
 
     /**
