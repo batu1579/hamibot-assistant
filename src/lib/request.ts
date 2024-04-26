@@ -111,21 +111,43 @@ export class Request {
             ...this.getHeaders(config.data instanceof FormData),
         };
 
-        try {
-            const requestTasks = this.baseUrls.map((_baseUrl) => {
-                config.baseURL = _baseUrl;
-                return axios.request<DataType>(config);
-            });
-            return (await Promise.race(requestTasks)).data;
-        } catch (error: any) {
-            if (isAxiosError(error)) {
-                this.handleRequestError(error);
-            } else {
-                throw new Error(
-                    `未知异常，请在仓库提交 issue 。详细信息：${error.message}`
-                );
+        if (this.baseUrls.length <= 0) {
+            throw new RequestError("没有可用的 Hamibot 服务器！");
+        }
+
+        for (let index = 0; index < this.baseUrls.length; index++) {
+            config.baseURL = this.baseUrls[index];
+
+            try {
+                const response = await axios.request<DataType>(config);
+                return response.data;
+            } catch (error: any) {
+                if (!isAxiosError(error)) {
+                    throw new RequestError(
+                        `未知异常，请在仓库提交 issue 。详细信息：${error.message}`
+                    ).attachWith(error);
+                }
+
+                const requestError = this.createRequestError(error);
+
+                if (
+                    requestError.retriable &&
+                    index < this.baseUrls.length - 1
+                ) {
+                    console.log(
+                        `请求失败，正在重试 BaseURL: ${
+                            this.baseUrls[index + 1]
+                        }`
+                    );
+                    continue;
+                }
+
+                throw requestError.attachWith(error);
             }
         }
+
+        // 理论上不应该运行到这里
+        throw new RequestError("请求模块异常，在仓库提交 issue 。");
     }
 
     /**
