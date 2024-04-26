@@ -7,6 +7,8 @@
 
 ## [Unreleased]
 
+## [0.7.5] - 2024-04-26
+
 ### Fixed
 
 - 修复在上传文件时会出现 400 错误码的问题 [#26](https://github.com/batu1579/hamibot-assistant/issues/26)
@@ -286,7 +288,8 @@
 [语义化版本号]: https://semver.org/spec/v2.0.0.html
 
 <!-- Versions -->
-[unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.4...HEAD
+[unreleased]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.5...HEAD
+[0.7.5]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.4..v0.7.5
 [0.7.4]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.3..v0.7.4
 [0.7.3]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.2..v0.7.3
 [0.7.2]: https://github.com/batu1579/hamibot-assistant/compare/v0.7.1..v0.7.2
