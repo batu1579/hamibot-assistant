@@ -4,6 +4,28 @@ import { commands, extensions, workspace } from "vscode";
 import { validToken } from "./valid";
 import * as FormData from "form-data";
 
+export class RequestError extends Error {
+    public readonly retriable: boolean;
+
+    constructor(message: string, retriable: boolean = false) {
+        super(message);
+        this.name = "RequestError";
+        this.retriable = retriable;
+    }
+
+    public static isRequestError(error: any): error is RequestError {
+        return (
+            error.name === "RequestError" &&
+            typeof error.retriable === "boolean"
+        );
+    }
+
+    public attachWith(error: Error): this {
+        this.stack = error.stack;
+        return this;
+    }
+}
+
 export class Request {
     public static readonly baseUrls: string[] = [
         "https://api.hamibot.cn",
